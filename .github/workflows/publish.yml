@@ -31,8 +31,13 @@ jobs:
           BASE_MONTH=$(date -u -d "$BASE_DATE" +"%m")
           NOW_YEAR=$(date -u -d "$NOW" +"%Y")
           NOW_MONTH=$(date -u -d "$NOW" +"%m")
+          echo "NOW_MONTH: $NOW_MONTH"
+          echo "BASE_MONTH: $BASE_MONTH"
           MAJOR=$((NOW_YEAR - BASE_YEAR))
           MINOR=$(( (NOW_MONTH - BASE_MONTH + 12) % 12 ))
+          if [ "$MINOR" -lt 0 ] || [ "$MINOR" -gt 11 ]; then
+            MINOR=0
+          fi
           PATCH=${{ github.run_number }}
           VERSION="$MAJOR.$MINOR.$PATCH"
           echo "Calculated version: $VERSION"
