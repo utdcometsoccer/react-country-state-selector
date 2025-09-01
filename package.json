@@ -75,8 +75,8 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/**/*.d.ts",
-    "src/**/*.js",
+    "dist/**/*.mjs",
+    "dist/**/*.d.ts",    
     "!src/tests"
   ]
 }
