@@ -1,6 +1,6 @@
 {
   "name": "@idahoedokpayi/react-country-state-selector",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "A React component library for selecting countries and states.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

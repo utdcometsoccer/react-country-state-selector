@@ -22,9 +22,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Bump version
+      - name: Calculate version
+        id: version
         run: |
-          npm version patch --no-git-tag-version
+          BASE_DATE="2025-09-01"
+          NOW=$(date -u +"%Y-%m-%d")
+          BASE_YEAR=$(date -u -d "$BASE_DATE" +"%Y")
+          BASE_MONTH=$(date -u -d "$BASE_DATE" +"%m")
+          NOW_YEAR=$(date -u -d "$NOW" +"%Y")
+          NOW_MONTH=$(date -u -d "$NOW" +"%m")
+          MAJOR=$((NOW_YEAR - BASE_YEAR))
+          MINOR=$(( (NOW_MONTH - BASE_MONTH + 12) % 12 ))
+          PATCH=${{ github.run_number }}
+          VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "Calculated version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Set npm version
+        run: npm version $VERSION --no-git-tag-version
 
       - name: Build
         run: npm run build
