@@ -1,9 +1,17 @@
 {
   "name": "@idahoedokpayi/react-country-state-selector",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idahoedokpayi/react-country-state-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idahoedokpayi/react-country-state-selector/issues"
+  },
+  "homepage": "https://github.com/utdcometsoccer/react-country-state-selector#readme",
   "description": "A React component library for selecting countries and states.",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/react-country-state-selector.umd.js",
+  "module": "dist/react-country-state-selector.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
@@ -20,7 +28,11 @@
     "dropdown",
     "selector"
   ],
-  "author": "Idaho Edokpayi",
+  "author": {
+    "name": "Idaho Edokpayi",
+    "email": "idaho@edokpayi.com",
+    "url": "https://edokpayi.com"
+  },
   "license": "MIT",
   "dependencies": {
     "npm": "^11.5.2"
@@ -60,5 +72,11 @@
     "setupFiles": [
       "./vitest.setup.ts"
     ]
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "src/**/*.js",
+    "!src/tests"
+  ]
 }
