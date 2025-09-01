@@ -34,7 +34,7 @@ jobs:
           echo "NOW_MONTH: $NOW_MONTH"
           echo "BASE_MONTH: $BASE_MONTH"
           MAJOR=$((NOW_YEAR - BASE_YEAR))
-          MINOR=$(( (NOW_MONTH - BASE_MONTH + 12) % 12 ))
+          MINOR=$(( (NOW_MONTH - BASE_MONTH + 12)))
           if [ "$MINOR" -lt 0 ] || [ "$MINOR" -gt 11 ]; then
             MINOR=0
           fi
