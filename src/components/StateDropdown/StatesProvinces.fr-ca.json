@@ -1,0 +1,16 @@
+[
+  { "code": "AB", "name": "Alberta" },
+  { "code": "BC", "name": "Colombie-Britannique" },
+  { "code": "MB", "name": "Manitoba" },
+  { "code": "NB", "name": "Nouveau-Brunswick" },
+  { "code": "NL", "name": "Terre-Neuve-et-Labrador" },
+  { "code": "NS", "name": "Nouvelle-Écosse" },
+  { "code": "NT", "name": "Territoires du Nord-Ouest" },
+  { "code": "NU", "name": "Nunavut" },
+  { "code": "ON", "name": "Ontario" },
+  { "code": "PE", "name": "Île-du-Prince-Édouard" },
+  { "code": "QC", "name": "Québec" },
+  { "code": "SK", "name": "Saskatchewan" },
+  { "code": "YT", "name": "Yukon" },
+  { "code": "CF", "name": "Forces canadiennes (APO/FPO)" }
+]
