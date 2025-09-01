@@ -69,16 +69,45 @@ const App = () => {
 };
 ```
 
-## API
+## Props Reference
 
 ### CountryDropdown Props
 
-- `onChange`: A callback function that is called when the selected country changes.
+- `selectedCountry` (string): The currently selected country code.
+- `onCountryChange` (function): Callback when the country selection changes.
+- `culture` (string | CultureInfo): The culture/language to use for country data.
+- `countryInformation` (array): Custom array of country objects to display.
+- `getCountryInformation` (function): Custom function to fetch country data by culture.
+- `Label` (string): Text for the label element.
+- `classNameLabel` (string): CSS class for the label element.
+- `classNameSelect` (string): CSS class for the select element.
 
 ### StateDropdown Props
 
-- `country`: The selected country to filter the states.
-- `onChange`: A callback function that is called when the selected state changes.
+- `selectedState` (string): The currently selected state/province code.
+- `onStateChange` (function): Callback when the state/province selection changes.
+- `culture` (string | CultureInfo): The culture/language to use for state/province data.
+- `country` (string): The country code to use for state/province data.
+- `stateProvinceInformation` (array): Custom array of state/province objects to display.
+- `getStateProvinceInformation` (function): Custom function to fetch state/province data by culture.
+- `Label` (string): Text for the label element.
+- `classNameLabel` (string): CSS class for the label element.
+- `classNameSelect` (string): CSS class for the select element.
+
+## Standards Compliance
+
+Country codes are based on the [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) standard. State and province codes are based on official government sources and follow the conventions of [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) where applicable. This ensures broad compatibility and internationalization support.
+
+## Customization
+
+You can insert your own countries and states/provinces by passing custom arrays to the `countryInformation` and `stateProvinceInformation` props of the components. This allows you to extend or override the built-in data for your own use cases or regions.
+
+Example:
+
+```tsx
+<CountryDropdown countryInformation={[{ code: 'XX', name: 'My Country' }]} />
+<StateDropdown stateProvinceInformation={[{ code: 'YY', name: 'My State' }]} />
+```
 
 ## License
 
