@@ -19,6 +19,12 @@ in **English**, **Spanish**, and **French**.
 
 ## Installation
 
+This package requires `react` and `react-dom` as peer dependencies. Make sure you have them installed in your project:
+
+```sh
+npm install react react-dom
+```
+
 To install the library, you can use npm or yarn:
 
 ```bash
