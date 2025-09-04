@@ -1,3 +1,5 @@
+export { default as LanguageDropdown } from './components/LanguageDropdown';
+export { getLanguageInformationByCulture } from './services/getLanguageInformation';
 export { default as CountryDropdown } from './components/CountryDropdown';
 export { default as StateDropdown } from './components/StateDropdown';
 export * from './types';
