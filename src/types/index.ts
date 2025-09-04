@@ -1,3 +1,18 @@
+export interface LanguageDropdownProps {
+    selectedLanguage?: Language;
+    onLanguageChange: (language: Language) => void;
+    culture?: CultureInfo | string;
+    languageInformation?: LanguageInformation[];
+    getLanguageInformation?: (cultureInfo: CultureInfo) => Promise<LanguageInformation[]>;
+    Label?: string;
+    classNameLabel?: string;
+    classNameSelect?: string;
+}
+// Type for a single element from languages JSON file
+export type LanguageInformation = {
+    code: Language;
+    name: string;
+};
 export interface CountryDropdownProps {
     selectedCountry?: string;
     onCountryChange: (country: string) => void;
