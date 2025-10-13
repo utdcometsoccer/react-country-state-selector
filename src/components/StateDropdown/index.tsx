@@ -1,7 +1,8 @@
 import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
-import { cultureFromBrowser } from '../../services/cultureFromBrowser';
+import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
-import { CultureInfo, type StateDropdownProps, StateProvinceInformation, Country } from '../../types';
+import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
+import { resolveCultureInfo } from '../../utils/cultureResolution';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -39,20 +40,7 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
 
 const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
-  let initialCultureInfo: CultureInfo = cultureFromBrowser();
-  if (culture instanceof CultureInfo) {
-    initialCultureInfo = culture;
-  } else if (typeof culture !== 'undefined') {
-    try {
-      initialCultureInfo = new CultureInfo(culture);
-    } catch {
-      if (typeof country !== 'undefined') {
-        initialCultureInfo = new CultureInfo(`en-${country}`);
-      } 
-    }
-  } else if (typeof country !== 'undefined') {
-    initialCultureInfo = new CultureInfo(`en-${country}`);
-  }
+  const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
 
   const [state, dispatch] = useReducer(reducer, {
     selectedState,
@@ -91,7 +79,7 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
 
   return (
     <>
-      {state.error && <div style={{ color: 'red' }}>{state.error}</div>}
+      {state.error && <div className="state-error-message">{state.error}</div>}
       <label
         htmlFor="state-province-select"
         className={classNameLabel ?? undefined}

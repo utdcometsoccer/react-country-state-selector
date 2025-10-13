@@ -2,6 +2,7 @@ import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
+import { resolveCultureInfo } from '../../utils/cultureResolution';
 import './LanguageDropdown.css';
 
 interface LanguageDropdownState {
@@ -49,18 +50,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   classNameSelect
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
-
-  let initialCultureInfo: CultureInfo = cultureFromBrowser();
-  if (culture instanceof CultureInfo) {
-    initialCultureInfo = culture;
-  } else if (typeof culture === 'string') {
-    try {
-      initialCultureInfo = new CultureInfo(culture as Culture);
-    } catch {
-      initialCultureInfo = cultureFromBrowser();
-    }
-  }
-
+  const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialLanguageInformation: LanguageInformation[] = languageInformation ?? [];
 
   const [state, dispatch] = useReducer(reducer, {
