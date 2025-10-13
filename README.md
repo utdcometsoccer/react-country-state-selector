@@ -2,7 +2,7 @@
 
 [![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/publish.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![Tests](https://img.shields.io/badge/tests-109%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![npm version](https://badge.fury.io/js/react-country-state-selector.svg)](https://badge.fury.io/js/react-country-state-selector)
+[![npm version](https://badge.fury.io/js/@idahoedokpayi%2Freact-country-state-selector.svg)](https://www.npmjs.com/package/@idahoedokpayi/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Internationalization First!**
