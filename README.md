@@ -1,7 +1,7 @@
 # react-country-state-selector
 
-[![Build Status](https://github.com/utdcometsoccer/react-country-state-selector/workflows/CI/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![Tests](https://github.com/utdcometsoccer/react-country-state-selector/workflows/Tests/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/ci.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://img.shields.io/badge/tests-109%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![npm version](https://badge.fury.io/js/react-country-state-selector.svg)](https://badge.fury.io/js/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
