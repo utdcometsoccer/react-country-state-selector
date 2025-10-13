@@ -1,5 +1,10 @@
 # react-country-state-selector
 
+[![Build Status](https://github.com/utdcometsoccer/react-country-state-selector/workflows/CI/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://github.com/utdcometsoccer/react-country-state-selector/workflows/Tests/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![npm version](https://badge.fury.io/js/react-country-state-selector.svg)](https://badge.fury.io/js/react-country-state-selector)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **Internationalization First!**
 
 This library provides React components for country and state/province selection, designed for easy internationalization and localization. Out of the box, it supports:
