@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState, useRef } from 'react';
 import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
@@ -45,7 +45,8 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
 
 const CountryDropdown: FC<CountryDropdownProps> = ({ 
   selectedCountry, 
-  onCountryChange, 
+  onCountryChange,
+  onSuccess,
   culture, 
   countryInformation, 
   getCountryInformation, 
@@ -73,6 +74,10 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     isLoadingCountryInformation: false
   });
 
+  const [selectionFeedback, setSelectionFeedback] = useState<string>('');
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (state.countryInformation.length === 0 && !state.isLoadingCountryInformation) {
       dispatch({ type: 'SET_LOADING_COUNTRY_INFORMATION', payload: true });
@@ -97,6 +102,20 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_COUNTRY', payload: value as Country });
     onCountryChange(value);
+    
+    // Success feedback
+    const country = state.countryInformation.find(c => c.code === value);
+    const countryName = country ? country.name : value;
+    setSelectionFeedback(`${countryName} selected`);
+    
+    // Trigger success animation
+    setShowSuccessAnimation(true);
+    setTimeout(() => setShowSuccessAnimation(false), 600);
+    
+    // Call onSuccess callback if provided
+    if (onSuccess) {
+      onSuccess(value);
+    }
   };
 
   // Convert country information to VirtualSelect options
@@ -114,6 +133,15 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     if (matchingCountry) {
       dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
       onCountryChange(matchingCountry.code);
+      
+      // Success feedback
+      setSelectionFeedback(`${matchingCountry.name} selected`);
+      setShowSuccessAnimation(true);
+      setTimeout(() => setShowSuccessAnimation(false), 600);
+      
+      if (onSuccess) {
+        onSuccess(matchingCountry.code);
+      }
     } else {
       dispatch({ type: 'SET_COUNTRY', payload: value as Country });
       onCountryChange(value);
@@ -128,8 +156,27 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   };
 
   return (
-    <div className="country-dropdown-container">
-      {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
+    <div className="country-dropdown-container" ref={selectRef}>
+      {/* Aria-live region for selection confirmation */}
+      <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
+        {selectionFeedback}
+      </div>
+      
+      {state.error && (
+        <div 
+          id="country-error-message"
+          className="country-error-message"
+          role="alert"
+          aria-live="polite"
+        >
+          <span className="rcss-error-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+            </svg>
+          </span>
+          <span>{state.error}</span>
+        </div>
+      )}
       <label
         htmlFor="country-select"
         className={classNameLabel ?? 'country-dropdown-label'}
@@ -145,8 +192,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
             list="country-datalist"
             value={getSelectedCountryName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'country-error' : undefined}
+            className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+            aria-describedby={state.error ? 'country-error-message' : undefined}
             placeholder="Search or select a country"
             autoComplete="off"
           />
@@ -165,8 +212,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a country"
-          className={classNameSelect ?? 'country-dropdown-select'}
-          aria-describedby={state.error ? 'country-error' : undefined}
+          className={`${classNameSelect ?? 'country-dropdown-select'} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+          aria-describedby={state.error ? 'country-error-message' : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />

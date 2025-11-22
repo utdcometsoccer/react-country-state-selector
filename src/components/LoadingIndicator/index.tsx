@@ -11,10 +11,10 @@ const LoadingIndicator: FC<LoadingIndicatorProps> = ({
   ariaLabel = 'Loading content' 
 }) => {
   return (
-    <div className="rcss-loading-container" role="status" aria-label={ariaLabel}>
-      <div className="rcss-loading-spinner" aria-hidden="true">
-        <div className="rcss-spinner-ring"></div>
-      </div>
+    <div className="rcss-loading-container" role="status" aria-live="polite" aria-label={ariaLabel}>
+      <span className="rcss-loading-spinner" aria-hidden="true">
+        <span className="rcss-spinner-ring"></span>
+      </span>
       <span className="rcss-loading-message">{message}</span>
     </div>
   );

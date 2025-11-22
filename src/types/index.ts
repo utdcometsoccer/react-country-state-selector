@@ -25,6 +25,7 @@ export type LanguageInformation = {
 export interface CountryDropdownProps {
     selectedCountry?: string;
     onCountryChange: (country: string) => void;
+    onSuccess?: (country: string) => void;
     culture?: CultureInfo | string;
     countryInformation?: CountryInformation[];
     getCountryInformation?: GetCountryInformation;
@@ -152,6 +153,7 @@ export interface StateDropdownProps {
     getStateProvinceInformation?: GetStateProvinceInformation; 
     selectedState?: string;
     onStateChange: (state: string) => void;
+    onSuccess?: (state: string) => void;
     country: Country;
     culture?: CultureInfo | Culture;
     stateProvinceInformation?: StateProvinceInformation[];

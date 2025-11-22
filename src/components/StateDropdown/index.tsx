@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState, useRef } from 'react';
 import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
@@ -46,6 +46,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
   getStateProvinceInformation,
   stateProvinceInformation, selectedState,
   onStateChange,
+  onSuccess,
   country,
   culture,
   Label,
@@ -71,6 +72,10 @@ const StateDropdown: FC<StateDropdownProps> = ({
     isLoadingStateProvinceInformation: false
   });
 
+  const [selectionFeedback, setSelectionFeedback] = useState<string>('');
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (state.stateProvinceInformation.length === 0 && !state.isLoadingStateProvinceInformation) {
       dispatch({ type: 'SET_LOADING_STATE_PROVINCE_INFORMATION', payload: true });
@@ -95,6 +100,20 @@ const StateDropdown: FC<StateDropdownProps> = ({
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_STATE', payload: value });
     onStateChange(value);
+    
+    // Success feedback
+    const stateProvince = state.stateProvinceInformation.find(s => s.code === value);
+    const stateName = stateProvince ? stateProvince.name : value;
+    setSelectionFeedback(`${stateName} selected`);
+    
+    // Trigger success animation
+    setShowSuccessAnimation(true);
+    setTimeout(() => setShowSuccessAnimation(false), 600);
+    
+    // Call onSuccess callback if provided
+    if (onSuccess) {
+      onSuccess(value);
+    }
   };
 
   // Convert state/province information to VirtualSelect options
@@ -112,6 +131,15 @@ const StateDropdown: FC<StateDropdownProps> = ({
     if (matchingState) {
       dispatch({ type: 'SET_STATE', payload: matchingState.code });
       onStateChange(matchingState.code);
+      
+      // Success feedback
+      setSelectionFeedback(`${matchingState.name} selected`);
+      setShowSuccessAnimation(true);
+      setTimeout(() => setShowSuccessAnimation(false), 600);
+      
+      if (onSuccess) {
+        onSuccess(matchingState.code);
+      }
     } else {
       dispatch({ type: 'SET_STATE', payload: value });
       onStateChange(value);
@@ -126,8 +154,27 @@ const StateDropdown: FC<StateDropdownProps> = ({
   };
 
   return (
-    <div className="state-dropdown-container">
-      {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
+    <div className="state-dropdown-container" ref={selectRef}>
+      {/* Aria-live region for selection confirmation */}
+      <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
+        {selectionFeedback}
+      </div>
+      
+      {state.error && (
+        <div 
+          id="state-province-error-message"
+          className="state-error-message"
+          role="alert"
+          aria-live="polite"
+        >
+          <span className="rcss-error-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+            </svg>
+          </span>
+          <span>{state.error}</span>
+        </div>
+      )}
       <label
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
@@ -143,8 +190,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
             list="state-province-datalist"
             value={getSelectedStateName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'state-province-error' : undefined}
+            className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+            aria-describedby={state.error ? 'state-province-error-message' : undefined}
             placeholder="Search or select a state/province"
             autoComplete="off"
           />
@@ -163,8 +210,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a state/province"
-          className={classNameSelect ?? undefined}
-          aria-describedby={state.error ? 'state-province-error' : undefined}
+          className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+          aria-describedby={state.error ? 'state-province-error-message' : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
