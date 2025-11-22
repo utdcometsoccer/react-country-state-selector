@@ -5,6 +5,7 @@ import { getCountryInformationByCulture } from '../../services/getCountryInforma
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
+import LoadingIndicator from '../LoadingIndicator';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -91,7 +92,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
         {Label}
       </label>
       {state.isLoadingCountryInformation ? (
-        <div>Loading country information...</div>
+        <LoadingIndicator message="Loading country information..." ariaLabel="Loading country information" />
       ) : (
         <select
           id="country-select"

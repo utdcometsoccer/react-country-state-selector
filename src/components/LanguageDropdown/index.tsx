@@ -5,6 +5,7 @@ import { getLanguageInformationByCulture } from '../../services/getLanguageInfor
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
+import LoadingIndicator from '../LoadingIndicator';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -99,7 +100,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        <div>Loading language information...</div>
+        <LoadingIndicator message="Loading language information..." ariaLabel="Loading language information" />
       ) : (
         <select
           id="language-select"

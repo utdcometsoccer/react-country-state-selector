@@ -4,6 +4,7 @@ import { getStateProvinceInformationByCulture } from '../../services/getStatePro
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import LoadingIndicator from '../LoadingIndicator';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -89,7 +90,7 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
         {Label}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        <div>Loading state/province information...</div>
+        <LoadingIndicator message="Loading state/province information..." ariaLabel="Loading state or province information" />
       ) : (
         <select
           id="state-province-select"
