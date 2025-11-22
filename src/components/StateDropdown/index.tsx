@@ -4,6 +4,7 @@ import { getStateProvinceInformationByCulture } from '../../services/getStatePro
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -39,7 +40,19 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, stateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
+const StateDropdown: FC<StateDropdownProps> = ({ 
+  getStateProvinceInformation, 
+  stateProvinceInformation, 
+  selectedState, 
+  onStateChange, 
+  country, 
+  culture, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50
+}) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -74,10 +87,17 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_STATE', payload: e.target.value });
-    onStateChange(e.target.value);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_STATE', payload: value });
+    onStateChange(value);
   };
+
+  // Convert state/province information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.stateProvinceInformation.map(stateProvince => ({
+    value: stateProvince.code,
+    label: stateProvince.name,
+    group: stateProvince.group
+  }));
 
   return (
     <>
@@ -91,16 +111,17 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
       {state.isLoadingStateProvinceInformation ? (
         <div>Loading state/province information...</div>
       ) : (
-        <select
+        <VirtualSelect
           id="state-province-select"
           value={state.selectedState ?? ''}
           onChange={handleChange}
+          options={virtualSelectOptions}
+          placeholder="Select a state/province"
           className={classNameSelect ?? undefined}
           aria-describedby={state.error ? 'state-province-error' : undefined}
-        >
-          <option value="">Select a state/province</option>
-          {renderGroupedOptions(state.stateProvinceInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
     </>
   );

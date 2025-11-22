@@ -5,6 +5,7 @@ import { getLanguageInformationByCulture } from '../../services/getLanguageInfor
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -48,7 +49,9 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   getLanguageInformation,
   Label,
   classNameLabel,
-  classNameSelect
+  classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -84,10 +87,17 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     }
   }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_LANGUAGE', payload: e.target.value as Language });
-    onLanguageChange(e.target.value as Language);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
+    onLanguageChange(value as Language);
   };
+
+  // Convert language information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.languageInformation.map(language => ({
+    value: language.code,
+    label: language.name,
+    group: language.group
+  }));
 
   return (
     <>
@@ -101,16 +111,17 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
       {state.isLoadingLanguageInformation ? (
         <div>Loading language information...</div>
       ) : (
-        <select
+        <VirtualSelect
           id="language-select"
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
+          options={virtualSelectOptions}
+          placeholder="Select a language"
           className={classNameSelect ?? undefined}
           aria-describedby={state.error ? 'language-error' : undefined}
-        >
-          <option value="">Select a language</option>
-          {renderGroupedOptions(state.languageInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
     </>
   );

@@ -5,6 +5,7 @@ import { getCountryInformationByCulture } from '../../services/getCountryInforma
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -40,7 +41,18 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
   }
 }
 
-const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect }) => {
+const CountryDropdown: FC<CountryDropdownProps> = ({ 
+  selectedCountry, 
+  onCountryChange, 
+  culture, 
+  countryInformation, 
+  getCountryInformation, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50
+}) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -76,10 +88,17 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
     }
   }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_COUNTRY', payload: e.target.value as Country });
-    onCountryChange(e.target.value);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_COUNTRY', payload: value as Country });
+    onCountryChange(value);
   };
+
+  // Convert country information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.countryInformation.map(country => ({
+    value: country.code,
+    label: country.name,
+    group: country.group
+  }));
 
   return (
     <>
@@ -93,16 +112,17 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
       {state.isLoadingCountryInformation ? (
         <div>Loading country information...</div>
       ) : (
-        <select
+        <VirtualSelect
           id="country-select"
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
+          options={virtualSelectOptions}
+          placeholder="Select a country"
           className={classNameSelect ?? undefined}
           aria-describedby={state.error ? 'country-error' : undefined}
-        >
-          <option value="">Select a country</option>
-          {renderGroupedOptions(state.countryInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
     </>
   );

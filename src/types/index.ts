@@ -7,6 +7,8 @@ export interface LanguageDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
 }
 // Type for a single element from languages JSON file
 export type LanguageInformation = {
@@ -23,6 +25,8 @@ export interface CountryDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
 }
 // Type for a single element from countries JSON file
 export type CountryInformation = {
@@ -144,6 +148,8 @@ export interface StateDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
 }
 
 export interface GetCountryInformation {
