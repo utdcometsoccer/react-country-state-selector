@@ -1,15 +1,15 @@
 /* Visual hierarchy: Typography and Spacing */
 .language-dropdown-label {
   display: block;
-  font-size: 14px;
+  font-size: var(--rcss-label-font-size, 0.875rem);
   font-weight: 600;
   line-height: 1.5;
   margin-bottom: 6px;
-  color: #212121;
+  color: var(--rcss-label-color, #374151);
 }
 
 .language-dropdown-select {
-  font-size: 14px;
+  font-size: var(--rcss-font-size, 1rem);
   line-height: 1.5;
   padding: 8px 12px;
   display: block;
@@ -144,7 +144,7 @@ input#language-select:disabled {
 
 /* Placeholder styling for search input */
 input#language-select::placeholder {
-  color: #9ca3af;
+  color: var(--rcss-placeholder-color, #9ca3af);
   opacity: 1;
 }
 

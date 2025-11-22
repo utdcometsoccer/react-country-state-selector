@@ -11,8 +11,8 @@
 }
 
 .loading-spinner {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3498db;
+  border: 2px solid var(--rcss-border-color, #d1d5db);
+  border-top: 2px solid var(--rcss-primary-color, #0066cc);
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -20,6 +20,7 @@
 }
 
 .loading-spinner-text {
-  color: #666;
-  font-size: 14px;
+  color: var(--rcss-text-color, #1f2937);
+  font-size: var(--rcss-label-font-size, 0.875rem);
+  font-family: var(--rcss-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
 }
