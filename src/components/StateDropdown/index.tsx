@@ -77,16 +77,12 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
+    if (!showSuccessAnimation) return;
     
-    if (showSuccessAnimation) {
-      timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
-    }
+    const timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
     
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
   }, [showSuccessAnimation]);
 
@@ -111,6 +107,15 @@ const StateDropdown: FC<StateDropdownProps> = ({
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
+  // Helper function to trigger success feedback
+  const triggerSuccessFeedback = (code: string, name: string) => {
+    setSelectionFeedback(`${name} selected`);
+    setShowSuccessAnimation(true);
+    if (onSuccess) {
+      onSuccess(code);
+    }
+  };
+
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_STATE', payload: value });
     onStateChange(value);
@@ -118,15 +123,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
     // Success feedback
     const stateProvince = state.stateProvinceInformation.find(s => s.code === value);
     const stateName = stateProvince ? stateProvince.name : value;
-    setSelectionFeedback(`${stateName} selected`);
-    
-    // Trigger success animation
-    setShowSuccessAnimation(true);
-    
-    // Call onSuccess callback if provided
-    if (onSuccess) {
-      onSuccess(value);
-    }
+    triggerSuccessFeedback(value, stateName);
   };
 
   // Convert state/province information to VirtualSelect options
@@ -144,14 +141,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
     if (matchingState) {
       dispatch({ type: 'SET_STATE', payload: matchingState.code });
       onStateChange(matchingState.code);
-      
-      // Success feedback
-      setSelectionFeedback(`${matchingState.name} selected`);
-      setShowSuccessAnimation(true);
-      
-      if (onSuccess) {
-        onSuccess(matchingState.code);
-      }
+      triggerSuccessFeedback(matchingState.code, matchingState.name);
     } else {
       dispatch({ type: 'SET_STATE', payload: value });
       onStateChange(value);

@@ -79,16 +79,12 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | null = null;
+    if (!showSuccessAnimation) return;
     
-    if (showSuccessAnimation) {
-      timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
-    }
+    const timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
     
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
   }, [showSuccessAnimation]);
 
@@ -113,6 +109,15 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     }
   }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
+  // Helper function to trigger success feedback
+  const triggerSuccessFeedback = (code: string, name: string) => {
+    setSelectionFeedback(`${name} selected`);
+    setShowSuccessAnimation(true);
+    if (onSuccess) {
+      onSuccess(code);
+    }
+  };
+
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_COUNTRY', payload: value as Country });
     onCountryChange(value);
@@ -120,15 +125,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     // Success feedback
     const country = state.countryInformation.find(c => c.code === value);
     const countryName = country ? country.name : value;
-    setSelectionFeedback(`${countryName} selected`);
-    
-    // Trigger success animation
-    setShowSuccessAnimation(true);
-    
-    // Call onSuccess callback if provided
-    if (onSuccess) {
-      onSuccess(value);
-    }
+    triggerSuccessFeedback(value, countryName);
   };
 
   // Convert country information to VirtualSelect options
@@ -146,14 +143,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     if (matchingCountry) {
       dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
       onCountryChange(matchingCountry.code);
-      
-      // Success feedback
-      setSelectionFeedback(`${matchingCountry.name} selected`);
-      setShowSuccessAnimation(true);
-      
-      if (onSuccess) {
-        onSuccess(matchingCountry.code);
-      }
+      triggerSuccessFeedback(matchingCountry.code, matchingCountry.name);
     } else {
       dispatch({ type: 'SET_COUNTRY', payload: value as Country });
       onCountryChange(value);
