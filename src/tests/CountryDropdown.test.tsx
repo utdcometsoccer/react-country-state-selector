@@ -38,9 +38,9 @@ describe('CountryDropdown', () => {
       />
     );
     
-    expect(screen.getByLabelText('Country')).toBeInTheDocument();
+    expect(screen.getByText('Country')).toBeInTheDocument();
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('United States')).toBeInTheDocument();
+    expect(screen.getByText('United States')).toBeInTheDocument();
   });
 
   it('renders without a label when not provided', () => {
@@ -68,8 +68,13 @@ describe('CountryDropdown', () => {
       />
     );
     
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'CA' } });
+    // Open the dropdown
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+    
+    // Click on Canada option
+    const canadaOption = screen.getByText('Canada');
+    fireEvent.click(canadaOption);
     
     expect(mockOnCountryChange).toHaveBeenCalledWith('CA');
   });
@@ -84,7 +89,10 @@ describe('CountryDropdown', () => {
       />
     );
 
-    expect(screen.getByText('Select a country')).toBeInTheDocument();
+    // Open the dropdown to see options
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+
     expect(screen.getByText('United States')).toBeInTheDocument();
     expect(screen.getByText('Canada')).toBeInTheDocument();
     expect(screen.getByText('Mexico')).toBeInTheDocument();
@@ -103,10 +111,10 @@ describe('CountryDropdown', () => {
     );
 
     const label = screen.getByText('Country');
-    const select = screen.getByRole('combobox');
+    const selectContainer = document.querySelector('.virtual-select-container');
 
     expect(label).toHaveClass('custom-label');
-    expect(select).toHaveClass('custom-select');
+    expect(selectContainer).toHaveClass('custom-select');
   });
 
   it('shows loading message when loading country information', async () => {

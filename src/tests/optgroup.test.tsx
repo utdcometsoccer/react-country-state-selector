@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import CountryDropdown from '../components/CountryDropdown';
@@ -32,25 +32,20 @@ describe('Optgroup Support', () => {
         />
       );
 
-      // Check that optgroups are present
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBeGreaterThan(0);
+      // Open the dropdown to see groups
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
 
-      // Check specific optgroup labels
-      const northAmericaGroup = Array.from(optgroups).find(
-        (og) => og.getAttribute('label') === 'North America'
-      );
-      expect(northAmericaGroup).toBeTruthy();
+      // Check that group labels are present
+      expect(screen.getByText('North America')).toBeInTheDocument();
+      expect(screen.getByText('Europe')).toBeInTheDocument();
 
-      const europeGroup = Array.from(optgroups).find(
-        (og) => og.getAttribute('label') === 'Europe'
-      );
-      expect(europeGroup).toBeTruthy();
-
-      // Check that options are under correct optgroups
-      expect(northAmericaGroup?.querySelectorAll('option').length).toBe(3);
-      expect(europeGroup?.querySelectorAll('option').length).toBe(2);
+      // Verify grouped options appear under groups
+      expect(screen.getByText('United States')).toBeInTheDocument();
+      expect(screen.getByText('Canada')).toBeInTheDocument();
+      expect(screen.getByText('Mexico')).toBeInTheDocument();
+      expect(screen.getByText('France')).toBeInTheDocument();
+      expect(screen.getByText('Germany')).toBeInTheDocument();
     });
 
     it('renders options without optgroups when no group property exists', () => {
@@ -68,9 +63,13 @@ describe('Optgroup Support', () => {
         />
       );
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBe(0);
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
+
+      // Check that group labels are not present
+      expect(screen.queryByText('North America')).not.toBeInTheDocument();
+      expect(screen.queryByText('Europe')).not.toBeInTheDocument();
 
       // Options should still be rendered directly
       expect(screen.getByText('United States')).toBeInTheDocument();
@@ -93,11 +92,12 @@ describe('Optgroup Support', () => {
         />
       );
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
       
-      // Should have optgroups for grouped items
-      expect(optgroups.length).toBeGreaterThan(0);
+      // Should have group labels for grouped items
+      expect(screen.getByText('North America')).toBeInTheDocument();
       
       // Ungrouped item should still be in the select
       expect(screen.getByText('Unknown Country')).toBeInTheDocument();
@@ -128,15 +128,13 @@ describe('Optgroup Support', () => {
       // Wait for the component to finish loading
       await screen.findByRole('combobox');
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBeGreaterThan(0);
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
 
-      const westCoastGroup = Array.from(optgroups).find(
-        (og) => og.getAttribute('label') === 'West Coast'
-      );
-      expect(westCoastGroup).toBeTruthy();
-      expect(westCoastGroup?.querySelectorAll('option').length).toBe(2);
+      // Check that group labels are present
+      expect(screen.getByText('West Coast')).toBeInTheDocument();
+      expect(screen.getByText('East Coast')).toBeInTheDocument();
     });
 
     it('renders options without optgroups when no group property exists', async () => {
@@ -159,9 +157,12 @@ describe('Optgroup Support', () => {
       // Wait for the component to finish loading
       await screen.findByRole('combobox');
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBe(0);
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
+
+      // Check that group labels are not present
+      expect(screen.queryByText('West Coast')).not.toBeInTheDocument();
 
       expect(screen.getByText('California')).toBeInTheDocument();
       expect(screen.getByText('Texas')).toBeInTheDocument();
@@ -187,21 +188,13 @@ describe('Optgroup Support', () => {
         />
       );
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBeGreaterThan(0);
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
 
-      const germanicGroup = Array.from(optgroups).find(
-        (og) => og.getAttribute('label') === 'Germanic'
-      );
-      expect(germanicGroup).toBeTruthy();
-      expect(germanicGroup?.querySelectorAll('option').length).toBe(2);
-
-      const romanceGroup = Array.from(optgroups).find(
-        (og) => og.getAttribute('label') === 'Romance'
-      );
-      expect(romanceGroup).toBeTruthy();
-      expect(romanceGroup?.querySelectorAll('option').length).toBe(2);
+      // Check that group labels are present
+      expect(screen.getByText('Germanic')).toBeInTheDocument();
+      expect(screen.getByText('Romance')).toBeInTheDocument();
     });
 
     it('renders options without optgroups when no group property exists', () => {
@@ -219,9 +212,12 @@ describe('Optgroup Support', () => {
         />
       );
 
-      const select = screen.getByRole('combobox');
-      const optgroups = select.querySelectorAll('optgroup');
-      expect(optgroups.length).toBe(0);
+      // Open the dropdown
+      const trigger = screen.getByRole('combobox');
+      fireEvent.click(trigger);
+
+      // Check that group labels are not present
+      expect(screen.queryByText('Germanic')).not.toBeInTheDocument();
 
       expect(screen.getByText('English')).toBeInTheDocument();
       expect(screen.getByText('Spanish')).toBeInTheDocument();

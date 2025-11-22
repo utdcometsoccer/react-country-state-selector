@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 export interface LanguageDropdownProps {
     selectedLanguage?: Language;
@@ -9,9 +9,11 @@ export interface LanguageDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
     enableSearch?: boolean;
     showLoadingIndicator?: boolean;
-    customLoadingIndicator?: React.ReactNode;
+    customLoadingIndicator?: ReactNode;
     loadingText?: string;
 }
 // Type for a single element from languages JSON file
@@ -29,9 +31,11 @@ export interface CountryDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
     enableSearch?: boolean;
     showLoadingIndicator?: boolean;
-    customLoadingIndicator?: React.ReactNode;
+    customLoadingIndicator?: ReactNode;
     loadingText?: string;
 }
 // Type for a single element from countries JSON file
@@ -154,9 +158,11 @@ export interface StateDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableVirtualScrolling?: boolean;
+    virtualScrollThreshold?: number;
     enableSearch?: boolean;
     showLoadingIndicator?: boolean;
-    customLoadingIndicator?: React.ReactNode;
+    customLoadingIndicator?: ReactNode;
     loadingText?: string;
 }
 

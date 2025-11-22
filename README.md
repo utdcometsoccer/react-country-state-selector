@@ -20,9 +20,10 @@ in **English**, **Spanish**, and **French**.
 - 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
+- 🚀 **Virtual scrolling** - Optimized performance for long lists using react-window
 - 🎨 **Flexible customization** - Custom labels, CSS classes, and data sources
 - ♿ **Accessibility first** - Full ARIA support and screen reader compatibility
-- 🧪 **Thoroughly tested** - 144+ comprehensive unit tests with 100% backward compatibility
+- 🧪 **Thoroughly tested** - 145+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
 - 📱 **Mobile-friendly** - Optimized touch interactions and native keyboard support
@@ -120,6 +121,67 @@ const App = () => {
 };
 ```
 
+## Virtual Scrolling
+
+All dropdown components now feature **virtual scrolling** for improved performance with long lists. Virtual scrolling renders only the visible items in the dropdown, significantly improving performance when dealing with large datasets like the full list of countries (250+ items) or languages (185+ items).
+
+### How It Works
+
+Virtual scrolling is **automatically enabled** when the number of options exceeds a threshold (default: 50 items). This means:
+
+- **Country Dropdown**: Virtual scrolling enabled (250+ countries)
+- **Language Dropdown**: Virtual scrolling enabled (185+ languages)  
+- **State Dropdown**: Standard rendering (typically < 50 states per country)
+
+You can see the performance benefits when interacting with dropdowns containing many options - the dropdown opens instantly and scrolling is smooth regardless of the list size.
+
+### Configuration
+
+You can control virtual scrolling behavior using these props:
+
+```jsx
+<CountryDropdown 
+  selectedCountry={country}
+  onCountryChange={handleCountryChange}
+  // Enable or disable virtual scrolling (default: true)
+  enableVirtualScrolling={true}
+  // Set the threshold for when to use virtual scrolling (default: 50)
+  virtualScrollThreshold={100}
+/>
+```
+
+**Props:**
+- `enableVirtualScrolling` (boolean, default: `true`): Enable or disable virtual scrolling globally
+- `virtualScrollThreshold` (number, default: `50`): Minimum number of items required to trigger virtual scrolling
+
+### Features
+
+- ✅ **Automatic activation** - No configuration needed for most use cases
+- ✅ **Keyboard navigation** - Full support for arrow keys and Enter/Escape
+- ✅ **Grouped options** - Works seamlessly with optgroup functionality
+- ✅ **Accessibility** - Maintains all ARIA attributes and screen reader support
+- ✅ **Smooth scrolling** - Optimized rendering for large lists
+- ✅ **Backward compatible** - Can be disabled if needed
+
+### Example with Custom Threshold
+
+```jsx
+// Only use virtual scrolling for very large lists
+<LanguageDropdown
+  selectedLanguage={language}
+  onLanguageChange={handleLanguageChange}
+  enableVirtualScrolling={true}
+  virtualScrollThreshold={100} // Only virtualize if more than 100 languages
+/>
+
+// Disable virtual scrolling completely
+<CountryDropdown
+  selectedCountry={country}
+  onCountryChange={handleCountryChange}
+  enableVirtualScrolling={false} // Use standard rendering for all list sizes
+/>
+```
+
 ## Search/Filter Functionality
 
 All dropdown components support optional search/filter functionality, which is particularly useful on mobile devices and for long lists. When enabled, users can type to search and filter options in real-time.
@@ -204,6 +266,8 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
@@ -220,6 +284,8 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
@@ -235,6 +301,8 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.

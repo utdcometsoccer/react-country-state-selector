@@ -4,7 +4,7 @@ import { getStateProvinceInformationByCulture } from '../../services/getStatePro
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import LoadingSpinner from '../LoadingSpinner';
-import { renderGroupedOptions } from '../../utils/renderOptions';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -49,6 +49,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
   Label,
   classNameLabel,
   classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50,
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading state/province information...",
@@ -88,11 +90,17 @@ const StateDropdown: FC<StateDropdownProps> = ({
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_STATE', payload: e.target.value });
-    onStateChange(e.target.value);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_STATE', payload: value });
+    onStateChange(value);
   };
 
+  // Convert state/province information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.stateProvinceInformation.map(stateProvince => ({
+    value: stateProvince.code,
+    label: stateProvince.name,
+    group: stateProvince.group
+  }));
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Find matching state by code or name
@@ -147,16 +155,17 @@ const StateDropdown: FC<StateDropdownProps> = ({
           </datalist>
         </>
       ) : (
-        <select
+        <VirtualSelect
           id="state-province-select"
           value={state.selectedState ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? 'state-dropdown-select'}
+          options={virtualSelectOptions}
+          placeholder="Select a state/province"
+          className={classNameSelect ?? undefined}
           aria-describedby={state.error ? 'state-province-error' : undefined}
-        >
-          <option value="">Select a state/province</option>
-          {renderGroupedOptions(state.stateProvinceInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
     </div>
   );
