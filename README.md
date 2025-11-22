@@ -17,7 +17,7 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
-- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (~19 KB gzipped)
+- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (18.6 KB gzipped core)
 - 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
@@ -35,19 +35,19 @@ This library is designed with performance in mind, implementing several optimiza
 
 ### Bundle Size Impact
 
-The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need:
+The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need. All measurements below are from Vite v7.2.4 build output:
 
 **Core Library (always loaded):**
-- ES Module: **~66 KB** (16.5 KB gzipped)
-- UMD Module: **~90 KB** (24 KB gzipped)
-- CSS Styles: **~15 KB** (2.1 KB gzipped)
+- ES Module: **65.76 KB** (16.50 KB gzipped)
+- UMD Module: **90.04 KB** (24.05 KB gzipped)
+- CSS Styles: **14.73 KB** (2.14 KB gzipped)
 
 **Data Files (loaded on-demand):**
-- Country data per locale: **~9 KB each** (2.4 KB gzipped)
-- Language data per locale: **~8 KB each** (1.5 KB gzipped)  
-- State/Province data per locale: **1-3 KB each** (0.3-0.7 KB gzipped)
+- Country data per locale: **~8.6-8.7 KB each** (~2.4 KB gzipped)
+- Language data per locale: **~8.3-8.4 KB each** (~1.5 KB gzipped)  
+- State/Province data per locale: **0.8-3.1 KB each** (0.3-0.7 KB gzipped)
 
-**Total Initial Bundle:** As low as **~81 KB** (18.6 KB gzipped) for the core library without any data files.
+**Total Initial Bundle:** **80.5 KB** uncompressed or **18.6 KB gzipped** for the core library (ES + CSS) without any data files.
 
 ### Dynamic Data Loading
 
@@ -65,9 +65,9 @@ All country, state, and language data files are loaded **dynamically** using Jav
 const data = await import(`../components/CountryDropdown/${fileName}.json`);
 
 // Result: Only the specific locale file is loaded:
-// ✅ countries.en-us.json → 8.7 KB (2.4 KB gzipped) 
-// ❌ countries.es-mx.json → NOT loaded (saved 8.6 KB)
-// ❌ countries.fr-ca.json → NOT loaded (saved 8.6 KB)
+// ✅ countries.en-us.json → 8.74 KB (2.44 KB gzipped) 
+// ❌ countries.es-mx.json → NOT loaded (saved 8.63 KB)
+// ❌ countries.fr-ca.json → NOT loaded (saved 8.61 KB)
 ```
 
 ### Virtual Scrolling Performance
@@ -160,9 +160,9 @@ npx source-map-explorer dist/bundle.js
 ```
 
 **Expected Impact on Your Bundle:**
-- Minimal: **~19 KB gzipped** (core + one locale)
-- Typical: **~23 KB gzipped** (core + 2-3 locales)
-- Maximum: **~35 KB gzipped** (core + all 9 locale files)
+- Minimal: **~21 KB gzipped** (core + one locale with country data)
+- Typical: **~25 KB gzipped** (core + 2-3 locales)
+- Maximum: **~37 KB gzipped** (core + all locale files)
 
 ## Installation
 
