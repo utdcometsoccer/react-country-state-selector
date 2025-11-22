@@ -81,6 +81,8 @@ The easiest way to customize the appearance is by overriding CSS custom properti
   
   /* Error styling */
   --rcss-error-color: #dc2626;
+  --rcss-error-background: #fef2f2;
+  --rcss-error-border: #fecaca;
   
   /* Typography */
   --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -91,6 +93,34 @@ The easiest way to customize the appearance is by overriding CSS custom properti
   --rcss-spacing: 0.5rem;
 }
 ```
+
+#### Customizing the Dropdown Arrow
+
+**Note**: The dropdown arrow color is embedded in an SVG data URI and cannot be changed via CSS variables due to browser limitations. To customize the arrow color, override the `background-image` property:
+
+```css
+/* Black arrow */
+select#country-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* White arrow (for dark backgrounds) */
+select#country-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Blue arrow to match primary color */
+select#country-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230066cc' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+```
+
+The color in the SVG must be URL-encoded. Here are common colors:
+- `%23000000` = black
+- `%23ffffff` = white
+- `%236b7280` = gray (default)
+- `%230066cc` = blue
+- `%23ef4444` = red
 
 #### Example: Material Design Theme
 

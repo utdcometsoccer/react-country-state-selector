@@ -305,6 +305,8 @@ The library uses **CSS custom properties (variables)** for easy customization. O
   
   /* Error styling */
   --rcss-error-color: #dc2626;
+  --rcss-error-background: #fef2f2;
+  --rcss-error-border: #fecaca;
   
   /* Typography */
   --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -315,6 +317,8 @@ The library uses **CSS custom properties (variables)** for easy customization. O
   --rcss-spacing: 0.5rem;
 }
 ```
+
+**Note about dropdown arrow color**: The dropdown arrow color is embedded in an SVG data URI and cannot be changed via CSS variables due to browser limitations. To customize the arrow color, you need to override the entire `background-image` property. See the [Styling Guide](./docs/STYLING.md) for examples.
 
 ### Using Custom CSS Classes
 
