@@ -306,6 +306,129 @@ Available default functions:
 - `getCountryInformationByCulture` - Default country data loader
 - `getLanguageInformationByCulture` - Default language data loader
 
+## Styling
+
+The library includes **default, accessible styling** out of the box that can be easily customized to match your design system.
+
+### Including the Default Styles
+
+To use the default styles, import the CSS file in your application:
+
+```tsx
+import 'react-country-state-selector/dist/react-country-state-selector.css';
+```
+
+The default styles include:
+- Clean, modern appearance with rounded corners
+- Focus states with visible ring for keyboard navigation
+- Hover states for better user feedback
+- Disabled states with reduced opacity
+- Error message styling
+- High contrast mode support for accessibility
+- Reduced motion support for users with motion sensitivities
+- Responsive design that works on all screen sizes
+
+### Customizing Styles with CSS Variables
+
+The library uses **CSS custom properties (variables)** for easy customization. Override these variables to match your brand:
+
+```css
+:root {
+  /* Primary colors */
+  --rcss-primary-color: #0066cc;
+  --rcss-primary-hover: #0052a3;
+  
+  /* Border styling */
+  --rcss-border-color: #d1d5db;
+  --rcss-border-radius: 0.375rem;
+  
+  /* Focus ring */
+  --rcss-focus-ring-color: rgba(0, 102, 204, 0.4);
+  
+  /* Text colors */
+  --rcss-text-color: #1f2937;
+  --rcss-label-color: #374151;
+  
+  /* Backgrounds */
+  --rcss-background-color: #ffffff;
+  --rcss-disabled-background: #f3f4f6;
+  
+  /* Error styling */
+  --rcss-error-color: #dc2626;
+  --rcss-error-background: #fef2f2;
+  --rcss-error-border: #fecaca;
+  
+  /* Typography */
+  --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rcss-font-size: 1rem;
+  --rcss-label-font-size: 0.875rem;
+  
+  /* Spacing */
+  --rcss-spacing: 0.5rem;
+}
+```
+
+**Note about dropdown arrow color**: The dropdown arrow color is embedded in an SVG data URI and cannot be changed via CSS variables due to browser limitations. To customize the arrow color, you need to override the entire `background-image` property. See the [Styling Guide](./docs/STYLING.md) for examples.
+
+### Using Custom CSS Classes
+
+For complete control, you can provide your own CSS classes using the `classNameLabel` and `classNameSelect` props:
+
+```tsx
+<CountryDropdown
+  selectedCountry=""
+  onCountryChange={handleChange}
+  classNameLabel="my-custom-label"
+  classNameSelect="my-custom-select"
+/>
+```
+
+Then style them in your CSS:
+
+```css
+.my-custom-label {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.my-custom-select {
+  border: 2px solid #4a5568;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1rem;
+}
+```
+
+### Completely Unstyled Components
+
+If you want to start from scratch, you can skip importing the CSS file and provide your own classes:
+
+```tsx
+// Don't import the CSS file
+// import 'react-country-state-selector/dist/react-country-state-selector.css';
+
+<CountryDropdown
+  selectedCountry=""
+  onCountryChange={handleChange}
+  classNameLabel="your-label-class"
+  classNameSelect="your-select-class"
+/>
+```
+
+The components will render with only your custom classes and no default styling.
+
+### Accessibility Features
+
+The default styles include important accessibility features:
+- **WCAG 2.1 AA compliant** color contrast ratios
+- **Focus indicators** that are clearly visible
+- **High contrast mode** support for better visibility
+- **Reduced motion** support for users who prefer less animation
+- **Screen reader friendly** with proper ARIA attributes
+
+For more details on styling and customization, see the [Styling Guide](./docs/STYLING.md).
+
 ## Architecture
 
 The library features a clean, maintainable architecture:

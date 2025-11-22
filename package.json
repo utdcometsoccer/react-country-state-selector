@@ -82,6 +82,7 @@
     "dist/**/*.js",
     "dist/**/*.mjs",
     "dist/**/*.d.ts",
+    "dist/**/*.css",
     "!src/tests"
   ],
   "engines": {
