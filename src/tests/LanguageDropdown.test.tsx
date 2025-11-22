@@ -268,4 +268,23 @@ describe('LanguageDropdown', () => {
       expect(select).toHaveAttribute('aria-describedby', 'language-error');
     });
   });
+
+  it('error message has proper ARIA live region attributes', async () => {
+    mockedGetLanguageInformation.mockRejectedValue(new Error('Failed to load'));
+
+    render(
+      <LanguageDropdown
+        selectedLanguage="en"
+        onLanguageChange={mockOnLanguageChange}
+        Label="Language"
+      />
+    );
+
+    await waitFor(() => {
+      const errorMessage = document.getElementById('language-error');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveAttribute('role', 'alert');
+      expect(errorMessage).toHaveAttribute('aria-live', 'polite');
+    });
+  });
 });

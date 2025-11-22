@@ -128,7 +128,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   return (
     <div className="language-dropdown-container">
-      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+      {state.error && <div id="language-error" className="language-error-message" role="alert" aria-live="polite">{state.error}</div>}
       <label
         htmlFor="language-select"
         className={classNameLabel ?? 'language-dropdown-label'}
