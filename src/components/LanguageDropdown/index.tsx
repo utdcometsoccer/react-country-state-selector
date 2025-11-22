@@ -90,11 +90,10 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   return (
     <>
-  {state.error && <div className="language-error-message">{state.error}</div>}
+  {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
       <label
         htmlFor="language-select"
         className={classNameLabel ?? undefined}
-        aria-label={Label}
       >
         {Label}
       </label>
@@ -106,7 +105,6 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
           className={classNameSelect ?? undefined}
-          aria-labelledby={Label ? 'language-select-label' : undefined}
           aria-describedby={state.error ? 'language-error' : undefined}
         >
           <option value="">Select a language</option>

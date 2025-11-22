@@ -101,7 +101,7 @@ describe('LanguageDropdown', () => {
       />
     );
 
-    const label = screen.getByLabelText('Language');
+    const label = screen.getByText('Language');
     const select = screen.getByRole('combobox');
 
     expect(label).toHaveClass('custom-label');
@@ -233,8 +233,15 @@ describe('LanguageDropdown', () => {
     );
 
     const select = screen.getByRole('combobox');
+    const label = screen.getByText('Language');
+    
+    // Verify proper label-to-input association
+    expect(label.tagName).toBe('LABEL');
+    expect(label).toHaveAttribute('for', 'language-select');
     expect(select).toHaveAttribute('id', 'language-select');
-    expect(select).toHaveAttribute('aria-labelledby');
+    
+    // aria-labelledby should not be present when using htmlFor/id
+    expect(select).not.toHaveAttribute('aria-labelledby');
   });
 
   it('sets error aria attributes when error is present', async () => {

@@ -39,7 +39,8 @@ describe('StateDropdown', () => {
       />
     );
     
-    expect(screen.getByLabelText('State/Province')).toBeInTheDocument();
+    const label = screen.getByText('State/Province');
+    expect(label).toBeInTheDocument();
     
     await waitFor(() => {
       expect(screen.getByRole('combobox')).toBeInTheDocument();
@@ -111,7 +112,7 @@ describe('StateDropdown', () => {
       />
     );
 
-    const label = screen.getByLabelText('State/Province');
+    const label = screen.getByText('State/Province');
     
     await waitFor(() => {
       const select = screen.getByRole('combobox');
@@ -267,10 +268,18 @@ describe('StateDropdown', () => {
       />
     );
 
+    const label = screen.getByText('State/Province');
+
     await waitFor(() => {
       const select = screen.getByRole('combobox');
+      
+      // Verify proper label-to-input association
+      expect(label.tagName).toBe('LABEL');
+      expect(label).toHaveAttribute('for', 'state-province-select');
       expect(select).toHaveAttribute('id', 'state-province-select');
-      expect(select).toHaveAttribute('aria-labelledby');
+      
+      // aria-labelledby should not be present when using htmlFor/id
+      expect(select).not.toHaveAttribute('aria-labelledby');
     });
   });
 
