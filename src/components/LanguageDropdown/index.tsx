@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useMemo } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import './LanguageDropdown.css';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -59,6 +60,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   customLoadingIndicator,
   loadingText = "Loading language information..."
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('language'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialLanguageInformation: LanguageInformation[] = languageInformation ?? [];
@@ -127,29 +133,31 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <div className="language-dropdown-container">
-      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+    <div className="rcs-container">
+      {state.error && <div id={errorId} className="rcs-error">{state.error}</div>}
       <label
-        htmlFor="language-select"
-        className={classNameLabel ?? 'language-dropdown-label'}
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
       >
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
+        <div className="rcs-loading">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
-            id="language-select"
-            list="language-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedLanguageName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'language-error' : undefined}
+            className={classNameSelect ?? 'rcs-select'}
+            aria-describedby={state.error ? errorId : undefined}
             placeholder="Search or select a language"
             autoComplete="off"
           />
-          <datalist id="language-datalist">
+          <datalist id={datalistId}>
             {state.languageInformation.map((language) => (
               <option key={language.code} value={language.name} data-value={language.code}>
                 {language.name}
@@ -159,13 +167,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="language-select"
+          id={uniqueId}
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a language"
-          className={classNameSelect ?? 'language-dropdown-select'}
-          aria-describedby={state.error ? 'language-error' : undefined}
+          className={classNameSelect ?? 'rcs-select'}
+          aria-describedby={state.error ? errorId : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />

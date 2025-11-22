@@ -1,4 +1,7 @@
-/* Visual hierarchy: Typography and Spacing */
+/* Consistent CSS class structure with rcs- prefix */
+/* rcs = react-country-state-selector */
+
+/* Visual hierarchy: Typography and Spacing - Legacy classes for backward compatibility */
 .country-dropdown-label {
   display: block;
   font-size: 14px;
@@ -40,6 +43,45 @@
   --rcss-font-size: 1rem;
   --rcss-label-font-size: 0.875rem;
   --rcss-spacing: 0.5rem;
+}
+
+/* Standard rcs- prefixed classes */
+.rcs-container {
+  margin-bottom: 16px;
+}
+
+.rcs-label {
+  display: block;
+  color: var(--rcss-label-color);
+  font-weight: 500;
+  font-size: var(--rcss-label-font-size);
+  margin-bottom: var(--rcss-spacing);
+  font-family: var(--rcss-font-family);
+  line-height: 1.25rem;
+}
+
+.rcs-select {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rcs-error {
+  color: var(--rcss-error-color);
+  font-size: var(--rcss-label-font-size);
+  margin-bottom: var(--rcss-spacing);
+  padding: 0.5rem;
+  background-color: var(--rcss-error-background);
+  border: 1px solid var(--rcss-error-border);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+}
+
+.rcs-loading {
+  display: block;
 }
 
 /* Error message styling */
@@ -182,6 +224,100 @@ input#country-select::placeholder {
 /* Reduced motion support for search input */
 @media (prefers-reduced-motion: reduce) {
   input#country-select {
+    transition: none;
+  }
+}
+/* New rcs-select styling for dynamically generated IDs */
+select.rcs-select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: var(--rcss-font-size);
+  line-height: 1.5;
+  color: var(--rcss-text-color);
+  background-color: var(--rcss-background-color);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.5em 1.5em;
+  border: 1px solid var(--rcss-border-color);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+  appearance: none;
+  padding-right: 2.5rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+select.rcs-select:focus {
+  outline: none;
+  border-color: var(--rcss-primary-color);
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+select.rcs-select:hover:not(:disabled) {
+  border-color: var(--rcss-primary-hover);
+}
+
+select.rcs-select:disabled {
+  background-color: var(--rcss-disabled-background);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Input styling for rcs-select class */
+input.rcs-select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: var(--rcss-font-size);
+  line-height: 1.5;
+  color: var(--rcss-text-color);
+  background-color: var(--rcss-background-color);
+  border: 1px solid var(--rcss-border-color);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input.rcs-select:focus {
+  outline: none;
+  border-color: var(--rcss-primary-color);
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+input.rcs-select:hover:not(:disabled) {
+  border-color: var(--rcss-primary-hover);
+}
+
+input.rcs-select:disabled {
+  background-color: var(--rcss-disabled-background);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input.rcs-select::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+/* High contrast mode support for rcs-select */
+@media (prefers-contrast: high) {
+  select.rcs-select,
+  input.rcs-select {
+    border-width: 2px;
+  }
+  
+  select.rcs-select:focus,
+  input.rcs-select:focus {
+    outline: 2px solid var(--rcss-primary-color);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support for rcs-select */
+@media (prefers-reduced-motion: reduce) {
+  select.rcs-select,
+  input.rcs-select {
     transition: none;
   }
 }

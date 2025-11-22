@@ -77,7 +77,8 @@ describe('Search Functionality', () => {
 
       const select = screen.getByRole('combobox');
       expect(select).toBeInTheDocument();
-      expect(select.tagName).toBe('SELECT');
+      // VirtualSelect uses a div with role="combobox", not a native select
+      expect(select.tagName).toBe('DIV');
     });
 
     it('renders select dropdown when enableSearch is not provided (default)', () => {
@@ -93,7 +94,8 @@ describe('Search Functionality', () => {
 
       const select = screen.getByRole('combobox');
       expect(select).toBeInTheDocument();
-      expect(select.tagName).toBe('SELECT');
+      // VirtualSelect uses a div with role="combobox", not a native select
+      expect(select.tagName).toBe('DIV');
     });
 
     it('renders datalist with all country options', () => {
@@ -108,7 +110,12 @@ describe('Search Functionality', () => {
         />
       );
 
-      const datalist = document.getElementById('country-datalist');
+      const input = screen.getByPlaceholderText('Search or select a country');
+      const datalistId = input.getAttribute('list');
+      expect(datalistId).toBeTruthy();
+      expect(datalistId).toMatch(/^rcs-country-\d+-datalist$/);
+      
+      const datalist = document.getElementById(datalistId!);
       expect(datalist).toBeInTheDocument();
       expect(datalist?.tagName).toBe('DATALIST');
       

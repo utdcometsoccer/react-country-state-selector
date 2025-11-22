@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useMemo } from 'react';
 import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import { Country, type CountryDropdownProps, CountryInformation, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -59,6 +60,11 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   customLoadingIndicator,
   loadingText = "Loading country information..."
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('country'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -128,29 +134,31 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   };
 
   return (
-    <div className="country-dropdown-container">
-      {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
+    <div className="rcs-container">
+      {state.error && <div id={errorId} className="rcs-error">{state.error}</div>}
       <label
-        htmlFor="country-select"
-        className={classNameLabel ?? 'country-dropdown-label'}
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
       >
         {Label}
       </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />
+        <div className="rcs-loading">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
-            id="country-select"
-            list="country-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedCountryName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'country-error' : undefined}
+            className={classNameSelect ?? 'rcs-select'}
+            aria-describedby={state.error ? errorId : undefined}
             placeholder="Search or select a country"
             autoComplete="off"
           />
-          <datalist id="country-datalist">
+          <datalist id={datalistId}>
             {state.countryInformation.map((country) => (
               <option key={country.code} value={country.name} data-value={country.code}>
                 {country.name}
@@ -160,13 +168,13 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="country-select"
+          id={uniqueId}
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a country"
-          className={classNameSelect ?? 'country-dropdown-select'}
-          aria-describedby={state.error ? 'country-error' : undefined}
+          className={classNameSelect ?? 'rcs-select'}
+          aria-describedby={state.error ? errorId : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />

@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useMemo } from 'react';
 import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import LoadingIndicator from '../LoadingIndicator';
 import LoadingSpinner from '../LoadingSpinner';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -58,6 +59,11 @@ const StateDropdown: FC<StateDropdownProps> = ({
   loadingText = "Loading state/province information...",
   enableSearch = false
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('state'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -80,7 +86,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
           dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: info });
           dispatch({ type: 'SET_ERROR', payload: null });
         } catch (err: any) {
-          if (process.env.NODE_ENV === 'Development') {
+          if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
           } else {
             dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
@@ -126,29 +132,31 @@ const StateDropdown: FC<StateDropdownProps> = ({
   };
 
   return (
-    <div className="state-dropdown-container">
-      {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
+    <div className="rcs-container">
+      {state.error && <div id={errorId} className="rcs-error">{state.error}</div>}
       <label
-        htmlFor="state-province-select"
-        className={classNameLabel ?? 'state-dropdown-label'}
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
       >
         {Label}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
+        <div className="rcs-loading">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
-            id="state-province-select"
-            list="state-province-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedStateName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'state-province-error' : undefined}
+            className={classNameSelect ?? 'rcs-select'}
+            aria-describedby={state.error ? errorId : undefined}
             placeholder="Search or select a state/province"
             autoComplete="off"
           />
-          <datalist id="state-province-datalist">
+          <datalist id={datalistId}>
             {state.stateProvinceInformation.map((stateProvince) => (
               <option key={stateProvince.code} value={stateProvince.name} data-value={stateProvince.code}>
                 {stateProvince.name}
@@ -158,13 +166,13 @@ const StateDropdown: FC<StateDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="state-province-select"
+          id={uniqueId}
           value={state.selectedState ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a state/province"
-          className={classNameSelect ?? undefined}
-          aria-describedby={state.error ? 'state-province-error' : undefined}
+          className={classNameSelect ?? 'rcs-select'}
+          aria-describedby={state.error ? errorId : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
