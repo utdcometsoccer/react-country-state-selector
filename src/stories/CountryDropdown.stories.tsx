@@ -14,6 +14,7 @@ const meta = {
         classNameLabel: { control: 'text' },
         classNameSelect: { control: 'text' },
         enableSearch: { control: 'boolean' },
+        required: { control: 'boolean' },
     },
 } satisfies Meta<typeof CountryDropdown>;
 
@@ -92,5 +93,18 @@ export const WithSearchPreselected: Story = {
         classNameLabel: 'country-label',
         classNameSelect: 'country-select',
         enableSearch: true,
+    },
+};
+
+export const RequiredField: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        required: true,
     },
 };

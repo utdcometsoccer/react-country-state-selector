@@ -143,7 +143,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
       >
-        {Label}{required && <span aria-label="required"> *</span>}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingStateProvinceInformation ? (
         <div role="status" aria-live="polite">

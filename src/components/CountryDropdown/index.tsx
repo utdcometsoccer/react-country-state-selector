@@ -145,7 +145,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         htmlFor="country-select"
         className={classNameLabel ?? 'country-dropdown-label'}
       >
-        {Label}{required && <span aria-label="required"> *</span>}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
         <div role="status" aria-live="polite">

@@ -144,7 +144,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         htmlFor="language-select"
         className={classNameLabel ?? 'language-dropdown-label'}
       >
-        {Label}{required && <span aria-label="required"> *</span>}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingLanguageInformation ? (
         <div role="status" aria-live="polite">
