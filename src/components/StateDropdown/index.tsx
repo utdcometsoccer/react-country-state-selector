@@ -127,7 +127,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   return (
     <div className="state-dropdown-container">
-      {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
+      {state.error && <div id="state-province-error" className="state-error-message" role="alert" aria-live="polite">{state.error}</div>}
       <label
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
