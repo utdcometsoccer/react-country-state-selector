@@ -13,6 +13,7 @@ const meta = {
         Label: { control: 'text' },
         classNameLabel: { control: 'text' },
         classNameSelect: { control: 'text' },
+        enableSearch: { control: 'boolean' },
     },
 } satisfies Meta<typeof CountryDropdown>;
 
@@ -40,5 +41,31 @@ export const WithOptgroups: Story = {
         Label: 'Select Country (Grouped by Region)',
         classNameLabel: 'country-label',
         classNameSelect: 'country-select',
+    },
+};
+
+export const WithSearch: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country (Searchable)',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        enableSearch: true,
+    },
+};
+
+export const WithSearchPreselected: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: 'CA',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country (Searchable - Preselected)',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        enableSearch: true,
     },
 };
