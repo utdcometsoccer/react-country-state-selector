@@ -36,7 +36,10 @@ export function renderGroupedOptions<T extends GroupableItem>(items: T[]): React
       if (!grouped.has(item.group)) {
         grouped.set(item.group, []);
       }
-      grouped.get(item.group)!.push(item);
+      const groupItems = grouped.get(item.group);
+      if (groupItems) {
+        groupItems.push(item);
+      }
     } else {
       ungrouped.push(item);
     }
