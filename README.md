@@ -17,7 +17,7 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
-- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (18.6 KB gzipped core)
+- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (18.64 KB gzipped core)
 - 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
@@ -47,7 +47,7 @@ The library uses **code splitting** and **dynamic imports** to ensure you only l
 - Language data per locale: **~8.3-8.4 KB each** (~1.5 KB gzipped)  
 - State/Province data per locale: **0.8-3.1 KB each** (0.3-0.7 KB gzipped)
 
-**Total Initial Bundle:** **80.5 KB** uncompressed or **18.6 KB gzipped** for the core library (ES + CSS) without any data files.
+**Total Initial Bundle:** **80.49 KB** uncompressed or **18.64 KB gzipped** for the core library (ES + CSS) without any data files.
 
 ### Dynamic Data Loading
 
