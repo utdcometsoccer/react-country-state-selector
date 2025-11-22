@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface LanguageDropdownProps {
     selectedLanguage?: Language;
     onLanguageChange: (language: Language) => void;
@@ -7,6 +9,9 @@ export interface LanguageDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    showLoadingIndicator?: boolean;
+    customLoadingIndicator?: React.ReactNode;
+    loadingText?: string;
 }
 // Type for a single element from languages JSON file
 export type LanguageInformation = {
@@ -22,6 +27,9 @@ export interface CountryDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    showLoadingIndicator?: boolean;
+    customLoadingIndicator?: React.ReactNode;
+    loadingText?: string;
 }
 // Type for a single element from countries JSON file
 export type CountryInformation = {
@@ -141,6 +149,9 @@ export interface StateDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    showLoadingIndicator?: boolean;
+    customLoadingIndicator?: React.ReactNode;
+    loadingText?: string;
 }
 
 export interface GetCountryInformation {

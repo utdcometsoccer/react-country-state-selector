@@ -4,6 +4,7 @@ import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type L
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import './LanguageDropdown.css';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -47,7 +48,10 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   getLanguageInformation,
   Label,
   classNameLabel,
-  classNameSelect
+  classNameSelect,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading language information..."
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -98,8 +102,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
       >
         {Label}
       </label>
-      {state.isLoadingLanguageInformation ? (
-        <div>Loading language information...</div>
+      {state.isLoadingLanguageInformation && showLoadingIndicator ? (
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : (
         <select
           id="language-select"

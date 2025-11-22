@@ -4,6 +4,7 @@ import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -39,7 +40,19 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
   }
 }
 
-const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect }) => {
+const CountryDropdown: FC<CountryDropdownProps> = ({ 
+  selectedCountry, 
+  onCountryChange, 
+  culture, 
+  countryInformation, 
+  getCountryInformation, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading country information..."
+}) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -90,8 +103,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
       >
         {Label}
       </label>
-      {state.isLoadingCountryInformation ? (
-        <div>Loading country information...</div>
+      {state.isLoadingCountryInformation && showLoadingIndicator ? (
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : (
         <select
           id="country-select"
