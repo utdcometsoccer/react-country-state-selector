@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { getCountryInformationByCulture } from '../services/getCountryInformation';
 import { CultureInfo } from '../types';
 

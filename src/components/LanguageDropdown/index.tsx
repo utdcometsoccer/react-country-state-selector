@@ -1,10 +1,11 @@
 import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
-import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
+import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
+import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 import LoadingSpinner from '../LoadingSpinner';
 
@@ -135,7 +136,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        customLoadingIndicator || <LoadingSpinner text={loadingText} />
+        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
       ) : enableSearch ? (
         <>
           <input

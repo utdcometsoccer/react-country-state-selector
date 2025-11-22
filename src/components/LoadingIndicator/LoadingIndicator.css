@@ -1,0 +1,86 @@
+/* Touch-optimized loading indicator styles */
+
+.rcss-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  min-height: 3rem; /* 48px - minimum touch target size per WCAG guidelines */
+  background-color: var(--rcss-background-color, #ffffff);
+  border: 1px solid var(--rcss-border-color, #d1d5db);
+  border-radius: var(--rcss-border-radius, 0.375rem);
+  font-family: var(--rcss-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Spinner container with touch-friendly size */
+.rcss-loading-spinner {
+  width: 1.5rem; /* 24px */
+  height: 1.5rem; /* 24px */
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Animated spinner ring */
+.rcss-spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--rcss-border-color, #d1d5db);
+  border-top-color: var(--rcss-primary-color, #0066cc);
+  border-radius: 50%;
+  animation: rcss-spin 0.8s linear infinite;
+}
+
+@keyframes rcss-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading message text */
+.rcss-loading-message {
+  color: var(--rcss-text-color, #1f2937);
+  font-size: var(--rcss-font-size, 1rem);
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .rcss-spinner-ring {
+    /* Show a pulsing opacity instead of rotation */
+    animation: rcss-pulse 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes rcss-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .rcss-loading-container {
+    border-width: 2px;
+  }
+  
+  .rcss-spinner-ring {
+    border-width: 3px;
+  }
+}
+
+/* Dark mode support (if CSS variables are configured) */
+@media (prefers-color-scheme: dark) {
+  .rcss-loading-container {
+    background-color: var(--rcss-background-color-dark, var(--rcss-background-color, #ffffff));
+  }
+}

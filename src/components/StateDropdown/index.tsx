@@ -3,6 +3,8 @@ import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
+import LoadingIndicator from '../LoadingIndicator';
 import LoadingSpinner from '../LoadingSpinner';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
@@ -133,7 +135,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
         {Label}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        customLoadingIndicator || <LoadingSpinner text={loadingText} />
+        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
       ) : enableSearch ? (
         <>
           <input
