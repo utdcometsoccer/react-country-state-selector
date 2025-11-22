@@ -7,6 +7,7 @@ export interface LanguageDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
 }
 // Type for a single element from languages JSON file
 export type LanguageInformation = {
@@ -23,6 +24,7 @@ export interface CountryDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
 }
 // Type for a single element from countries JSON file
 export type CountryInformation = {
@@ -144,6 +146,7 @@ export interface StateDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
 }
 
 export interface GetCountryInformation {

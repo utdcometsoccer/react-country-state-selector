@@ -40,7 +40,7 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
   }
 }
 
-const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect }) => {
+const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect, enableSearch = false }) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -81,6 +81,28 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
     onCountryChange(e.target.value);
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching country by code or name
+    const matchingCountry = state.countryInformation.find(
+      c => c.code === value || c.name === value
+    );
+    if (matchingCountry) {
+      dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
+      onCountryChange(matchingCountry.code);
+    } else {
+      dispatch({ type: 'SET_COUNTRY', payload: value as Country });
+      onCountryChange(value);
+    }
+  };
+
+  // Get display name for selected country
+  const getSelectedCountryName = () => {
+    if (!state.selectedCountry) return '';
+    const country = state.countryInformation.find(c => c.code === state.selectedCountry);
+    return country ? country.name : state.selectedCountry;
+  };
+
   return (
     <>
       {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
@@ -92,6 +114,26 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
       </label>
       {state.isLoadingCountryInformation ? (
         <div>Loading country information...</div>
+      ) : enableSearch ? (
+        <>
+          <input
+            id="country-select"
+            list="country-datalist"
+            value={getSelectedCountryName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'country-error' : undefined}
+            placeholder="Search or select a country"
+            autoComplete="off"
+          />
+          <datalist id="country-datalist">
+            {state.countryInformation.map((country) => (
+              <option key={country.code} value={country.name} data-value={country.code}>
+                {country.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
         <select
           id="country-select"
