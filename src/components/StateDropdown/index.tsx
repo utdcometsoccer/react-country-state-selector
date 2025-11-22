@@ -3,6 +3,7 @@ import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import LoadingSpinner from '../LoadingSpinner';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 
 interface StateDropdownState {
@@ -39,7 +40,19 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, stateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
+const StateDropdown: FC<StateDropdownProps> = ({ 
+  getStateProvinceInformation, 
+  stateProvinceInformation, selectedState, 
+  onStateChange, 
+  country, 
+  culture, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading state/province information..."
+}) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -88,8 +101,8 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
       >
         {Label}
       </label>
-      {state.isLoadingStateProvinceInformation ? (
-        <div>Loading state/province information...</div>
+      {state.isLoadingStateProvinceInformation && showLoadingIndicator ? (
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : (
         <select
           id="state-province-select"
