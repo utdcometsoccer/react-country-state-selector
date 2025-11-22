@@ -1,7 +1,7 @@
 # react-country-state-selector
 
 [![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/publish.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![Tests](https://img.shields.io/badge/tests-113%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://img.shields.io/badge/tests-128%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![npm version](https://badge.fury.io/js/@idahoedokpayi%2Freact-country-state-selector.svg)](https://www.npmjs.com/package/@idahoedokpayi/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -205,6 +205,9 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading country information..."): Custom text to display with the loading indicator.
 
 ### StateDropdown Props
 
@@ -218,6 +221,9 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading state/province information..."): Custom text to display with the loading indicator.
 
 ### LanguageDropdown Props
 
@@ -230,6 +236,9 @@ The `enableSearch` prop is **optional and defaults to `false`**, ensuring comple
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
 - `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading language information..."): Custom text to display with the loading indicator.
 
 ## Culture Resolution
 
@@ -259,7 +268,9 @@ This library is built with quality and reliability in mind:
 
 - **144+ comprehensive unit tests** covering all components and utilities
 - **24+ dedicated tests** for search/filter functionality
+- **128+ comprehensive unit tests** covering all components and utilities
 - **20+ dedicated tests** for culture resolution logic
+- **15+ tests** for loading indicator functionality
 - **Integration tests** ensuring component compatibility
 - **Error handling tests** for robust fallback mechanisms
 - **Accessibility tests** for ARIA compliance and screen reader support
@@ -297,6 +308,166 @@ Examples:
   languageInformation={[
     { code: 'xx', name: 'My Language' },
     { code: 'yy', name: 'Another Language' }
+  ]} 
+/>
+```
+
+## Loading Indicators
+
+All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
+
+### Default Loading Indicator
+
+By default, all components show an animated spinner with descriptive text:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+/>
+// Shows: animated spinner with "Loading country information..."
+```
+
+### Disable Loading Indicator
+
+You can hide the loading indicator completely:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+  showLoadingIndicator={false}
+/>
+// No loading indicator will be shown
+```
+
+### Custom Loading Text
+
+Customize the loading message:
+
+```jsx
+<StateDropdown 
+  selectedState=""
+  onStateChange={handleStateChange}
+  country="US"
+  culture="en-US"
+  loadingText="Please wait, fetching states..."
+/>
+// Shows: spinner with "Please wait, fetching states..."
+```
+
+### Custom Loading Indicator
+
+Replace the default spinner with your own component:
+
+```jsx
+const MyCustomSpinner = () => (
+  <div style={{ padding: '10px' }}>
+    <img src="/my-loader.gif" alt="Loading" />
+    <span>Loading data...</span>
+  </div>
+);
+
+<LanguageDropdown 
+  selectedLanguage=""
+  onLanguageChange={handleLanguageChange}
+  culture="en-US"
+  customLoadingIndicator={<MyCustomSpinner />}
+/>
+```
+
+### Using the LoadingSpinner Component
+
+The library exports the `LoadingSpinner` component that you can use independently:
+
+```jsx
+import { LoadingSpinner } from 'react-country-state-selector';
+
+// In your component
+<LoadingSpinner text="Loading..." />
+```
+  ]} 
+/>
+```
+
+## Loading Indicators
+
+All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
+
+### Default Loading Indicator
+
+By default, all components show an animated spinner with descriptive text:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+/>
+// Shows: animated spinner with "Loading country information..."
+```
+
+### Disable Loading Indicator
+
+You can hide the loading indicator completely:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+  showLoadingIndicator={false}
+/>
+// No loading indicator will be shown
+```
+
+### Custom Loading Text
+
+Customize the loading message:
+
+```jsx
+<StateDropdown 
+  selectedState=""
+  onStateChange={handleStateChange}
+  country="US"
+  culture="en-US"
+  loadingText="Please wait, fetching states..."
+/>
+// Shows: spinner with "Please wait, fetching states..."
+```
+
+### Custom Loading Indicator
+
+Replace the default spinner with your own component:
+
+```jsx
+const MyCustomSpinner = () => (
+  <div style={{ padding: '10px' }}>
+    <img src="/my-loader.gif" alt="Loading" />
+    <span>Loading data...</span>
+  </div>
+);
+
+<LanguageDropdown 
+  selectedLanguage=""
+  onLanguageChange={handleLanguageChange}
+  culture="en-US"
+  customLoadingIndicator={<MyCustomSpinner />}
+/>
+```
+
+### Using the LoadingSpinner Component
+
+The library exports the `LoadingSpinner` component that you can use independently:
+
+```jsx
+import { LoadingSpinner } from 'react-country-state-selector';
+
+// In your component
+<LoadingSpinner text="Loading..." />
+```
   ]} 
 />
 ```

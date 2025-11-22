@@ -5,6 +5,7 @@ import { getCountryInformationByCulture } from '../../services/getCountryInforma
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -40,7 +41,20 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
   }
 }
 
-const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect, enableSearch = false }) => {
+const CountryDropdown: FC<CountryDropdownProps> = ({ 
+  selectedCountry, 
+  onCountryChange, 
+  culture, 
+  countryInformation, 
+  getCountryInformation, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  enableSearch = false,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading country information..."
+}) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -104,16 +118,16 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
   };
 
   return (
-    <>
+    <div className="country-dropdown-container">
       {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
       <label
         htmlFor="country-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'country-dropdown-label'}
       >
         {Label}
       </label>
-      {state.isLoadingCountryInformation ? (
-        <div>Loading country information...</div>
+      {state.isLoadingCountryInformation && showLoadingIndicator ? (
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : enableSearch ? (
         <>
           <input
@@ -139,14 +153,14 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
           id="country-select"
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'country-dropdown-select'}
           aria-describedby={state.error ? 'country-error' : undefined}
         >
           <option value="">Select a country</option>
           {renderGroupedOptions(state.countryInformation)}
         </select>
       )}
-    </>
+    </div>
   );
 };
 

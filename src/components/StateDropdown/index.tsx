@@ -3,6 +3,7 @@ import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import LoadingSpinner from '../LoadingSpinner';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 
 interface StateDropdownState {
@@ -39,7 +40,20 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, stateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect, enableSearch = false }) => {
+const StateDropdown: FC<StateDropdownProps> = ({
+  getStateProvinceInformation,
+  stateProvinceInformation, selectedState,
+  onStateChange,
+  country,
+  culture,
+  Label,
+  classNameLabel,
+  classNameSelect,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading state/province information...",
+  enableSearch = false
+}) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -102,16 +116,16 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
   };
 
   return (
-    <>
+    <div className="state-dropdown-container">
       {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
       <label
         htmlFor="state-province-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'state-dropdown-label'}
       >
         {Label}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        <div>Loading state/province information...</div>
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : enableSearch ? (
         <>
           <input
@@ -137,14 +151,14 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
           id="state-province-select"
           value={state.selectedState ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'state-dropdown-select'}
           aria-describedby={state.error ? 'state-province-error' : undefined}
         >
           <option value="">Select a state/province</option>
           {renderGroupedOptions(state.stateProvinceInformation)}
         </select>
       )}
-    </>
+    </div>
   );
 };
 

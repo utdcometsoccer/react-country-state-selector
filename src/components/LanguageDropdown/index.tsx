@@ -5,6 +5,7 @@ import { getLanguageInformationByCulture } from '../../services/getLanguageInfor
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -49,7 +50,10 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   Label,
   classNameLabel,
   classNameSelect,
-  enableSearch = false
+  enableSearch = false,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading language information..."
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -113,16 +117,16 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <>
-  {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+    <div className="language-dropdown-container">
+      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
       <label
         htmlFor="language-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'language-dropdown-label'}
       >
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        <div>Loading language information...</div>
+        <> <LoadingSpinner text={loadingText} /><div>Loading language information...</div> </>
       ) : enableSearch ? (
         <>
           <input
@@ -148,14 +152,14 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           id="language-select"
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'language-dropdown-select'}
           aria-describedby={state.error ? 'language-error' : undefined}
         >
           <option value="">Select a language</option>
           {renderGroupedOptions(state.languageInformation)}
         </select>
       )}
-    </>
+    </div>
   );
 };
 

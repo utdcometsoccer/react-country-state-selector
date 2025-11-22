@@ -8,14 +8,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "nodenext",
-    "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./src/*"]
     },
     "declaration": true,
     "outDir": "dist",
     "emitDeclarationOnly": true
   },
-  "include": ["src"],
+  "include": ["src", "vitest.shims.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
