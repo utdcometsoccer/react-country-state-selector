@@ -11,7 +11,7 @@ const LoadingIndicator: FC<LoadingIndicatorProps> = ({
   ariaLabel = 'Loading content' 
 }) => {
   return (
-    <div className="rcss-loading-container" role="status" aria-label={ariaLabel}>
+    <div className="rcss-loading-container" role="status" aria-live="polite" aria-busy="true" aria-label={ariaLabel}>
       <div className="rcss-loading-spinner" aria-hidden="true">
         <div className="rcss-spinner-ring"></div>
       </div>
