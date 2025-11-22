@@ -627,6 +627,23 @@ Available default functions:
 
 The library includes **default, accessible styling** out of the box that can be easily customized to match your design system.
 
+### Preset Themes
+
+Choose from three ready-to-use preset themes:
+
+```tsx
+// Minimal - Clean, understated design
+import 'react-country-state-selector/dist/themes/minimal.css';
+
+// Material - Google Material Design inspired
+import 'react-country-state-selector/dist/themes/material.css';
+
+// Bootstrap - Bootstrap 5 form control styling
+import 'react-country-state-selector/dist/themes/bootstrap.css';
+```
+
+See the [Preset Themes Guide](./docs/THEMES.md) for detailed comparison and usage examples.
+
 ### Including the Default Styles
 
 To use the default styles, import the CSS file in your application:
@@ -744,7 +761,13 @@ The default styles include important accessibility features:
 - **Reduced motion** support for users who prefer less animation
 - **Screen reader friendly** with proper ARIA attributes
 
-For more details on styling and customization, see the [Styling Guide](./docs/STYLING.md).
+### Styling Documentation
+
+For comprehensive styling information, see:
+- **[Preset Themes Guide](./docs/THEMES.md)** - Ready-to-use theme presets (minimal, material, bootstrap)
+- **[CSS Variables Reference](./docs/CSS-VARIABLES.md)** - Complete list of all customizable CSS custom properties
+- **[Style Examples](./docs/STYLE-EXAMPLES.md)** - Real-world styling examples and patterns
+- **[Styling Guide](./docs/STYLING.md)** - Comprehensive styling documentation
 
 ## Architecture
 
