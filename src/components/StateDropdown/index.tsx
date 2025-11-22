@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FC, useEffect, useReducer, useState, useRef } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
 import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
@@ -74,7 +74,21 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   const [selectionFeedback, setSelectionFeedback] = useState<string>('');
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
-  const selectRef = useRef<HTMLDivElement>(null);
+
+  // Cleanup timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    
+    if (showSuccessAnimation) {
+      timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
+    }
+    
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [showSuccessAnimation]);
 
   useEffect(() => {
     if (state.stateProvinceInformation.length === 0 && !state.isLoadingStateProvinceInformation) {
@@ -108,7 +122,6 @@ const StateDropdown: FC<StateDropdownProps> = ({
     
     // Trigger success animation
     setShowSuccessAnimation(true);
-    setTimeout(() => setShowSuccessAnimation(false), 600);
     
     // Call onSuccess callback if provided
     if (onSuccess) {
@@ -135,7 +148,6 @@ const StateDropdown: FC<StateDropdownProps> = ({
       // Success feedback
       setSelectionFeedback(`${matchingState.name} selected`);
       setShowSuccessAnimation(true);
-      setTimeout(() => setShowSuccessAnimation(false), 600);
       
       if (onSuccess) {
         onSuccess(matchingState.code);
@@ -154,7 +166,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
   };
 
   return (
-    <div className="state-dropdown-container" ref={selectRef}>
+    <div className="state-dropdown-container">
       {/* Aria-live region for selection confirmation */}
       <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
         {selectionFeedback}
