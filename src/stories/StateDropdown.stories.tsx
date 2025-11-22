@@ -16,6 +16,7 @@ const meta = {
         Label: { control: 'text' },
         classNameLabel: { control: 'text' },
         classNameSelect: { control: 'text' },
+        enableSearch: { control: 'boolean' },
     },
 } satisfies Meta<typeof StateDropdown>;
 
@@ -33,5 +34,18 @@ export const Primary: Story = {
         Label: 'State/Province',
         classNameLabel: 'state-label',
         classNameSelect: 'state-select',
+    },
+};
+
+export const WithSearch: Story = {
+    args: {
+        onStateChange: (state) => console.log('Selected state:', state),
+        selectedState: '',
+        country: 'US',
+        culture: 'en-US',
+        Label: 'State/Province (Searchable)',
+        classNameLabel: 'state-label',
+        classNameSelect: 'state-select',
+        enableSearch: true,
     },
 };

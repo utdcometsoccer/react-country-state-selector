@@ -6,6 +6,7 @@ import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -51,7 +52,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   classNameLabel,
   classNameSelect,
   enableVirtualScrolling = true,
-  virtualScrollThreshold = 50
+  virtualScrollThreshold = 50,
+  enableSearch = false,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading language information..."
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -98,18 +103,59 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     label: language.name,
     group: language.group
   }));
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching language by code or name
+    const matchingLanguage = state.languageInformation.find(
+      l => l.code === value || l.name === value
+    );
+    if (matchingLanguage) {
+      dispatch({ type: 'SET_LANGUAGE', payload: matchingLanguage.code });
+      onLanguageChange(matchingLanguage.code);
+    } else {
+      dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
+      onLanguageChange(value as Language);
+    }
+  };
+
+  // Get display name for selected language
+  const getSelectedLanguageName = () => {
+    if (!state.selectedLanguage) return '';
+    const language = state.languageInformation.find(l => l.code === state.selectedLanguage);
+    return language ? language.name : state.selectedLanguage;
+  };
 
   return (
-    <>
-  {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+    <div className="language-dropdown-container">
+      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
       <label
         htmlFor="language-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'language-dropdown-label'}
       >
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        <div>Loading language information...</div>
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="language-select"
+            list="language-datalist"
+            value={getSelectedLanguageName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'language-error' : undefined}
+            placeholder="Search or select a language"
+            autoComplete="off"
+          />
+          <datalist id="language-datalist">
+            {state.languageInformation.map((language) => (
+              <option key={language.code} value={language.name} data-value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
         <VirtualSelect
           id="language-select"
@@ -117,13 +163,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a language"
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'language-dropdown-select'}
           aria-describedby={state.error ? 'language-error' : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
       )}
-    </>
+    </div>
   );
 };
 
