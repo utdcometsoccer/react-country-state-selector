@@ -144,7 +144,7 @@ input#state-province-select:disabled {
 
 /* Placeholder styling for search input */
 input#state-province-select::placeholder {
-  color: #9ca3af;
+  color: #6d727a;
   opacity: 1;
 }
 
