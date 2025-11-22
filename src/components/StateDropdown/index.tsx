@@ -5,6 +5,8 @@ import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import LoadingIndicator from '../LoadingIndicator';
+import LoadingSpinner from '../LoadingSpinner';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -40,7 +42,22 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, stateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
+const StateDropdown: FC<StateDropdownProps> = ({
+  getStateProvinceInformation,
+  stateProvinceInformation, selectedState,
+  onStateChange,
+  country,
+  culture,
+  Label,
+  classNameLabel,
+  classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading state/province information...",
+  enableSearch = false
+}) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -75,35 +92,84 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, st
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_STATE', payload: e.target.value });
-    onStateChange(e.target.value);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_STATE', payload: value });
+    onStateChange(value);
+  };
+
+  // Convert state/province information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.stateProvinceInformation.map(stateProvince => ({
+    value: stateProvince.code,
+    label: stateProvince.name,
+    group: stateProvince.group
+  }));
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching state by code or name
+    const matchingState = state.stateProvinceInformation.find(
+      s => s.code === value || s.name === value
+    );
+    if (matchingState) {
+      dispatch({ type: 'SET_STATE', payload: matchingState.code });
+      onStateChange(matchingState.code);
+    } else {
+      dispatch({ type: 'SET_STATE', payload: value });
+      onStateChange(value);
+    }
+  };
+
+  // Get display name for selected state
+  const getSelectedStateName = () => {
+    if (!state.selectedState) return '';
+    const stateProvince = state.stateProvinceInformation.find(s => s.code === state.selectedState);
+    return stateProvince ? stateProvince.name : state.selectedState;
   };
 
   return (
-    <>
+    <div className="state-dropdown-container">
       {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
       <label
         htmlFor="state-province-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'state-dropdown-label'}
       >
         {Label}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        <LoadingIndicator message="Loading state/province information..." ariaLabel="Loading state or province information" />
+        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="state-province-select"
+            list="state-province-datalist"
+            value={getSelectedStateName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'state-province-error' : undefined}
+            placeholder="Search or select a state/province"
+            autoComplete="off"
+          />
+          <datalist id="state-province-datalist">
+            {state.stateProvinceInformation.map((stateProvince) => (
+              <option key={stateProvince.code} value={stateProvince.name} data-value={stateProvince.code}>
+                {stateProvince.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
-        <select
+        <VirtualSelect
           id="state-province-select"
           value={state.selectedState ?? ''}
           onChange={handleChange}
+          options={virtualSelectOptions}
+          placeholder="Select a state/province"
           className={classNameSelect ?? undefined}
           aria-describedby={state.error ? 'state-province-error' : undefined}
-        >
-          <option value="">Select a state/province</option>
-          {renderGroupedOptions(state.stateProvinceInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
-    </>
+    </div>
   );
 };
 

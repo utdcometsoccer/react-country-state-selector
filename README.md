@@ -1,7 +1,7 @@
 # react-country-state-selector
 
 [![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/publish.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![Tests](https://img.shields.io/badge/tests-113%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://img.shields.io/badge/tests-128%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![npm version](https://badge.fury.io/js/@idahoedokpayi%2Freact-country-state-selector.svg)](https://www.npmjs.com/package/@idahoedokpayi/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -17,13 +17,16 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
+- 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
+- 🚀 **Virtual scrolling** - Optimized performance for long lists using react-window
 - 🎨 **Flexible customization** - Custom labels, CSS classes, and data sources
 - ♿ **Accessibility first** - Full ARIA support and screen reader compatibility
-- 🧪 **Thoroughly tested** - 113+ comprehensive unit tests with 100% backward compatibility
+- 🧪 **Thoroughly tested** - 145+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
+- 📱 **Mobile-friendly** - Optimized touch interactions and native keyboard support
 
 ## Installation
 
@@ -118,6 +121,139 @@ const App = () => {
 };
 ```
 
+## Virtual Scrolling
+
+All dropdown components now feature **virtual scrolling** for improved performance with long lists. Virtual scrolling renders only the visible items in the dropdown, significantly improving performance when dealing with large datasets like the full list of countries (250+ items) or languages (185+ items).
+
+### How It Works
+
+Virtual scrolling is **automatically enabled** when the number of options exceeds a threshold (default: 50 items). This means:
+
+- **Country Dropdown**: Virtual scrolling enabled (250+ countries)
+- **Language Dropdown**: Virtual scrolling enabled (185+ languages)  
+- **State Dropdown**: Standard rendering (typically < 50 states per country)
+
+You can see the performance benefits when interacting with dropdowns containing many options - the dropdown opens instantly and scrolling is smooth regardless of the list size.
+
+### Configuration
+
+You can control virtual scrolling behavior using these props:
+
+```jsx
+<CountryDropdown 
+  selectedCountry={country}
+  onCountryChange={handleCountryChange}
+  // Enable or disable virtual scrolling (default: true)
+  enableVirtualScrolling={true}
+  // Set the threshold for when to use virtual scrolling (default: 50)
+  virtualScrollThreshold={100}
+/>
+```
+
+**Props:**
+- `enableVirtualScrolling` (boolean, default: `true`): Enable or disable virtual scrolling globally
+- `virtualScrollThreshold` (number, default: `50`): Minimum number of items required to trigger virtual scrolling
+
+### Features
+
+- ✅ **Automatic activation** - No configuration needed for most use cases
+- ✅ **Keyboard navigation** - Full support for arrow keys and Enter/Escape
+- ✅ **Grouped options** - Works seamlessly with optgroup functionality
+- ✅ **Accessibility** - Maintains all ARIA attributes and screen reader support
+- ✅ **Smooth scrolling** - Optimized rendering for large lists
+- ✅ **Backward compatible** - Can be disabled if needed
+
+### Example with Custom Threshold
+
+```jsx
+// Only use virtual scrolling for very large lists
+<LanguageDropdown
+  selectedLanguage={language}
+  onLanguageChange={handleLanguageChange}
+  enableVirtualScrolling={true}
+  virtualScrollThreshold={100} // Only virtualize if more than 100 languages
+/>
+
+// Disable virtual scrolling completely
+<CountryDropdown
+  selectedCountry={country}
+  onCountryChange={handleCountryChange}
+  enableVirtualScrolling={false} // Use standard rendering for all list sizes
+/>
+```
+
+## Search/Filter Functionality
+
+All dropdown components support optional search/filter functionality, which is particularly useful on mobile devices and for long lists. When enabled, users can type to search and filter options in real-time.
+
+### Enabling Search
+
+Simply add the `enableSearch` prop to any dropdown component:
+
+```jsx
+import { CountryDropdown } from 'react-country-state-selector';
+
+const App = () => {
+  const [country, setCountry] = useState('');
+
+  return (
+    <CountryDropdown 
+      selectedCountry={country}
+      onCountryChange={setCountry}
+      culture="en-US"
+      Label="Select Country"
+      enableSearch={true}  // Enable search functionality
+    />
+  );
+};
+```
+
+### How It Works
+
+- When `enableSearch={true}`, the dropdown renders as a searchable input field with autocomplete suggestions
+- Users can type to filter options in real-time
+- Works on all devices, including mobile
+- Uses native HTML5 `<datalist>` for optimal performance and accessibility
+- Automatically matches input by name or code
+- Falls back to standard `<select>` when `enableSearch` is `false` or omitted
+
+### Mobile-Friendly
+
+The search functionality is designed with mobile users in mind:
+- Large, touch-friendly input fields
+- Native mobile keyboard support
+- Autocomplete suggestions adapt to mobile screens
+- Fast filtering for large lists (like all countries)
+
+### Examples
+
+**StateDropdown with Search**
+```jsx
+<StateDropdown 
+  selectedState={state}
+  onStateChange={setState}
+  country="US"
+  culture="en-US"
+  Label="Select State"
+  enableSearch={true}
+/>
+```
+
+**LanguageDropdown with Search**
+```jsx
+<LanguageDropdown 
+  selectedLanguage={language}
+  onLanguageChange={setLanguage}
+  culture="en-US"
+  Label="Select Language"
+  enableSearch={true}
+/>
+```
+
+### Backward Compatibility
+
+The `enableSearch` prop is **optional and defaults to `false`**, ensuring complete backward compatibility with existing implementations. Your existing code will continue to work exactly as before without any changes.
+
 ## Props Reference
 
 ### CountryDropdown Props
@@ -130,6 +266,12 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading country information..."): Custom text to display with the loading indicator.
 
 ### StateDropdown Props
 
@@ -142,6 +284,12 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading state/province information..."): Custom text to display with the loading indicator.
 
 ### LanguageDropdown Props
 
@@ -153,6 +301,12 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableVirtualScrolling` (boolean, default: `true`): Enable virtual scrolling for long lists.
+- `virtualScrollThreshold` (number, default: `50`): Minimum items to trigger virtual scrolling.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
+- `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
+- `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
+- `loadingText` (string, default: "Loading language information..."): Custom text to display with the loading indicator.
 
 ## Culture Resolution
 
@@ -180,8 +334,11 @@ const culture = new CultureInfo('fr-CA');
 
 This library is built with quality and reliability in mind:
 
-- **113+ comprehensive unit tests** covering all components and utilities
+- **144+ comprehensive unit tests** covering all components and utilities
+- **24+ dedicated tests** for search/filter functionality
+- **128+ comprehensive unit tests** covering all components and utilities
 - **20+ dedicated tests** for culture resolution logic
+- **15+ tests** for loading indicator functionality
 - **Integration tests** ensuring component compatibility
 - **Error handling tests** for robust fallback mechanisms
 - **Accessibility tests** for ARIA compliance and screen reader support
@@ -219,6 +376,166 @@ Examples:
   languageInformation={[
     { code: 'xx', name: 'My Language' },
     { code: 'yy', name: 'Another Language' }
+  ]} 
+/>
+```
+
+## Loading Indicators
+
+All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
+
+### Default Loading Indicator
+
+By default, all components show an animated spinner with descriptive text:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+/>
+// Shows: animated spinner with "Loading country information..."
+```
+
+### Disable Loading Indicator
+
+You can hide the loading indicator completely:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+  showLoadingIndicator={false}
+/>
+// No loading indicator will be shown
+```
+
+### Custom Loading Text
+
+Customize the loading message:
+
+```jsx
+<StateDropdown 
+  selectedState=""
+  onStateChange={handleStateChange}
+  country="US"
+  culture="en-US"
+  loadingText="Please wait, fetching states..."
+/>
+// Shows: spinner with "Please wait, fetching states..."
+```
+
+### Custom Loading Indicator
+
+Replace the default spinner with your own component:
+
+```jsx
+const MyCustomSpinner = () => (
+  <div style={{ padding: '10px' }}>
+    <img src="/my-loader.gif" alt="Loading" />
+    <span>Loading data...</span>
+  </div>
+);
+
+<LanguageDropdown 
+  selectedLanguage=""
+  onLanguageChange={handleLanguageChange}
+  culture="en-US"
+  customLoadingIndicator={<MyCustomSpinner />}
+/>
+```
+
+### Using the LoadingSpinner Component
+
+The library exports the `LoadingSpinner` component that you can use independently:
+
+```jsx
+import { LoadingSpinner } from 'react-country-state-selector';
+
+// In your component
+<LoadingSpinner text="Loading..." />
+```
+  ]} 
+/>
+```
+
+## Loading Indicators
+
+All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
+
+### Default Loading Indicator
+
+By default, all components show an animated spinner with descriptive text:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+/>
+// Shows: animated spinner with "Loading country information..."
+```
+
+### Disable Loading Indicator
+
+You can hide the loading indicator completely:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+  showLoadingIndicator={false}
+/>
+// No loading indicator will be shown
+```
+
+### Custom Loading Text
+
+Customize the loading message:
+
+```jsx
+<StateDropdown 
+  selectedState=""
+  onStateChange={handleStateChange}
+  country="US"
+  culture="en-US"
+  loadingText="Please wait, fetching states..."
+/>
+// Shows: spinner with "Please wait, fetching states..."
+```
+
+### Custom Loading Indicator
+
+Replace the default spinner with your own component:
+
+```jsx
+const MyCustomSpinner = () => (
+  <div style={{ padding: '10px' }}>
+    <img src="/my-loader.gif" alt="Loading" />
+    <span>Loading data...</span>
+  </div>
+);
+
+<LanguageDropdown 
+  selectedLanguage=""
+  onLanguageChange={handleLanguageChange}
+  culture="en-US"
+  customLoadingIndicator={<MyCustomSpinner />}
+/>
+```
+
+### Using the LoadingSpinner Component
+
+The library exports the `LoadingSpinner` component that you can use independently:
+
+```jsx
+import { LoadingSpinner } from 'react-country-state-selector';
+
+// In your component
+<LoadingSpinner text="Loading..." />
+```
   ]} 
 />
 ```

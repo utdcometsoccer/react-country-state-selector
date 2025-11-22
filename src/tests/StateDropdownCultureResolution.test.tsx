@@ -224,11 +224,12 @@ describe('StateDropdown Culture Resolution Integration', () => {
       const label = screen.getByText('Province');
       expect(label).toBeInTheDocument();
       
-      // Wait for the dropdown to load - check for the select element by ID
+      // Wait for the dropdown to load - check for the combobox element (VirtualSelect trigger)
       await waitFor(() => {
         const selectElement = screen.getByRole('combobox');
         expect(selectElement).toBeInTheDocument();
-        expect(selectElement.tagName).toBe('SELECT');
+        // VirtualSelect uses DIV for the trigger, not SELECT
+        expect(selectElement.tagName).toBe('DIV');
       });
 
       // Should have called our utility with the provided culture

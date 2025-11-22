@@ -1,3 +1,26 @@
+/* Visual hierarchy: Typography and Spacing */
+.state-dropdown-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 6px;
+  color: #212121;
+}
+
+.state-dropdown-select {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.state-dropdown-container {
+  margin-bottom: 16px;
+}
+
 /* Note: CSS custom properties are defined in CountryDropdown.css to avoid duplication */
 
 /* Error message styling */
@@ -81,6 +104,65 @@ select#state-province-select:disabled {
 /* Reduced motion support for accessibility */
 @media (prefers-reduced-motion: reduce) {
   select#state-province-select {
+    transition: none;
+  }
+}
+
+/* Search input styling (when enableSearch is true) */
+input#state-province-select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: var(--rcss-font-size);
+  line-height: 1.5;
+  color: var(--rcss-text-color);
+  background-color: var(--rcss-background-color);
+  border: 1px solid var(--rcss-border-color);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Focus state for search input */
+input#state-province-select:focus {
+  outline: none;
+  border-color: var(--rcss-primary-color);
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+/* Hover state for search input */
+input#state-province-select:hover:not(:disabled) {
+  border-color: var(--rcss-primary-hover);
+}
+
+/* Disabled state for search input */
+input#state-province-select:disabled {
+  background-color: var(--rcss-disabled-background);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Placeholder styling for search input */
+input#state-province-select::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+/* High contrast mode support for search input */
+@media (prefers-contrast: high) {
+  input#state-province-select {
+    border-width: 2px;
+  }
+  
+  input#state-province-select:focus {
+    outline: 2px solid var(--rcss-primary-color);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support for search input */
+@media (prefers-reduced-motion: reduce) {
+  input#state-province-select {
     transition: none;
   }
 }

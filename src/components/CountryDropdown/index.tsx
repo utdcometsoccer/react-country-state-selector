@@ -6,6 +6,8 @@ import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
+import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -41,7 +43,22 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
   }
 }
 
-const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryChange, culture, countryInformation, getCountryInformation, Label, classNameLabel, classNameSelect }) => {
+const CountryDropdown: FC<CountryDropdownProps> = ({ 
+  selectedCountry, 
+  onCountryChange, 
+  culture, 
+  countryInformation, 
+  getCountryInformation, 
+  Label, 
+  classNameLabel, 
+  classNameSelect,
+  enableVirtualScrolling = true,
+  virtualScrollThreshold = 50,
+  enableSearch = false,
+  showLoadingIndicator = true,
+  customLoadingIndicator,
+  loadingText = "Loading country information..."
+}) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -77,35 +94,84 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
     }
   }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_COUNTRY', payload: e.target.value as Country });
-    onCountryChange(e.target.value);
+  const handleChange = (value: string) => {
+    dispatch({ type: 'SET_COUNTRY', payload: value as Country });
+    onCountryChange(value);
+  };
+
+  // Convert country information to VirtualSelect options
+  const virtualSelectOptions: VirtualSelectOption[] = state.countryInformation.map(country => ({
+    value: country.code,
+    label: country.name,
+    group: country.group
+  }));
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching country by code or name
+    const matchingCountry = state.countryInformation.find(
+      c => c.code === value || c.name === value
+    );
+    if (matchingCountry) {
+      dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
+      onCountryChange(matchingCountry.code);
+    } else {
+      dispatch({ type: 'SET_COUNTRY', payload: value as Country });
+      onCountryChange(value);
+    }
+  };
+
+  // Get display name for selected country
+  const getSelectedCountryName = () => {
+    if (!state.selectedCountry) return '';
+    const country = state.countryInformation.find(c => c.code === state.selectedCountry);
+    return country ? country.name : state.selectedCountry;
   };
 
   return (
-    <>
+    <div className="country-dropdown-container">
       {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
       <label
         htmlFor="country-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'country-dropdown-label'}
       >
         {Label}
       </label>
-      {state.isLoadingCountryInformation ? (
-        <LoadingIndicator message="Loading country information..." ariaLabel="Loading country information" />
+      {state.isLoadingCountryInformation && showLoadingIndicator ? (
+        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="country-select"
+            list="country-datalist"
+            value={getSelectedCountryName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'country-error' : undefined}
+            placeholder="Search or select a country"
+            autoComplete="off"
+          />
+          <datalist id="country-datalist">
+            {state.countryInformation.map((country) => (
+              <option key={country.code} value={country.name} data-value={country.code}>
+                {country.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
-        <select
+        <VirtualSelect
           id="country-select"
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          options={virtualSelectOptions}
+          placeholder="Select a country"
+          className={classNameSelect ?? 'country-dropdown-select'}
           aria-describedby={state.error ? 'country-error' : undefined}
-        >
-          <option value="">Select a country</option>
-          {renderGroupedOptions(state.countryInformation)}
-        </select>
+          enableVirtualScrolling={enableVirtualScrolling}
+          virtualScrollThreshold={virtualScrollThreshold}
+        />
       )}
-    </>
+    </div>
   );
 };
 
