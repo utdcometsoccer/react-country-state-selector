@@ -1,5 +1,5 @@
 import CountryDropdown from '../components/CountryDropdown';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
     component: CountryDropdown,

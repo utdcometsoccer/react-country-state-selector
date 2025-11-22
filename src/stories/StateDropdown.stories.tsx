@@ -1,5 +1,5 @@
 import StateDropdown from '../components/StateDropdown';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
     component: StateDropdown,
