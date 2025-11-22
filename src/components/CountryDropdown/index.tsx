@@ -4,7 +4,7 @@ import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
-import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
+import { Country, type CountryDropdownProps, CountryInformation, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 import LoadingSpinner from '../LoadingSpinner';

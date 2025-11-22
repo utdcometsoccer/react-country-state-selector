@@ -1,6 +1,6 @@
 import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
-import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
+import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
