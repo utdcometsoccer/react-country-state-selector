@@ -145,6 +145,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
       onCountryChange(matchingCountry.code);
       triggerSuccessFeedback(matchingCountry.code, matchingCountry.name);
     } else {
+      // No success feedback for partial/invalid input - user is likely still typing
       dispatch({ type: 'SET_COUNTRY', payload: value as Country });
       onCountryChange(value);
     }

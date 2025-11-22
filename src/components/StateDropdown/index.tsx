@@ -143,6 +143,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
       onStateChange(matchingState.code);
       triggerSuccessFeedback(matchingState.code, matchingState.name);
     } else {
+      // No success feedback for partial/invalid input - user is likely still typing
       dispatch({ type: 'SET_STATE', payload: value });
       onStateChange(value);
     }
