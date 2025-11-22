@@ -756,6 +756,16 @@ The library features a clean, maintainable architecture:
 - **Error boundaries** - Graceful error handling with user-friendly fallbacks
 - **Performance optimized** - Efficient data loading and caching strategies
 
+## Additional Documentation
+
+For more detailed information, see the following guides:
+
+- **[Error Handling & Recovery Guide](./docs/ERROR-HANDLING.md)** - Learn about error handling, retry mechanisms, and recovery guidance
+- **[Accessibility Guide](./docs/ACCESSIBILITY.md)** - Comprehensive accessibility features and ARIA support
+- **[Styling Guide](./docs/STYLING.md)** - Customization options and CSS theming
+- **[Visual Hierarchy Guide](./docs/VISUAL-HIERARCHY.md)** - Design principles and visual organization
+- **[UI/UX Analysis](./docs/UI-UX-ANALYSIS.md)** - Detailed analysis and recommendations
+
 ## License
 
 This project is licensed under the MIT License.
