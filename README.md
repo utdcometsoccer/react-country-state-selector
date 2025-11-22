@@ -1,7 +1,7 @@
 # react-country-state-selector
 
 [![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/publish.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![Tests](https://img.shields.io/badge/tests-109%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://img.shields.io/badge/tests-113%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![npm version](https://badge.fury.io/js/@idahoedokpayi%2Freact-country-state-selector.svg)](https://www.npmjs.com/package/@idahoedokpayi/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -21,7 +21,7 @@ in **English**, **Spanish**, and **French**.
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
 - 🎨 **Flexible customization** - Custom labels, CSS classes, and data sources
 - ♿ **Accessibility first** - Full ARIA support and screen reader compatibility
-- 🧪 **Thoroughly tested** - 109+ comprehensive unit tests with 100% backward compatibility
+- 🧪 **Thoroughly tested** - 113+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
 
@@ -180,7 +180,7 @@ const culture = new CultureInfo('fr-CA');
 
 This library is built with quality and reliability in mind:
 
-- **109+ comprehensive unit tests** covering all components and utilities
+- **113+ comprehensive unit tests** covering all components and utilities
 - **20+ dedicated tests** for culture resolution logic
 - **Integration tests** ensuring component compatibility
 - **Error handling tests** for robust fallback mechanisms
@@ -222,6 +222,39 @@ Examples:
   ]} 
 />
 ```
+
+### Custom Data Loading Functions
+
+You can also provide custom functions to load data dynamically. The library exports default implementations that you can use as reference:
+
+```tsx
+import { 
+  StateDropdown, 
+  defaultGetStateProvinceInformation,
+  CultureInfo 
+} from 'react-country-state-selector';
+
+// Use the default function directly
+const myCustomFunction = async (cultureInfo: CultureInfo) => {
+  // You can call the default implementation
+  const defaultData = await defaultGetStateProvinceInformation(cultureInfo);
+  
+  // Then modify or extend it
+  return [...defaultData, { code: 'XX', name: 'Custom State' }];
+};
+
+<StateDropdown 
+  getStateProvinceInformation={myCustomFunction}
+  country="US"
+  onStateChange={handleChange}
+/>
+```
+
+Available default functions:
+- `defaultGetStateProvinceInformation` - Default state/province data loader
+- `getStateProvinceInformationByCulture` - Alias for the above
+- `getCountryInformationByCulture` - Default country data loader
+- `getLanguageInformationByCulture` - Default language data loader
 
 ## Architecture
 

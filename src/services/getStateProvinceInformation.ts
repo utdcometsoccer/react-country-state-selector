@@ -22,3 +22,9 @@ export const getStateProvinceInformationByCulture: GetStateProvinceInformation =
   const data = await import(`../components/StateDropdown/${fileName}.json`);
   return data.default ?? data;
 };
+
+/**
+ * Default function for getting state and province information used by StateDropdown component.
+ * This is an alias for getStateProvinceInformationByCulture.
+ */
+export const defaultGetStateProvinceInformation: GetStateProvinceInformation = getStateProvinceInformationByCulture;
