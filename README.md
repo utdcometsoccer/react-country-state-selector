@@ -17,13 +17,15 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
+- 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
 - 🎨 **Flexible customization** - Custom labels, CSS classes, and data sources
 - ♿ **Accessibility first** - Full ARIA support and screen reader compatibility
-- 🧪 **Thoroughly tested** - 113+ comprehensive unit tests with 100% backward compatibility
+- 🧪 **Thoroughly tested** - 144+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
+- 📱 **Mobile-friendly** - Optimized touch interactions and native keyboard support
 
 ## Installation
 
@@ -118,6 +120,78 @@ const App = () => {
 };
 ```
 
+## Search/Filter Functionality
+
+All dropdown components support optional search/filter functionality, which is particularly useful on mobile devices and for long lists. When enabled, users can type to search and filter options in real-time.
+
+### Enabling Search
+
+Simply add the `enableSearch` prop to any dropdown component:
+
+```jsx
+import { CountryDropdown } from 'react-country-state-selector';
+
+const App = () => {
+  const [country, setCountry] = useState('');
+
+  return (
+    <CountryDropdown 
+      selectedCountry={country}
+      onCountryChange={setCountry}
+      culture="en-US"
+      Label="Select Country"
+      enableSearch={true}  // Enable search functionality
+    />
+  );
+};
+```
+
+### How It Works
+
+- When `enableSearch={true}`, the dropdown renders as a searchable input field with autocomplete suggestions
+- Users can type to filter options in real-time
+- Works on all devices, including mobile
+- Uses native HTML5 `<datalist>` for optimal performance and accessibility
+- Automatically matches input by name or code
+- Falls back to standard `<select>` when `enableSearch` is `false` or omitted
+
+### Mobile-Friendly
+
+The search functionality is designed with mobile users in mind:
+- Large, touch-friendly input fields
+- Native mobile keyboard support
+- Autocomplete suggestions adapt to mobile screens
+- Fast filtering for large lists (like all countries)
+
+### Examples
+
+**StateDropdown with Search**
+```jsx
+<StateDropdown 
+  selectedState={state}
+  onStateChange={setState}
+  country="US"
+  culture="en-US"
+  Label="Select State"
+  enableSearch={true}
+/>
+```
+
+**LanguageDropdown with Search**
+```jsx
+<LanguageDropdown 
+  selectedLanguage={language}
+  onLanguageChange={setLanguage}
+  culture="en-US"
+  Label="Select Language"
+  enableSearch={true}
+/>
+```
+
+### Backward Compatibility
+
+The `enableSearch` prop is **optional and defaults to `false`**, ensuring complete backward compatibility with existing implementations. Your existing code will continue to work exactly as before without any changes.
+
 ## Props Reference
 
 ### CountryDropdown Props
@@ -130,6 +204,7 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading country information..."): Custom text to display with the loading indicator.
@@ -145,6 +220,7 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading state/province information..."): Custom text to display with the loading indicator.
@@ -159,6 +235,7 @@ const App = () => {
 - `Label` (string): Text for the label element.
 - `classNameLabel` (string): CSS class for the label element.
 - `classNameSelect` (string): CSS class for the select element.
+- `enableSearch` (boolean, optional): Enables search/filter functionality. Default: `false`.
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading language information..."): Custom text to display with the loading indicator.
@@ -189,6 +266,8 @@ const culture = new CultureInfo('fr-CA');
 
 This library is built with quality and reliability in mind:
 
+- **144+ comprehensive unit tests** covering all components and utilities
+- **24+ dedicated tests** for search/filter functionality
 - **128+ comprehensive unit tests** covering all components and utilities
 - **20+ dedicated tests** for culture resolution logic
 - **15+ tests** for loading indicator functionality

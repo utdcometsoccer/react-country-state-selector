@@ -11,6 +11,7 @@ const meta = {
     Label: { control: 'text' },
     classNameLabel: { control: 'text' },
     classNameSelect: { control: 'text' },
+    enableSearch: { control: 'boolean' },
   },
 } satisfies Meta<typeof LanguageDropdown>;
 
@@ -27,5 +28,18 @@ export const Primary: Story = {
     Label: 'Language',
     classNameLabel: 'language-label',
     classNameSelect: 'language-select',
+  },
+};
+
+export const WithSearch: Story = {
+  args: {
+    onLanguageChange: (language) => console.log('Selected language:', language),
+    selectedLanguage: undefined,
+    culture: 'en-US',
+    languageInformation: [],
+    Label: 'Language (Searchable)',
+    classNameLabel: 'language-label',
+    classNameSelect: 'language-select',
+    enableSearch: true,
   },
 };

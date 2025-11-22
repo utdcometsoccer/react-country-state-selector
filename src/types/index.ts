@@ -9,6 +9,7 @@ export interface LanguageDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: React.ReactNode;
     loadingText?: string;
@@ -28,6 +29,7 @@ export interface CountryDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: React.ReactNode;
     loadingText?: string;
@@ -152,6 +154,7 @@ export interface StateDropdownProps {
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
+    enableSearch?: boolean;
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: React.ReactNode;
     loadingText?: string;

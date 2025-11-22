@@ -40,18 +40,19 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ 
-  getStateProvinceInformation, 
-  stateProvinceInformation, selectedState, 
-  onStateChange, 
-  country, 
-  culture, 
-  Label, 
-  classNameLabel, 
+const StateDropdown: FC<StateDropdownProps> = ({
+  getStateProvinceInformation,
+  stateProvinceInformation, selectedState,
+  onStateChange,
+  country,
+  culture,
+  Label,
+  classNameLabel,
   classNameSelect,
   showLoadingIndicator = true,
   customLoadingIndicator,
-  loadingText = "Loading state/province information..."
+  loadingText = "Loading state/province information...",
+  enableSearch = false
 }) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -92,6 +93,28 @@ const StateDropdown: FC<StateDropdownProps> = ({
     onStateChange(e.target.value);
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching state by code or name
+    const matchingState = state.stateProvinceInformation.find(
+      s => s.code === value || s.name === value
+    );
+    if (matchingState) {
+      dispatch({ type: 'SET_STATE', payload: matchingState.code });
+      onStateChange(matchingState.code);
+    } else {
+      dispatch({ type: 'SET_STATE', payload: value });
+      onStateChange(value);
+    }
+  };
+
+  // Get display name for selected state
+  const getSelectedStateName = () => {
+    if (!state.selectedState) return '';
+    const stateProvince = state.stateProvinceInformation.find(s => s.code === state.selectedState);
+    return stateProvince ? stateProvince.name : state.selectedState;
+  };
+
   return (
     <div className="state-dropdown-container">
       {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
@@ -101,8 +124,28 @@ const StateDropdown: FC<StateDropdownProps> = ({
       >
         {Label}
       </label>
-      {state.isLoadingStateProvinceInformation && showLoadingIndicator ? (
+      {state.isLoadingStateProvinceInformation ? (
         customLoadingIndicator || <LoadingSpinner text={loadingText} />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="state-province-select"
+            list="state-province-datalist"
+            value={getSelectedStateName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'state-province-error' : undefined}
+            placeholder="Search or select a state/province"
+            autoComplete="off"
+          />
+          <datalist id="state-province-datalist">
+            {state.stateProvinceInformation.map((stateProvince) => (
+              <option key={stateProvince.code} value={stateProvince.name} data-value={stateProvince.code}>
+                {stateProvince.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
         <select
           id="state-province-select"

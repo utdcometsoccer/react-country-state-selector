@@ -50,6 +50,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   Label,
   classNameLabel,
   classNameSelect,
+  enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading language information..."
@@ -93,6 +94,28 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     onLanguageChange(e.target.value as Language);
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching language by code or name
+    const matchingLanguage = state.languageInformation.find(
+      l => l.code === value || l.name === value
+    );
+    if (matchingLanguage) {
+      dispatch({ type: 'SET_LANGUAGE', payload: matchingLanguage.code });
+      onLanguageChange(matchingLanguage.code);
+    } else {
+      dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
+      onLanguageChange(value as Language);
+    }
+  };
+
+  // Get display name for selected language
+  const getSelectedLanguageName = () => {
+    if (!state.selectedLanguage) return '';
+    const language = state.languageInformation.find(l => l.code === state.selectedLanguage);
+    return language ? language.name : state.selectedLanguage;
+  };
+
   return (
     <div className="language-dropdown-container">
       {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
@@ -102,8 +125,28 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
       >
         {Label}
       </label>
-      {state.isLoadingLanguageInformation && showLoadingIndicator ? (
+      {state.isLoadingLanguageInformation ? (
         customLoadingIndicator || <LoadingSpinner text={loadingText} />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="language-select"
+            list="language-datalist"
+            value={getSelectedLanguageName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'language-error' : undefined}
+            placeholder="Search or select a language"
+            autoComplete="off"
+          />
+          <datalist id="language-datalist">
+            {state.languageInformation.map((language) => (
+              <option key={language.code} value={language.name} data-value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
         <select
           id="language-select"

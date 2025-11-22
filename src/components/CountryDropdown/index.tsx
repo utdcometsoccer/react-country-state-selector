@@ -50,6 +50,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   Label, 
   classNameLabel, 
   classNameSelect,
+  enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading country information..."
@@ -94,6 +95,28 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     onCountryChange(e.target.value);
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Find matching country by code or name
+    const matchingCountry = state.countryInformation.find(
+      c => c.code === value || c.name === value
+    );
+    if (matchingCountry) {
+      dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
+      onCountryChange(matchingCountry.code);
+    } else {
+      dispatch({ type: 'SET_COUNTRY', payload: value as Country });
+      onCountryChange(value);
+    }
+  };
+
+  // Get display name for selected country
+  const getSelectedCountryName = () => {
+    if (!state.selectedCountry) return '';
+    const country = state.countryInformation.find(c => c.code === state.selectedCountry);
+    return country ? country.name : state.selectedCountry;
+  };
+
   return (
     <div className="country-dropdown-container">
       {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
@@ -105,6 +128,26 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
       </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingSpinner text={loadingText} />
+      ) : enableSearch ? (
+        <>
+          <input
+            id="country-select"
+            list="country-datalist"
+            value={getSelectedCountryName()}
+            onChange={handleSearchChange}
+            className={classNameSelect ?? undefined}
+            aria-describedby={state.error ? 'country-error' : undefined}
+            placeholder="Search or select a country"
+            autoComplete="off"
+          />
+          <datalist id="country-datalist">
+            {state.countryInformation.map((country) => (
+              <option key={country.code} value={country.name} data-value={country.code}>
+                {country.name}
+              </option>
+            ))}
+          </datalist>
+        </>
       ) : (
         <select
           id="country-select"
