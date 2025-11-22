@@ -141,9 +141,11 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
         } else {
           setHighlightedIndex(prev => {
             let next = prev + 1;
-            // Skip group headers
-            while (next < organizedOptions.length && organizedOptions[next].type === 'group') {
+            let attempts = 0;
+            // Skip group headers (with safety limit)
+            while (next < organizedOptions.length && organizedOptions[next].type === 'group' && attempts < organizedOptions.length) {
               next++;
+              attempts++;
             }
             if (next >= organizedOptions.length) {
               next = prev;
@@ -161,9 +163,11 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
         if (isOpen) {
           setHighlightedIndex(prev => {
             let next = prev - 1;
-            // Skip group headers
-            while (next >= 0 && organizedOptions[next].type === 'group') {
+            let attempts = 0;
+            // Skip group headers (with safety limit)
+            while (next >= 0 && organizedOptions[next].type === 'group' && attempts < organizedOptions.length) {
               next--;
+              attempts++;
             }
             if (next < 0) {
               next = prev;
@@ -206,6 +210,8 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
   };
   
   // Render a single row in the virtual list
+  const EMPTY_STYLE = {}; // Reusable empty style object
+  
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const item = organizedOptions[index];
     
@@ -287,7 +293,7 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
           ) : (
             <div style={{ maxHeight: dropdownHeight, overflowY: 'auto' }}>
               {organizedOptions.map((item, index) => (
-                <Row key={index} index={index} style={{}} />
+                <Row key={index} index={index} style={EMPTY_STYLE} />
               ))}
             </div>
           )}
