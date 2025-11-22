@@ -126,7 +126,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         {Label}
       </label>
       {state.isLoadingLanguageInformation ? (
-        <> <LoadingSpinner text={loadingText} /><div>Loading language information...</div> </>
+        customLoadingIndicator || <LoadingSpinner text={loadingText} />
       ) : enableSearch ? (
         <>
           <input
