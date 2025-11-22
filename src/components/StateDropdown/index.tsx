@@ -3,6 +3,7 @@ import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -38,15 +39,16 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
   }
 }
 
-const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
+const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, stateProvinceInformation, selectedState, onStateChange, country, culture, Label, classNameLabel, classNameSelect }) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
+  const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
 
   const [state, dispatch] = useReducer(reducer, {
     selectedState,
     culture,
     cultureInfo: initialCultureInfo,
-    stateProvinceInformation: [],
+    stateProvinceInformation: initialStateProvinceInformation,
     error: null,
     isLoadingStateProvinceInformation: false
   });
@@ -79,11 +81,10 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
 
   return (
     <div className="state-dropdown-container">
-      {state.error && <div className="state-error-message">{state.error}</div>}
+      {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
       <label
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
-        aria-label={Label}
       >
         {Label}
       </label>
@@ -95,15 +96,10 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
           value={state.selectedState ?? ''}
           onChange={handleChange}
           className={classNameSelect ?? 'state-dropdown-select'}
-          aria-labelledby={Label ? 'state-province-select-label' : undefined}
           aria-describedby={state.error ? 'state-province-error' : undefined}
         >
           <option value="">Select a state/province</option>
-          {state.stateProvinceInformation.map((sp: StateProvinceInformation) => (
-            <option key={sp.code} value={sp.code}>
-              {sp.name}
-            </option>
-          ))}
+          {renderGroupedOptions(state.stateProvinceInformation)}
         </select>
       )}
     </div>

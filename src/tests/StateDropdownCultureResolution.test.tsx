@@ -102,7 +102,9 @@ describe('StateDropdown Culture Resolution Integration', () => {
       expect(mockResolveCultureInfo).toHaveBeenCalledWith('de-DE');
       
       // We can verify the culture is used by checking that the component renders
-      expect(screen.getByLabelText('State')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
+      });
     });
 
     it('handles culture resolution errors gracefully', () => {
@@ -194,7 +196,9 @@ describe('StateDropdown Culture Resolution Integration', () => {
         );
 
         expect(mockResolveCultureInfo).toHaveBeenCalledWith(testCase.input);
-        expect(screen.getByLabelText(`State ${testCase.description}`)).toBeInTheDocument();
+        await waitFor(() => {
+          expect(screen.getByRole('combobox')).toBeInTheDocument();
+        });
         
         unmount();
       }
@@ -217,7 +221,8 @@ describe('StateDropdown Culture Resolution Integration', () => {
       );
 
       // Should render the dropdown
-      expect(screen.getByLabelText('Province')).toBeInTheDocument();
+      const label = screen.getByText('Province');
+      expect(label).toBeInTheDocument();
       
       // Wait for the dropdown to load - check for the select element by ID
       await waitFor(() => {
@@ -243,7 +248,8 @@ describe('StateDropdown Culture Resolution Integration', () => {
         />
       );
 
-      expect(screen.getByLabelText('State')).toBeInTheDocument();
+      const label = screen.getByText('State');
+      expect(label).toBeInTheDocument();
 
       rerender(
         <StateDropdown
@@ -255,7 +261,9 @@ describe('StateDropdown Culture Resolution Integration', () => {
         />
       );
 
-      expect(screen.getByLabelText('Province')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Province')).toBeInTheDocument();
+      });
 
       rerender(
         <StateDropdown
@@ -267,7 +275,9 @@ describe('StateDropdown Culture Resolution Integration', () => {
         />
       );
 
-      expect(screen.getByLabelText('Estado')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Estado')).toBeInTheDocument();
+      });
     });
   });
 });

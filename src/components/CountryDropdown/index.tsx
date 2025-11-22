@@ -3,6 +3,7 @@ import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
 
 interface CountryDropdownState {
@@ -82,11 +83,10 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
 
   return (
     <div className="country-dropdown-container">
-      {state.error && <div className="country-error-message">{state.error}</div>}
+      {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
       <label
         htmlFor="country-select"
         className={classNameLabel ?? 'country-dropdown-label'}
-        aria-label={Label}
       >
         {Label}
       </label>
@@ -98,15 +98,10 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
           className={classNameSelect ?? 'country-dropdown-select'}
-          aria-labelledby={Label ? 'country-select-label' : undefined}
           aria-describedby={state.error ? 'country-error' : undefined}
         >
           <option value="">Select a country</option>
-          {state.countryInformation.map((country: CountryInformation) => (
-            <option key={country.code} value={country.code}>
-              {country.name}
-            </option>
-          ))}
+          {renderGroupedOptions(state.countryInformation)}
         </select>
       )}
     </div>

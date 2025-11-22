@@ -102,7 +102,7 @@ describe('CountryDropdown', () => {
       />
     );
 
-    const label = screen.getByLabelText('Country');
+    const label = screen.getByText('Country');
     const select = screen.getByRole('combobox');
 
     expect(label).toHaveClass('custom-label');
@@ -234,8 +234,15 @@ describe('CountryDropdown', () => {
     );
 
     const select = screen.getByRole('combobox');
+    const label = screen.getByText('Country');
+    
+    // Verify proper label-to-input association
+    expect(label.tagName).toBe('LABEL');
+    expect(label).toHaveAttribute('for', 'country-select');
     expect(select).toHaveAttribute('id', 'country-select');
-    expect(select).toHaveAttribute('aria-labelledby');
+    
+    // aria-labelledby should not be present when using htmlFor/id
+    expect(select).not.toHaveAttribute('aria-labelledby');
   });
 
   it('sets error aria attributes when error is present', async () => {

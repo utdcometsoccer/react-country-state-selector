@@ -157,8 +157,15 @@ describe('Integration Tests', () => {
     expect(countrySelect).toHaveAttribute('id', 'country-select');
     expect(languageSelect).toHaveAttribute('id', 'language-select');
 
-    // Verify they have proper ARIA attributes
-    expect(countrySelect).toHaveAttribute('aria-labelledby');
-    expect(languageSelect).toHaveAttribute('aria-labelledby');
+    // Verify they have proper label-to-input association (not aria-labelledby when using htmlFor/id)
+    const countryLabel = screen.getByText('Country');
+    const languageLabel = screen.getByText('Language');
+    
+    expect(countryLabel).toHaveAttribute('for', 'country-select');
+    expect(languageLabel).toHaveAttribute('for', 'language-select');
+    
+    // aria-labelledby should not be present when using htmlFor/id
+    expect(countrySelect).not.toHaveAttribute('aria-labelledby');
+    expect(languageSelect).not.toHaveAttribute('aria-labelledby');
   });
 });
