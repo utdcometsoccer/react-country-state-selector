@@ -756,6 +756,22 @@ The library features a clean, maintainable architecture:
 - **Error boundaries** - Graceful error handling with user-friendly fallbacks
 - **Performance optimized** - Efficient data loading and caching strategies
 
+## Theming and Customization
+
+The library provides comprehensive CSS custom properties (CSS variables) for easy theming. You can customize all visual aspects including colors, fonts, spacing, and more.
+
+For detailed theming documentation and examples, see:
+- [Theming Guide](./docs/THEMING.md) - Complete guide to customizing the appearance
+
+Quick example:
+```css
+:root {
+  --rcss-primary-color: #8b5cf6;        /* Purple primary */
+  --rcss-error-color: #dc2626;          /* Error color */
+  --rcss-border-radius: 0.5rem;         /* Rounded corners */
+}
+```
+
 ## License
 
 This project is licensed under the MIT License.
