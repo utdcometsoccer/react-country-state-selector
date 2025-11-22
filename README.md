@@ -223,6 +223,56 @@ Examples:
 />
 ```
 
+### Organizing Long Lists with Optgroups
+
+For better organization of long lists, you can group options using the optional `group` property. This is particularly useful for organizing countries by region, states by geographic area, or languages by family.
+
+When any item in your data has a `group` property, items will be automatically organized into `<optgroup>` elements:
+
+```tsx
+// Group countries by continent
+<CountryDropdown 
+  countryInformation={[
+    { code: 'US', name: 'United States', group: 'North America' },
+    { code: 'CA', name: 'Canada', group: 'North America' },
+    { code: 'MX', name: 'Mexico', group: 'North America' },
+    { code: 'FR', name: 'France', group: 'Europe' },
+    { code: 'DE', name: 'Germany', group: 'Europe' },
+    { code: 'JP', name: 'Japan', group: 'Asia' }
+  ]}
+  onCountryChange={handleChange}
+/>
+
+// Group states by region
+<StateDropdown 
+  country="US"
+  stateProvinceInformation={[
+    { code: 'CA', name: 'California', group: 'West Coast' },
+    { code: 'WA', name: 'Washington', group: 'West Coast' },
+    { code: 'NY', name: 'New York', group: 'East Coast' },
+    { code: 'FL', name: 'Florida', group: 'East Coast' }
+  ]}
+  onStateChange={handleChange}
+/>
+
+// Group languages by language family
+<LanguageDropdown 
+  languageInformation={[
+    { code: 'en', name: 'English', group: 'Germanic' },
+    { code: 'de', name: 'German', group: 'Germanic' },
+    { code: 'es', name: 'Spanish', group: 'Romance' },
+    { code: 'fr', name: 'French', group: 'Romance' }
+  ]}
+  onLanguageChange={handleChange}
+/>
+```
+
+**Notes:**
+- The `group` property is completely optional - items without it will render normally
+- Groups are displayed in the order they first appear in the data
+- Ungrouped items (without a `group` property) are rendered first, followed by grouped items
+- This feature works with all three dropdown components: CountryDropdown, StateDropdown, and LanguageDropdown
+
 ### Custom Data Loading Functions
 
 You can also provide custom functions to load data dynamically. The library exports default implementations that you can use as reference:

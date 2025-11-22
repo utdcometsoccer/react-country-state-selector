@@ -1,0 +1,22 @@
+[
+  { "code": "US", "name": "United States", "group": "North America" },
+  { "code": "CA", "name": "Canada", "group": "North America" },
+  { "code": "MX", "name": "Mexico", "group": "North America" },
+  { "code": "BR", "name": "Brazil", "group": "South America" },
+  { "code": "AR", "name": "Argentina", "group": "South America" },
+  { "code": "CL", "name": "Chile", "group": "South America" },
+  { "code": "FR", "name": "France", "group": "Europe" },
+  { "code": "DE", "name": "Germany", "group": "Europe" },
+  { "code": "GB", "name": "United Kingdom", "group": "Europe" },
+  { "code": "ES", "name": "Spain", "group": "Europe" },
+  { "code": "IT", "name": "Italy", "group": "Europe" },
+  { "code": "CN", "name": "China", "group": "Asia" },
+  { "code": "JP", "name": "Japan", "group": "Asia" },
+  { "code": "IN", "name": "India", "group": "Asia" },
+  { "code": "KR", "name": "South Korea", "group": "Asia" },
+  { "code": "AU", "name": "Australia", "group": "Oceania" },
+  { "code": "NZ", "name": "New Zealand", "group": "Oceania" },
+  { "code": "EG", "name": "Egypt", "group": "Africa" },
+  { "code": "ZA", "name": "South Africa", "group": "Africa" },
+  { "code": "NG", "name": "Nigeria", "group": "Africa" }
+]

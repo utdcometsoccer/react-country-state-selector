@@ -1,5 +1,7 @@
 import CountryDropdown from '../components/CountryDropdown';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { CountryInformation, Country } from '../types';
+import groupedCountries from '../components/CountryDropdown/countries-grouped-example.json';
 
 const meta = {
     component: CountryDropdown,
@@ -25,6 +27,17 @@ export const Primary: Story = {
         culture: 'en-US',
         countryInformation: [],
         Label: 'Country',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+    },
+};
+
+export const WithOptgroups: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        countryInformation: groupedCountries as CountryInformation[],
+        Label: 'Select Country (Grouped by Region)',
         classNameLabel: 'country-label',
         classNameSelect: 'country-select',
     },
