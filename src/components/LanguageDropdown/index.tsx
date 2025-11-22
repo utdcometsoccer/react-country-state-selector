@@ -57,7 +57,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
-  loadingText = "Loading language information..."
+  loadingText = "Loading language information...",
+  required = false
 }) => {
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -128,15 +129,27 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   return (
     <div className="language-dropdown-container">
-      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+      {state.error && (
+        <div 
+          id="language-error-message" 
+          className="language-error-message"
+          role="alert"
+          aria-live="polite"
+        >
+          {state.error}
+        </div>
+      )}
       <label
+        id="language-select-label"
         htmlFor="language-select"
         className={classNameLabel ?? 'language-dropdown-label'}
       >
-        {Label}
+        {Label}{required && <span aria-label="required"> *</span>}
       </label>
       {state.isLoadingLanguageInformation ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
+        <div role="status" aria-live="polite">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
@@ -145,9 +158,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
             value={getSelectedLanguageName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'language-error' : undefined}
+            aria-labelledby="language-select-label"
+            aria-describedby={state.error ? 'language-error-message' : undefined}
+            aria-required={required}
+            aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a language"
             autoComplete="off"
+            required={required}
           />
           <datalist id="language-datalist">
             {state.languageInformation.map((language) => (
@@ -165,9 +182,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           options={virtualSelectOptions}
           placeholder="Select a language"
           className={classNameSelect ?? 'language-dropdown-select'}
-          aria-describedby={state.error ? 'language-error' : undefined}
+          aria-labelledby="language-select-label"
+          aria-describedby={state.error ? 'language-error-message' : undefined}
+          aria-required={required}
+          aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
+          required={required}
         />
       )}
     </div>
