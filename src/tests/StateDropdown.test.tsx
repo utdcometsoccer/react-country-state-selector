@@ -115,9 +115,9 @@ describe('StateDropdown', () => {
     const label = screen.getByText('State/Province');
     
     await waitFor(() => {
-      const select = screen.getByRole('combobox');
+      const selectContainer = document.querySelector('.virtual-select-container');
       expect(label).toHaveClass('custom-label');
-      expect(select).toHaveClass('custom-select');
+      expect(selectContainer).toHaveClass('custom-select');
     });
   });
 
