@@ -102,7 +102,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
         }
       })();
     }
-  }, [state.stateProvinceInformation.length, state.cultureInfo, country, state.retryCount]);
+  }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_STATE', payload: value });

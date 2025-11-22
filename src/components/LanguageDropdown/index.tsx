@@ -103,7 +103,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         }
       })();
     }
-  }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation, state.retryCount]);
+  }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
 
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_LANGUAGE', payload: value as Language });

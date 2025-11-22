@@ -17,6 +17,8 @@ export interface VirtualSelectProps {
   className?: string;
   disabled?: boolean;
   'aria-describedby'?: string;
+  'aria-labelledby'?: string;
+  'aria-invalid'?: string;
   enableVirtualScrolling?: boolean;
   virtualScrollThreshold?: number;
 }
@@ -33,6 +35,8 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
   className,
   disabled = false,
   'aria-describedby': ariaDescribedBy,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-invalid': ariaInvalid,
   enableVirtualScrolling = true,
   virtualScrollThreshold = 50,
 }) => {
@@ -266,6 +270,8 @@ const VirtualSelect: React.FC<VirtualSelectProps> = ({
         aria-haspopup="listbox"
         aria-controls={`${id}-listbox`}
         aria-describedby={ariaDescribedBy}
+        aria-labelledby={ariaLabelledBy}
+        aria-invalid={ariaInvalid}
         tabIndex={disabled ? -1 : 0}
         aria-disabled={disabled}
       >

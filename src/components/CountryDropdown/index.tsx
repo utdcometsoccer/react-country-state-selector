@@ -104,7 +104,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         }
       })();
     }
-  }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation, state.retryCount]);
+  }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_COUNTRY', payload: value as Country });
