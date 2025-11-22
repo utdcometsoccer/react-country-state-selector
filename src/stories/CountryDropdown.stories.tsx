@@ -1,6 +1,6 @@
 import CountryDropdown from '../components/CountryDropdown';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { CountryInformation, Country } from '../types';
+import type { CountryInformation } from '../types';
 import groupedCountries from '../components/CountryDropdown/countries-grouped-example.json';
 
 const meta = {
