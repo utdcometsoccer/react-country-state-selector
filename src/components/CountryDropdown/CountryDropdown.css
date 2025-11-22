@@ -1,3 +1,26 @@
+/* Visual hierarchy: Typography and Spacing */
+.country-dropdown-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 6px;
+  color: #212121;
+}
+
+.country-dropdown-select {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.country-dropdown-container {
+  margin-bottom: 16px;
+}
+
 /* CSS Custom Properties for easy customization */
 :root {
   --rcss-primary-color: #0066cc;

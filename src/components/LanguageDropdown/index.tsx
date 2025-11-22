@@ -90,11 +90,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <>
-  {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+    <div className="language-dropdown-container">
+      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
       <label
         htmlFor="language-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'language-dropdown-label'}
       >
         {Label}
       </label>
@@ -105,14 +105,14 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           id="language-select"
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'language-dropdown-select'}
           aria-describedby={state.error ? 'language-error' : undefined}
         >
           <option value="">Select a language</option>
           {renderGroupedOptions(state.languageInformation)}
         </select>
       )}
-    </>
+    </div>
   );
 };
 

@@ -20,6 +20,31 @@ type Story = StoryObj<typeof CountryDropdown>;
 
 export default meta;
 
+// Story showing default visual hierarchy styles
+export const WithDefaultStyles: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: 'US',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Select Your Country',
+    },
+};
+
+// Story showing custom styling that overrides defaults
+export const WithCustomStyles: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: 'US',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+    },
+};
+
+// Legacy story for backward compatibility
 export const Primary: Story = {
     args: {
         onCountryChange: (country) => console.log('Selected country:', country),
