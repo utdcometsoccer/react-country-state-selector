@@ -38,9 +38,9 @@ describe('LanguageDropdown', () => {
       />
     );
 
-    expect(screen.getByLabelText('Language')).toBeInTheDocument();
+    expect(screen.getByText('Language')).toBeInTheDocument();
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('English')).toBeInTheDocument();
+    expect(screen.getByText('English')).toBeInTheDocument();
   });
 
   it('renders without a label when not provided', () => {
@@ -67,8 +67,13 @@ describe('LanguageDropdown', () => {
       />
     );
 
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'es' } });
+    // Open the dropdown
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+    
+    // Click on Spanish option
+    const spanishOption = screen.getAllByText('Spanish')[0];
+    fireEvent.click(spanishOption);
 
     expect(mockOnLanguageChange).toHaveBeenCalledWith('es');
   });
@@ -83,7 +88,10 @@ describe('LanguageDropdown', () => {
       />
     );
 
-    expect(screen.getByText('Select a language')).toBeInTheDocument();
+    // Open the dropdown to see options
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+
     expect(screen.getByText('English')).toBeInTheDocument();
     expect(screen.getByText('Spanish')).toBeInTheDocument();
     expect(screen.getByText('French')).toBeInTheDocument();
@@ -102,10 +110,10 @@ describe('LanguageDropdown', () => {
     );
 
     const label = screen.getByText('Language');
-    const select = screen.getByRole('combobox');
+    const selectContainer = document.querySelector('.virtual-select-container');
 
     expect(label).toHaveClass('custom-label');
-    expect(select).toHaveClass('custom-select');
+    expect(selectContainer).toHaveClass('custom-select');
   });
 
   it('shows loading message when loading language information', async () => {

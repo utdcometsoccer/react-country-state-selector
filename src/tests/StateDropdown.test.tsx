@@ -75,9 +75,16 @@ describe('StateDropdown', () => {
     );
     
     await waitFor(() => {
-      const select = screen.getByRole('combobox');
-      fireEvent.change(select, { target: { value: 'CA' } });
+      expect(screen.getByRole('combobox')).toBeInTheDocument();
     });
+    
+    // Open the dropdown
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+    
+    // Click on California option
+    const californiaOption = screen.getByText('California');
+    fireEvent.click(californiaOption);
     
     expect(mockOnStateChange).toHaveBeenCalledWith('CA');
   });
@@ -93,11 +100,16 @@ describe('StateDropdown', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Select a state/province')).toBeInTheDocument();
-      expect(screen.getByText('Texas')).toBeInTheDocument();
-      expect(screen.getByText('California')).toBeInTheDocument();
-      expect(screen.getByText('New York')).toBeInTheDocument();
+      expect(screen.getByRole('combobox')).toBeInTheDocument();
     });
+    
+    // Open the dropdown to see options
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+
+    expect(screen.getByText('Texas')).toBeInTheDocument();
+    expect(screen.getByText('California')).toBeInTheDocument();
+    expect(screen.getByText('New York')).toBeInTheDocument();
   });
 
   it('applies custom CSS classes when provided', async () => {
