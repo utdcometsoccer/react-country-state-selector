@@ -1,3 +1,26 @@
+/* Visual hierarchy: Typography and Spacing */
+.language-dropdown-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 6px;
+  color: #212121;
+}
+
+.language-dropdown-select {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.language-dropdown-container {
+  margin-bottom: 16px;
+}
+
 .language-error-message {
   color: red;
 }

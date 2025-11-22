@@ -1,3 +1,26 @@
+/* Visual hierarchy: Typography and Spacing */
+.state-dropdown-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 6px;
+  color: #212121;
+}
+
+.state-dropdown-select {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.state-dropdown-container {
+  margin-bottom: 16px;
+}
+
 .state-error-message {
   color: red;
 }

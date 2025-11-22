@@ -78,11 +78,11 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
   };
 
   return (
-    <>
+    <div className="state-dropdown-container">
       {state.error && <div className="state-error-message">{state.error}</div>}
       <label
         htmlFor="state-province-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'state-dropdown-label'}
         aria-label={Label}
       >
         {Label}
@@ -94,7 +94,7 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
           id="state-province-select"
           value={state.selectedState ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'state-dropdown-select'}
           aria-labelledby={Label ? 'state-province-select-label' : undefined}
           aria-describedby={state.error ? 'state-province-error' : undefined}
         >
@@ -106,7 +106,7 @@ const StateDropdown: FC<StateDropdownProps> = ({ getStateProvinceInformation, se
           ))}
         </select>
       )}
-    </>
+    </div>
   );
 };
 

@@ -81,11 +81,11 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
   };
 
   return (
-    <>
+    <div className="country-dropdown-container">
       {state.error && <div className="country-error-message">{state.error}</div>}
       <label
         htmlFor="country-select"
-        className={classNameLabel ?? undefined}
+        className={classNameLabel ?? 'country-dropdown-label'}
         aria-label={Label}
       >
         {Label}
@@ -97,7 +97,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
           id="country-select"
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
+          className={classNameSelect ?? 'country-dropdown-select'}
           aria-labelledby={Label ? 'country-select-label' : undefined}
           aria-describedby={state.error ? 'country-error' : undefined}
         >
@@ -109,7 +109,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
           ))}
         </select>
       )}
-    </>
+    </div>
   );
 };
 
