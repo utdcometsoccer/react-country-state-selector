@@ -54,6 +54,55 @@
   font-family: var(--rcss-font-family);
 }
 
+/* Retry button styling */
+.country-retry-button {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--rcss-label-font-size);
+  font-weight: 500;
+  color: var(--rcss-primary-color);
+  background-color: transparent;
+  border: 1px solid var(--rcss-primary-color);
+  border-radius: var(--rcss-border-radius);
+  cursor: pointer;
+  font-family: var(--rcss-font-family);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.country-retry-button:hover {
+  background-color: var(--rcss-primary-color);
+  color: #ffffff;
+}
+
+.country-retry-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+/* Error guidance styling */
+.country-error-guidance {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rcss-error-border);
+}
+
+.country-error-guidance strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.country-error-guidance ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.country-error-guidance li {
+  margin-bottom: 0.25rem;
+}
+
 /* Label styling */
 label[for="country-select"] {
   display: block;
