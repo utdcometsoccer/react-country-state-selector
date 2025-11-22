@@ -6,3 +6,4 @@ export * from './types';
 export * from './services/cultureFromBrowser';
 export * from './services/getCountryInformation';
 export * from './services/getStateProvinceInformation';
+export { renderGroupedOptions } from './utils/renderOptions';

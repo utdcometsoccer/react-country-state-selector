@@ -3,6 +3,7 @@ import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
 import { Country, type CountryDropdownProps, CountryInformation, Culture, CultureInfo } from '../../types';
 
 interface CountryDropdownState {
@@ -100,11 +101,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({ selectedCountry, onCountryC
           aria-describedby={state.error ? 'country-error' : undefined}
         >
           <option value="">Select a country</option>
-          {state.countryInformation.map((country: CountryInformation) => (
-            <option key={country.code} value={country.code}>
-              {country.name}
-            </option>
-          ))}
+          {renderGroupedOptions(state.countryInformation)}
         </select>
       )}
     </>
