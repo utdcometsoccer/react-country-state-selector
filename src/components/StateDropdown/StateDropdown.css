@@ -166,3 +166,54 @@ input#state-province-select::placeholder {
     transition: none;
   }
 }
+/* Validation error styling */
+.state-validation-error {
+  color: var(--rcss-error-color);
+  font-size: var(--rcss-label-font-size);
+  margin-top: 0.25rem;
+  margin-bottom: var(--rcss-spacing);
+  padding: 0.375rem 0.5rem;
+  background-color: var(--rcss-error-background);
+  border: 1px solid var(--rcss-error-border);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+}
+
+/* Retry button styling */
+.state-retry-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: var(--rcss-label-font-size);
+  font-weight: 500;
+  color: #ffffff;
+  background-color: var(--rcss-primary-color);
+  border: none;
+  border-radius: var(--rcss-border-radius);
+  cursor: pointer;
+  font-family: var(--rcss-font-family);
+  transition: background-color 0.15s ease-in-out;
+}
+
+.state-retry-button:hover {
+  background-color: var(--rcss-primary-hover);
+}
+
+.state-retry-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+.state-retry-button:active {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .state-retry-button {
+    transition: none;
+  }
+  
+  .state-retry-button:active {
+    transform: none;
+  }
+}

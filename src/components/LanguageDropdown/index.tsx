@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
@@ -8,6 +8,7 @@ import './LanguageDropdown.css';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 import LoadingSpinner from '../LoadingSpinner';
+import DropdownErrorBoundary from '../DropdownErrorBoundary';
 
 interface LanguageDropdownState {
   selectedLanguage?: Language;
@@ -16,6 +17,8 @@ interface LanguageDropdownState {
   languageInformation: LanguageInformation[];
   error?: string | null;
   isLoadingLanguageInformation: boolean;
+  validationError?: string;
+  retryCount: number;
 }
 
 type LanguageDropdownAction =
@@ -23,7 +26,10 @@ type LanguageDropdownAction =
   | { type: 'SET_CULTURE'; payload: CultureInfo | string }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_LANGUAGE_INFORMATION'; payload: LanguageInformation[] }
-  | { type: 'SET_LOADING_LANGUAGE_INFORMATION'; payload: boolean };
+  | { type: 'SET_LOADING_LANGUAGE_INFORMATION'; payload: boolean }
+  | { type: 'SET_VALIDATION_ERROR'; payload?: string }
+  | { type: 'INCREMENT_RETRY_COUNT' }
+  | { type: 'RESET_RETRY_COUNT' };
 
 function reducer(state: LanguageDropdownState, action: LanguageDropdownAction): LanguageDropdownState {
   switch (action.type) {
@@ -37,6 +43,12 @@ function reducer(state: LanguageDropdownState, action: LanguageDropdownAction): 
       return { ...state, languageInformation: action.payload };
     case 'SET_LOADING_LANGUAGE_INFORMATION':
       return { ...state, isLoadingLanguageInformation: action.payload };
+    case 'SET_VALIDATION_ERROR':
+      return { ...state, validationError: action.payload };
+    case 'INCREMENT_RETRY_COUNT':
+      return { ...state, retryCount: state.retryCount + 1 };
+    case 'RESET_RETRY_COUNT':
+      return { ...state, retryCount: 0 };
     default:
       return state;
   }
@@ -57,8 +69,12 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
-  loadingText = "Loading language information..."
+  loadingText = "Loading language information...",
+  required = false,
+  validate,
+  onValidationError
 }) => {
+  const maxRetries = 3;
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialLanguageInformation: LanguageInformation[] = languageInformation ?? [];
@@ -69,7 +85,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     cultureInfo: initialCultureInfo,
     languageInformation: initialLanguageInformation,
     error: null,
-    isLoadingLanguageInformation: false
+    isLoadingLanguageInformation: false,
+    retryCount: 0
   });
 
   useEffect(() => {
@@ -92,6 +109,56 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
       })();
     }
   }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
+
+  // Validation effect
+  useEffect(() => {
+    if (!state.selectedLanguage) {
+      if (required) {
+        const error = 'Language selection is required';
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+        if (onValidationError) {
+          onValidationError(error);
+        }
+      } else {
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+      }
+      return;
+    }
+
+    if (validate) {
+      const error = validate(state.selectedLanguage);
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+      if (error && onValidationError) {
+        onValidationError(error);
+      }
+    } else {
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+    }
+  }, [state.selectedLanguage, required, validate, onValidationError]);
+
+  const handleRetry = () => {
+    if (state.retryCount < maxRetries) {
+      dispatch({ type: 'INCREMENT_RETRY_COUNT' });
+      dispatch({ type: 'SET_ERROR', payload: null });
+      dispatch({ type: 'SET_LOADING_LANGUAGE_INFORMATION', payload: true });
+      (async () => {
+        try {
+          const info = await effectiveGetLanguageInformation(state.cultureInfo!);
+          dispatch({ type: 'SET_LANGUAGE_INFORMATION', payload: info });
+          dispatch({ type: 'SET_ERROR', payload: null });
+          dispatch({ type: 'RESET_RETRY_COUNT' });
+        } catch (err: any) {
+          if (process.env.NODE_ENV === 'development') {
+            dispatch({ type: 'SET_ERROR', payload: `Error loading language information: ${err?.message}\n${err?.stack}` });
+          } else {
+            dispatch({ type: 'SET_ERROR', payload: 'Error loading language information. Please try again later.' });
+          }
+        } finally {
+          dispatch({ type: 'SET_LOADING_LANGUAGE_INFORMATION', payload: false });
+        }
+      })();
+    }
+  };
 
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
@@ -127,14 +194,33 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <div className="language-dropdown-container">
-      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
-      <label
-        htmlFor="language-select"
-        className={classNameLabel ?? 'language-dropdown-label'}
-      >
-        {Label}
-      </label>
+    <DropdownErrorBoundary>
+      <div className="language-dropdown-container">
+        {state.error && (
+          <div id="language-error" className="language-error-message">
+            {state.error}
+            {state.retryCount < maxRetries && (
+              <button 
+                onClick={handleRetry}
+                className="language-retry-button"
+                aria-label="Retry loading language data"
+              >
+                Retry loading data
+              </button>
+            )}
+          </div>
+        )}
+        {state.validationError && (
+          <div id="language-validation-error" className="language-validation-error">
+            {state.validationError}
+          </div>
+        )}
+        <label
+          htmlFor="language-select"
+          className={classNameLabel ?? 'language-dropdown-label'}
+        >
+          {Label}{required && <span className="required-indicator" aria-label="required"> *</span>}
+        </label>
       {state.isLoadingLanguageInformation ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
       ) : enableSearch ? (
@@ -145,7 +231,9 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
             value={getSelectedLanguageName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'language-error' : undefined}
+            aria-describedby={state.error ? 'language-error' : state.validationError ? 'language-validation-error' : undefined}
+            aria-required={required}
+            aria-invalid={!!state.validationError}
             placeholder="Search or select a language"
             autoComplete="off"
           />
@@ -165,12 +253,15 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           options={virtualSelectOptions}
           placeholder="Select a language"
           className={classNameSelect ?? 'language-dropdown-select'}
-          aria-describedby={state.error ? 'language-error' : undefined}
+          aria-describedby={state.error ? 'language-error' : state.validationError ? 'language-validation-error' : undefined}
+          aria-required={required}
+          aria-invalid={!!state.validationError}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
       )}
-    </div>
+      </div>
+    </DropdownErrorBoundary>
   );
 };
 
