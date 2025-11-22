@@ -3,6 +3,7 @@ import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
 
 interface LanguageDropdownState {
@@ -110,11 +111,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           aria-describedby={state.error ? 'language-error' : undefined}
         >
           <option value="">Select a language</option>
-          {state.languageInformation.map((lang: LanguageInformation) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.name}
-            </option>
-          ))}
+          {renderGroupedOptions(state.languageInformation)}
         </select>
       )}
     </>
