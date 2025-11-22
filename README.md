@@ -26,7 +26,13 @@ in **English**, **Spanish**, and **French**.
 - 🧪 **Thoroughly tested** - 145+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
-- 📱 **Mobile-friendly** - Optimized touch interactions and native keyboard support
+- 📱 **Mobile-first design** - Touch-optimized with 44x44px minimum touch targets, responsive CSS, and mobile testing guidelines
+
+## Quick Links
+
+- [📱 Mobile & Touch Optimization Guide](./docs/MOBILE.md) - Comprehensive mobile best practices and testing
+- [♿ Accessibility Documentation](./docs/ACCESSIBILITY.md) - WCAG compliance and screen reader support
+- [🎨 Styling Guide](./docs/STYLING.md) - Customization and theming options
 
 ## Installation
 
@@ -253,6 +259,61 @@ The search functionality is designed with mobile users in mind:
 ### Backward Compatibility
 
 The `enableSearch` prop is **optional and defaults to `false`**, ensuring complete backward compatibility with existing implementations. Your existing code will continue to work exactly as before without any changes.
+
+## Mobile-First & Touch Optimization
+
+This library is built with a **mobile-first approach**, ensuring excellent usability on smartphones, tablets, and touch-enabled devices.
+
+### ✅ Mobile Features
+
+- **Touch-Optimized Targets**: All interactive elements meet the 44x44px minimum touch target size (iOS HIG and Material Design standards)
+- **Responsive CSS**: Automatically adapts to different screen sizes with mobile-specific optimizations
+- **No Zoom on Input**: Font sizes optimized to prevent unwanted iOS zoom behavior
+- **Search for Long Lists**: Enable `enableSearch` prop for easier navigation on mobile
+- **Native Mobile Support**: Uses native HTML elements for optimal mobile browser integration
+
+### Mobile-Optimized Example
+
+```jsx
+import { CountryDropdown } from 'react-country-state-selector';
+
+function MobileOptimizedForm() {
+  const [country, setCountry] = useState('');
+
+  return (
+    <div style={{ padding: '1rem' }}>
+      <CountryDropdown 
+        selectedCountry={country}
+        onCountryChange={setCountry}
+        culture="en-US"
+        Label="Country"
+        enableSearch={true}  // Recommended for mobile: easier than scrolling 250+ countries
+      />
+    </div>
+  );
+}
+```
+
+### Touch Target Specifications
+
+The library implements responsive touch targets that automatically adjust based on device:
+
+| Device Type | Min Touch Target | Font Size | Implementation |
+|-------------|-----------------|-----------|----------------|
+| Desktop | Auto (~40px) | 1rem (16px) | Default styling |
+| Tablet/Mobile (≤768px) | 44px | 16px | iOS HIG standard |
+| Small Phones (≤480px) | 48px | 16px | Material Design standard |
+
+### 📱 Comprehensive Mobile Guide
+
+For detailed mobile implementation guidance, testing procedures, and best practices, see our comprehensive [Mobile & Touch Optimization Guide](./docs/MOBILE.md).
+
+The guide covers:
+- Touch target guidelines and customization
+- Mobile testing checklist for various devices
+- Performance optimization tips
+- Mobile-specific troubleshooting
+- PWA integration considerations
 
 ## Props Reference
 
