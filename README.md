@@ -313,6 +313,136 @@ import { LoadingSpinner } from 'react-country-state-selector';
 />
 ```
 
+## Loading Indicators
+
+All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
+
+### Default Loading Indicator
+
+By default, all components show an animated spinner with descriptive text:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+/>
+// Shows: animated spinner with "Loading country information..."
+```
+
+### Disable Loading Indicator
+
+You can hide the loading indicator completely:
+
+```jsx
+<CountryDropdown 
+  selectedCountry=""
+  onCountryChange={handleCountryChange}
+  culture="en-US"
+  showLoadingIndicator={false}
+/>
+// No loading indicator will be shown
+```
+
+### Custom Loading Text
+
+Customize the loading message:
+
+```jsx
+<StateDropdown 
+  selectedState=""
+  onStateChange={handleStateChange}
+  country="US"
+  culture="en-US"
+  loadingText="Please wait, fetching states..."
+/>
+// Shows: spinner with "Please wait, fetching states..."
+```
+
+### Custom Loading Indicator
+
+Replace the default spinner with your own component:
+
+```jsx
+const MyCustomSpinner = () => (
+  <div style={{ padding: '10px' }}>
+    <img src="/my-loader.gif" alt="Loading" />
+    <span>Loading data...</span>
+  </div>
+);
+
+<LanguageDropdown 
+  selectedLanguage=""
+  onLanguageChange={handleLanguageChange}
+  culture="en-US"
+  customLoadingIndicator={<MyCustomSpinner />}
+/>
+```
+
+### Using the LoadingSpinner Component
+
+The library exports the `LoadingSpinner` component that you can use independently:
+
+```jsx
+import { LoadingSpinner } from 'react-country-state-selector';
+
+// In your component
+<LoadingSpinner text="Loading..." />
+```
+  ]} 
+/>
+```
+
+### Organizing Long Lists with Optgroups
+
+For better organization of long lists, you can group options using the optional `group` property. This is particularly useful for organizing countries by region, states by geographic area, or languages by family.
+
+When any item in your data has a `group` property, items will be automatically organized into `<optgroup>` elements:
+
+```tsx
+// Group countries by continent
+<CountryDropdown 
+  countryInformation={[
+    { code: 'US', name: 'United States', group: 'North America' },
+    { code: 'CA', name: 'Canada', group: 'North America' },
+    { code: 'MX', name: 'Mexico', group: 'North America' },
+    { code: 'FR', name: 'France', group: 'Europe' },
+    { code: 'DE', name: 'Germany', group: 'Europe' },
+    { code: 'JP', name: 'Japan', group: 'Asia' }
+  ]}
+  onCountryChange={handleChange}
+/>
+
+// Group states by region
+<StateDropdown 
+  country="US"
+  stateProvinceInformation={[
+    { code: 'CA', name: 'California', group: 'West Coast' },
+    { code: 'WA', name: 'Washington', group: 'West Coast' },
+    { code: 'NY', name: 'New York', group: 'East Coast' },
+    { code: 'FL', name: 'Florida', group: 'East Coast' }
+  ]}
+  onStateChange={handleChange}
+/>
+
+// Group languages by language family
+<LanguageDropdown 
+  languageInformation={[
+    { code: 'en', name: 'English', group: 'Germanic' },
+    { code: 'de', name: 'German', group: 'Germanic' },
+    { code: 'es', name: 'Spanish', group: 'Romance' },
+    { code: 'fr', name: 'French', group: 'Romance' }
+  ]}
+  onLanguageChange={handleChange}
+/>
+```
+
+**Notes:**
+- The `group` property is completely optional - items without it will render normally
+- Groups are displayed in the order they first appear in the data
+- Ungrouped items (without a `group` property) are rendered first, followed by grouped items
+- This feature works with all three dropdown components: CountryDropdown, StateDropdown, and LanguageDropdown
+
 ### Custom Data Loading Functions
 
 You can also provide custom functions to load data dynamically. The library exports default implementations that you can use as reference:
@@ -345,6 +475,129 @@ Available default functions:
 - `getStateProvinceInformationByCulture` - Alias for the above
 - `getCountryInformationByCulture` - Default country data loader
 - `getLanguageInformationByCulture` - Default language data loader
+
+## Styling
+
+The library includes **default, accessible styling** out of the box that can be easily customized to match your design system.
+
+### Including the Default Styles
+
+To use the default styles, import the CSS file in your application:
+
+```tsx
+import 'react-country-state-selector/dist/react-country-state-selector.css';
+```
+
+The default styles include:
+- Clean, modern appearance with rounded corners
+- Focus states with visible ring for keyboard navigation
+- Hover states for better user feedback
+- Disabled states with reduced opacity
+- Error message styling
+- High contrast mode support for accessibility
+- Reduced motion support for users with motion sensitivities
+- Responsive design that works on all screen sizes
+
+### Customizing Styles with CSS Variables
+
+The library uses **CSS custom properties (variables)** for easy customization. Override these variables to match your brand:
+
+```css
+:root {
+  /* Primary colors */
+  --rcss-primary-color: #0066cc;
+  --rcss-primary-hover: #0052a3;
+  
+  /* Border styling */
+  --rcss-border-color: #d1d5db;
+  --rcss-border-radius: 0.375rem;
+  
+  /* Focus ring */
+  --rcss-focus-ring-color: rgba(0, 102, 204, 0.4);
+  
+  /* Text colors */
+  --rcss-text-color: #1f2937;
+  --rcss-label-color: #374151;
+  
+  /* Backgrounds */
+  --rcss-background-color: #ffffff;
+  --rcss-disabled-background: #f3f4f6;
+  
+  /* Error styling */
+  --rcss-error-color: #dc2626;
+  --rcss-error-background: #fef2f2;
+  --rcss-error-border: #fecaca;
+  
+  /* Typography */
+  --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rcss-font-size: 1rem;
+  --rcss-label-font-size: 0.875rem;
+  
+  /* Spacing */
+  --rcss-spacing: 0.5rem;
+}
+```
+
+**Note about dropdown arrow color**: The dropdown arrow color is embedded in an SVG data URI and cannot be changed via CSS variables due to browser limitations. To customize the arrow color, you need to override the entire `background-image` property. See the [Styling Guide](./docs/STYLING.md) for examples.
+
+### Using Custom CSS Classes
+
+For complete control, you can provide your own CSS classes using the `classNameLabel` and `classNameSelect` props:
+
+```tsx
+<CountryDropdown
+  selectedCountry=""
+  onCountryChange={handleChange}
+  classNameLabel="my-custom-label"
+  classNameSelect="my-custom-select"
+/>
+```
+
+Then style them in your CSS:
+
+```css
+.my-custom-label {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.my-custom-select {
+  border: 2px solid #4a5568;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1rem;
+}
+```
+
+### Completely Unstyled Components
+
+If you want to start from scratch, you can skip importing the CSS file and provide your own classes:
+
+```tsx
+// Don't import the CSS file
+// import 'react-country-state-selector/dist/react-country-state-selector.css';
+
+<CountryDropdown
+  selectedCountry=""
+  onCountryChange={handleChange}
+  classNameLabel="your-label-class"
+  classNameSelect="your-select-class"
+/>
+```
+
+The components will render with only your custom classes and no default styling.
+
+### Accessibility Features
+
+The default styles include important accessibility features:
+- **WCAG 2.1 AA compliant** color contrast ratios
+- **Focus indicators** that are clearly visible
+- **High contrast mode** support for better visibility
+- **Reduced motion** support for users who prefer less animation
+- **Screen reader friendly** with proper ARIA attributes
+
+For more details on styling and customization, see the [Styling Guide](./docs/STYLING.md).
 
 ## Architecture
 

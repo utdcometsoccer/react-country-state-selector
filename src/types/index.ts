@@ -17,6 +17,7 @@ export interface LanguageDropdownProps {
 export type LanguageInformation = {
     code: Language;
     name: string;
+    group?: string;
 };
 export interface CountryDropdownProps {
     selectedCountry?: string;
@@ -35,6 +36,7 @@ export interface CountryDropdownProps {
 export type CountryInformation = {
     code: Country;
     name: string;
+    group?: string;
 };
 // ISO 3166-1 alpha-2 country codes
 export type Country =
@@ -146,6 +148,7 @@ export interface StateDropdownProps {
     onStateChange: (state: string) => void;
     country: Country;
     culture?: CultureInfo | Culture;
+    stateProvinceInformation?: StateProvinceInformation[];
     Label?: string;
     classNameLabel?: string;
     classNameSelect?: string;
@@ -161,6 +164,7 @@ export interface GetCountryInformation {
 export type StateProvinceInformation = {
   code: string;
   name: string;
+  group?: string;
 }
 
 export interface GetStateProvinceInformation {

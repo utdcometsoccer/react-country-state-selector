@@ -3,6 +3,7 @@ import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { Culture, CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
+import { renderGroupedOptions } from '../../utils/renderOptions';
 import './LanguageDropdown.css';
 import LoadingSpinner from '../LoadingSpinner';
 
@@ -93,12 +94,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <>
-  {state.error && <div className="language-error-message">{state.error}</div>}
+    <div className="language-dropdown-container">
+      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
       <label
         htmlFor="language-select"
-        className={classNameLabel ?? undefined}
-        aria-label={Label}
+        className={classNameLabel ?? 'language-dropdown-label'}
       >
         {Label}
       </label>
@@ -109,19 +109,14 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           id="language-select"
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
-          className={classNameSelect ?? undefined}
-          aria-labelledby={Label ? 'language-select-label' : undefined}
+          className={classNameSelect ?? 'language-dropdown-select'}
           aria-describedby={state.error ? 'language-error' : undefined}
         >
           <option value="">Select a language</option>
-          {state.languageInformation.map((lang: LanguageInformation) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.name}
-            </option>
-          ))}
+          {renderGroupedOptions(state.languageInformation)}
         </select>
       )}
-    </>
+    </div>
   );
 };
 
