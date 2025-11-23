@@ -110,6 +110,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     }
   }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
 
+  // Sync selected language from props to state
+  useEffect(() => {
+    if (selectedLanguage !== state.selectedLanguage) {
+      dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+    }
+  }, [selectedLanguage]);
+
   // Validation effect
   useEffect(() => {
     if (!state.selectedLanguage) {

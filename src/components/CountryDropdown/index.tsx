@@ -111,6 +111,13 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     }
   }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
+  // Sync selected country from props to state
+  useEffect(() => {
+    if (selectedCountry !== state.selectedCountry) {
+      dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
+    }
+  }, [selectedCountry]);
+
   // Validation effect
   useEffect(() => {
     if (!state.selectedCountry) {

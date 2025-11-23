@@ -109,6 +109,13 @@ const StateDropdown: FC<StateDropdownProps> = ({
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
+  // Sync selected state from props to state
+  useEffect(() => {
+    if (selectedState !== state.selectedState) {
+      dispatch({ type: 'SET_STATE', payload: selectedState });
+    }
+  }, [selectedState]);
+
   // Validation effect
   useEffect(() => {
     if (!state.selectedState) {
