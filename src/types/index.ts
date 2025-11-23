@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export interface LanguageDropdownProps {
     selectedLanguage?: Language;
     onLanguageChange: (language: Language) => void;
+    onSuccess?: (language: Language) => void;
     culture?: CultureInfo | string;
     languageInformation?: LanguageInformation[];
     getLanguageInformation?: (cultureInfo: CultureInfo) => Promise<LanguageInformation[]>;

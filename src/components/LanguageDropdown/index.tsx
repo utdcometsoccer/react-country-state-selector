@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
@@ -46,6 +46,7 @@ function reducer(state: LanguageDropdownState, action: LanguageDropdownAction): 
 const LanguageDropdown: FC<LanguageDropdownProps> = ({
   selectedLanguage,
   onLanguageChange,
+  onSuccess,
   culture,
   languageInformation,
   getLanguageInformation,
@@ -72,6 +73,20 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     isLoadingLanguageInformation: false
   });
 
+  const [selectionFeedback, setSelectionFeedback] = useState<string>('');
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+
+  // Cleanup timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    if (!showSuccessAnimation) return;
+    
+    const timeoutId = setTimeout(() => setShowSuccessAnimation(false), 600);
+    
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showSuccessAnimation]);
+
   useEffect(() => {
     if (state.languageInformation.length === 0 && !state.isLoadingLanguageInformation) {
       dispatch({ type: 'SET_LOADING_LANGUAGE_INFORMATION', payload: true });
@@ -93,9 +108,23 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     }
   }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
 
+  // Helper function to trigger success feedback
+  const triggerSuccessFeedback = (code: Language, name: string) => {
+    setSelectionFeedback(`${name} selected`);
+    setShowSuccessAnimation(true);
+    if (onSuccess) {
+      onSuccess(code);
+    }
+  };
+
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
     onLanguageChange(value as Language);
+    
+    // Success feedback
+    const language = state.languageInformation.find(l => l.code === value);
+    const languageName = language ? language.name : value;
+    triggerSuccessFeedback(value as Language, languageName);
   };
 
   // Convert language information to VirtualSelect options
@@ -113,7 +142,9 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     if (matchingLanguage) {
       dispatch({ type: 'SET_LANGUAGE', payload: matchingLanguage.code });
       onLanguageChange(matchingLanguage.code);
+      triggerSuccessFeedback(matchingLanguage.code, matchingLanguage.name);
     } else {
+      // No success feedback for partial/invalid input - user is likely still typing
       dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
       onLanguageChange(value as Language);
     }
@@ -128,7 +159,26 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   return (
     <div className="language-dropdown-container">
-      {state.error && <div id="language-error" className="language-error-message">{state.error}</div>}
+      {/* Aria-live region for selection confirmation */}
+      <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
+        {selectionFeedback}
+      </div>
+      
+      {state.error && (
+        <div 
+          id="language-error-message"
+          className="language-error-message"
+          role="alert"
+          aria-live="polite"
+        >
+          <span className="rcss-error-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+            </svg>
+          </span>
+          <span>{state.error}</span>
+        </div>
+      )}
       <label
         htmlFor="language-select"
         className={classNameLabel ?? 'language-dropdown-label'}
@@ -144,8 +194,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
             list="language-datalist"
             value={getSelectedLanguageName()}
             onChange={handleSearchChange}
-            className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'language-error' : undefined}
+            className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+            aria-describedby={state.error ? 'language-error-message' : undefined}
             placeholder="Search or select a language"
             autoComplete="off"
           />
@@ -164,8 +214,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a language"
-          className={classNameSelect ?? 'language-dropdown-select'}
-          aria-describedby={state.error ? 'language-error' : undefined}
+          className={`${classNameSelect ?? 'language-dropdown-select'} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
+          aria-describedby={state.error ? 'language-error-message' : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
