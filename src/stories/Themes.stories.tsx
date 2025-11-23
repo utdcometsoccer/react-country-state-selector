@@ -337,8 +337,8 @@ export const ThemeComparison: Story = {
  */
 export const CombinedDropdownsWithTheme: Story = {
     render: () => {
-        const [country, setCountry] = React.useState('US');
-        const [state, setState] = React.useState('TX');
+        const [country, setCountry] = React.useState<string>('US');
+        const [state, setState] = React.useState<string>('TX');
 
         return (
             <div style={{ padding: '2rem', fontFamily: 'var(--rcss-font-family)' }}>
@@ -380,7 +380,7 @@ export const CombinedDropdownsWithTheme: Story = {
                         <StateDropdown
                             selectedState={state}
                             onStateChange={setState}
-                            country={country}
+                            country={country as any}
                             culture="en-US"
                             Label="State/Province"
                         />
