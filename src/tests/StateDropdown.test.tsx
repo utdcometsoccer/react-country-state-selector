@@ -159,7 +159,7 @@ describe('StateDropdown', () => {
 
     // Mock process.env for development mode
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'Development'; // Note: StateDropdown uses 'Development' not 'development'
+    process.env.NODE_ENV = 'development';
 
     render(
       <StateDropdown
