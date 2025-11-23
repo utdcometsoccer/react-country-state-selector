@@ -2,6 +2,7 @@ import React from 'react';
 import CountryDropdown from '../components/CountryDropdown';
 import StateDropdown from '../components/StateDropdown';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Country } from '../types';
 import '../themes/minimal.css';
 import '../themes/material.css';
 import '../themes/bootstrap.css';
@@ -380,7 +381,7 @@ export const CombinedDropdownsWithTheme: Story = {
                         <StateDropdown
                             selectedState={state}
                             onStateChange={setState}
-                            country={country as any}
+                            country={country as Country}
                             culture="en-US"
                             Label="State/Province"
                         />
