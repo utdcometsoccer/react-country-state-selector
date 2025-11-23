@@ -116,7 +116,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     if (selectedCountry !== state.selectedCountry) {
       dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, state.selectedCountry]);
 
   // Validation effect
   useEffect(() => {

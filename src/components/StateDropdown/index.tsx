@@ -114,7 +114,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
     if (selectedState !== state.selectedState) {
       dispatch({ type: 'SET_STATE', payload: selectedState });
     }
-  }, [selectedState]);
+  }, [selectedState, state.selectedState]);
 
   // Validation effect
   useEffect(() => {

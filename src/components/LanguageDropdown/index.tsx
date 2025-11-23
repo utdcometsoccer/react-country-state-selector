@@ -115,7 +115,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     if (selectedLanguage !== state.selectedLanguage) {
       dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
     }
-  }, [selectedLanguage]);
+  }, [selectedLanguage, state.selectedLanguage]);
 
   // Validation effect
   useEffect(() => {
