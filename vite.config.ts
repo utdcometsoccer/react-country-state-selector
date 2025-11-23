@@ -15,15 +15,28 @@ function copyThemesPlugin() {
     name: 'copy-themes',
     writeBundle() {
       const themesDir = path.join(dirname, 'dist', 'themes');
-      mkdirSync(themesDir, { recursive: true });
+      const srcThemesDir = path.join(dirname, 'src', 'themes');
       
-      const themeFiles = ['minimal.css', 'material.css', 'bootstrap.css'];
-      themeFiles.forEach(file => {
-        const src = path.join(dirname, 'src', 'themes', file);
-        const dest = path.join(themesDir, file);
-        copyFileSync(src, dest);
-        console.log(`Copied ${file} to dist/themes/`);
-      });
+      try {
+        mkdirSync(themesDir, { recursive: true });
+        
+        const themeFiles = ['minimal.css', 'material.css', 'bootstrap.css'];
+        themeFiles.forEach(file => {
+          const src = path.join(srcThemesDir, file);
+          const dest = path.join(themesDir, file);
+          
+          try {
+            copyFileSync(src, dest);
+            console.log(`Copied ${file} to dist/themes/`);
+          } catch (error) {
+            console.error(`Failed to copy ${file}:`, error.message);
+            throw error;
+          }
+        });
+      } catch (error) {
+        console.error('Failed to copy theme files:', error.message);
+        throw error;
+      }
     }
   };
 }
