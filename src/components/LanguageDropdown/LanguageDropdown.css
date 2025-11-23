@@ -166,3 +166,67 @@ input#language-select::placeholder {
     transition: none;
   }
 }
+
+/* ============================================
+   Mobile-First & Touch Optimization
+   ============================================ */
+
+/* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
+@media (max-width: 768px) {
+  /* Increase padding for easier touch interaction */
+  select#language-select,
+  input#language-select {
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 44px; /* iOS Human Interface Guidelines minimum touch target */
+  }
+
+  /* Larger label for better readability on mobile */
+  label[for="language-select"] {
+    font-size: 1rem;
+    margin-bottom: 0.625rem;
+  }
+
+  /* Adjust container spacing for mobile */
+  .language-dropdown-container {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Error messages more prominent on mobile */
+  .language-error-message {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small mobile devices (portrait phones) */
+@media (max-width: 480px) {
+  select#language-select,
+  input#language-select {
+    padding: 0.875rem 1rem;
+    font-size: 16px;
+    min-height: 48px; /* Extra large touch target for small screens */
+  }
+}
+
+/* Touch device optimizations (tablets and phones) */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets for touch screens */
+  select#language-select,
+  input#language-select {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover states on touch devices */
+  select#language-select:hover:not(:disabled),
+  input#language-select:hover:not(:disabled) {
+    border-color: var(--rcss-border-color);
+  }
+
+  /* Enhanced focus states for touch */
+  select#language-select:focus,
+  input#language-select:focus {
+    box-shadow: 0 0 0 4px var(--rcss-focus-ring-color);
+  }
+}
