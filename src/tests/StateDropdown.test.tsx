@@ -314,4 +314,24 @@ describe('StateDropdown', () => {
       expect(select).toHaveAttribute('aria-invalid', 'true');
     });
   });
+
+  it('error message has proper ARIA live region attributes', async () => {
+    mockedGetStateProvinceInformation.mockRejectedValue(new Error('Failed to load'));
+
+    render(
+      <StateDropdown
+        selectedState="TX"
+        onStateChange={mockOnStateChange}
+        country="US"
+        Label="State/Province"
+      />
+    );
+
+    await waitFor(() => {
+      const errorMessage = document.getElementById('state-province-error');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveAttribute('role', 'alert');
+      expect(errorMessage).toHaveAttribute('aria-live', 'polite');
+    });
+  });
 });

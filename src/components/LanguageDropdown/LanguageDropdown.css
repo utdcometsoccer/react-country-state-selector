@@ -144,7 +144,7 @@ input#language-select:disabled {
 
 /* Placeholder styling for search input */
 input#language-select::placeholder {
-  color: #9ca3af;
+  color: #6d727a;
   opacity: 1;
 }
 
