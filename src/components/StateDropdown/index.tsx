@@ -56,7 +56,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading state/province information...",
-  enableSearch = false
+  enableSearch = false,
+  required = false
 }) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -80,7 +81,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
           dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: info });
           dispatch({ type: 'SET_ERROR', payload: null });
         } catch (err: any) {
-          if (process.env.NODE_ENV === 'Development') {
+          if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
           } else {
             dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
@@ -127,15 +128,27 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   return (
     <div className="state-dropdown-container">
-      {state.error && <div id="state-province-error" className="state-error-message" role="alert" aria-live="polite">{state.error}</div>}
+      {state.error && (
+        <div 
+          id="state-province-error-message" 
+          className="state-error-message"
+          role="alert"
+          aria-live="polite"
+        >
+          {state.error}
+        </div>
+      )}
       <label
+        id="state-province-select-label"
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
       >
-        {Label}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
+        <div role="status" aria-live="polite">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
@@ -144,9 +157,13 @@ const StateDropdown: FC<StateDropdownProps> = ({
             value={getSelectedStateName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'state-province-error' : undefined}
+            aria-labelledby="state-province-select-label"
+            aria-describedby={state.error ? 'state-province-error-message' : undefined}
+            aria-required={required}
+            aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a state/province"
             autoComplete="off"
+            required={required}
           />
           <datalist id="state-province-datalist">
             {state.stateProvinceInformation.map((stateProvince) => (
@@ -164,9 +181,13 @@ const StateDropdown: FC<StateDropdownProps> = ({
           options={virtualSelectOptions}
           placeholder="Select a state/province"
           className={classNameSelect ?? undefined}
-          aria-describedby={state.error ? 'state-province-error' : undefined}
+          aria-labelledby="state-province-select-label"
+          aria-describedby={state.error ? 'state-province-error-message' : undefined}
+          aria-required={required}
+          aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
+          required={required}
         />
       )}
     </div>

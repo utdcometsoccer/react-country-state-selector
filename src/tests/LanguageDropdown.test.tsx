@@ -246,10 +246,11 @@ describe('LanguageDropdown', () => {
     // Verify proper label-to-input association
     expect(label.tagName).toBe('LABEL');
     expect(label).toHaveAttribute('for', 'language-select');
+    expect(label).toHaveAttribute('id', 'language-select-label');
     expect(select).toHaveAttribute('id', 'language-select');
     
-    // aria-labelledby should not be present when using htmlFor/id
-    expect(select).not.toHaveAttribute('aria-labelledby');
+    // aria-labelledby should reference the label ID
+    expect(select).toHaveAttribute('aria-labelledby', 'language-select-label');
   });
 
   it('sets error aria attributes when error is present', async () => {
@@ -265,7 +266,8 @@ describe('LanguageDropdown', () => {
 
     await waitFor(() => {
       const select = screen.getByRole('combobox');
-      expect(select).toHaveAttribute('aria-describedby', 'language-error');
+      expect(select).toHaveAttribute('aria-describedby', 'language-error-message');
+      expect(select).toHaveAttribute('aria-invalid', 'true');
     });
   });
 
