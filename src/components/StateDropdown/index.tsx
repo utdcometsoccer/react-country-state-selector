@@ -15,6 +15,7 @@ interface StateDropdownState {
   stateProvinceInformation: StateProvinceInformation[];
   error?: string | null;
   isLoadingStateProvinceInformation: boolean;
+  retryCount: number;
 }
 
 type StateDropdownAction =
@@ -22,7 +23,9 @@ type StateDropdownAction =
   | { type: 'SET_CULTURE'; payload: CultureInfo | string }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_STATE_PROVINCE_INFORMATION'; payload: StateProvinceInformation[] }
-  | { type: 'SET_LOADING_STATE_PROVINCE_INFORMATION'; payload: boolean };
+  | { type: 'SET_LOADING_STATE_PROVINCE_INFORMATION'; payload: boolean }
+  | { type: 'INCREMENT_RETRY_COUNT' }
+  | { type: 'RESET_RETRY_COUNT' };
 
 function reducer(state: StateDropdownState, action: StateDropdownAction): StateDropdownState {
   switch (action.type) {
@@ -37,6 +40,10 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
       return { ...state, stateProvinceInformation: action.payload };
     case 'SET_LOADING_STATE_PROVINCE_INFORMATION':
       return { ...state, isLoadingStateProvinceInformation: action.payload };
+    case 'INCREMENT_RETRY_COUNT':
+      return { ...state, retryCount: state.retryCount + 1 };
+    case 'RESET_RETRY_COUNT':
+      return { ...state, retryCount: 0 };
     default:
       return state;
   }
@@ -69,7 +76,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
     cultureInfo: initialCultureInfo,
     stateProvinceInformation: initialStateProvinceInformation,
     error: null,
-    isLoadingStateProvinceInformation: false
+    isLoadingStateProvinceInformation: false,
+    retryCount: 0
   });
 
   useEffect(() => {
@@ -80,11 +88,15 @@ const StateDropdown: FC<StateDropdownProps> = ({
           const info = await effectiveGetStateProvinceInformation(state.cultureInfo!);
           dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: info });
           dispatch({ type: 'SET_ERROR', payload: null });
+          dispatch({ type: 'RESET_RETRY_COUNT' });
         } catch (err: any) {
+          dispatch({ type: 'INCREMENT_RETRY_COUNT' });
           if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
           } else {
-            dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
+            // Provide actionable error message with guidance
+            const errorMessage = 'Unable to load state/province information. This might be due to a network issue or the data file being unavailable.';
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
           }
         } finally {
           dispatch({ type: 'SET_LOADING_STATE_PROVINCE_INFORMATION', payload: false });
@@ -96,6 +108,11 @@ const StateDropdown: FC<StateDropdownProps> = ({
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_STATE', payload: value });
     onStateChange(value);
+  };
+
+  const handleRetry = () => {
+    dispatch({ type: 'SET_ERROR', payload: null });
+    dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: [] });
   };
 
   // Convert state/province information to VirtualSelect options
@@ -135,7 +152,29 @@ const StateDropdown: FC<StateDropdownProps> = ({
           role="alert"
           aria-live="polite"
         >
-          {state.error}
+          <span>{state.error}</span>
+          {state.retryCount < 3 && (
+            <>
+              {' '}
+              <button 
+                onClick={handleRetry}
+                className="state-retry-button"
+                aria-label="Retry loading state/province information"
+              >
+                Try Again
+              </button>
+            </>
+          )}
+          {state.retryCount >= 3 && (
+            <div className="state-error-guidance">
+              <strong>What you can do:</strong>
+              <ul>
+                <li>Check your internet connection</li>
+                <li>Refresh the page</li>
+                <li>Try again later</li>
+              </ul>
+            </div>
+          )}
         </div>
       )}
       <label

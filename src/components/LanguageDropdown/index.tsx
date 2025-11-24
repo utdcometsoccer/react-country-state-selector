@@ -16,6 +16,7 @@ interface LanguageDropdownState {
   languageInformation: LanguageInformation[];
   error?: string | null;
   isLoadingLanguageInformation: boolean;
+  retryCount: number;
 }
 
 type LanguageDropdownAction =
@@ -23,7 +24,9 @@ type LanguageDropdownAction =
   | { type: 'SET_CULTURE'; payload: CultureInfo | string }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_LANGUAGE_INFORMATION'; payload: LanguageInformation[] }
-  | { type: 'SET_LOADING_LANGUAGE_INFORMATION'; payload: boolean };
+  | { type: 'SET_LOADING_LANGUAGE_INFORMATION'; payload: boolean }
+  | { type: 'INCREMENT_RETRY_COUNT' }
+  | { type: 'RESET_RETRY_COUNT' };
 
 function reducer(state: LanguageDropdownState, action: LanguageDropdownAction): LanguageDropdownState {
   switch (action.type) {
@@ -37,6 +40,10 @@ function reducer(state: LanguageDropdownState, action: LanguageDropdownAction): 
       return { ...state, languageInformation: action.payload };
     case 'SET_LOADING_LANGUAGE_INFORMATION':
       return { ...state, isLoadingLanguageInformation: action.payload };
+    case 'INCREMENT_RETRY_COUNT':
+      return { ...state, retryCount: state.retryCount + 1 };
+    case 'RESET_RETRY_COUNT':
+      return { ...state, retryCount: 0 };
     default:
       return state;
   }
@@ -70,7 +77,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     cultureInfo: initialCultureInfo,
     languageInformation: initialLanguageInformation,
     error: null,
-    isLoadingLanguageInformation: false
+    isLoadingLanguageInformation: false,
+    retryCount: 0
   });
 
   useEffect(() => {
@@ -81,11 +89,15 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           const info = await effectiveGetLanguageInformation(state.cultureInfo!);
           dispatch({ type: 'SET_LANGUAGE_INFORMATION', payload: info });
           dispatch({ type: 'SET_ERROR', payload: null });
+          dispatch({ type: 'RESET_RETRY_COUNT' });
         } catch (err: any) {
+          dispatch({ type: 'INCREMENT_RETRY_COUNT' });
           if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading language information: ${err?.message}\n${err?.stack}` });
           } else {
-            dispatch({ type: 'SET_ERROR', payload: 'Error loading language information. Please try again later.' });
+            // Provide actionable error message with guidance
+            const errorMessage = 'Unable to load language information. This might be due to a network issue or the data file being unavailable.';
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
           }
         } finally {
           dispatch({ type: 'SET_LOADING_LANGUAGE_INFORMATION', payload: false });
@@ -97,6 +109,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
     onLanguageChange(value as Language);
+  };
+
+  const handleRetry = () => {
+    dispatch({ type: 'SET_ERROR', payload: null });
+    dispatch({ type: 'SET_LANGUAGE_INFORMATION', payload: [] });
   };
 
   // Convert language information to VirtualSelect options
@@ -136,7 +153,29 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           role="alert"
           aria-live="polite"
         >
-          {state.error}
+          <span>{state.error}</span>
+          {state.retryCount < 3 && (
+            <>
+              {' '}
+              <button 
+                onClick={handleRetry}
+                className="language-retry-button"
+                aria-label="Retry loading language information"
+              >
+                Try Again
+              </button>
+            </>
+          )}
+          {state.retryCount >= 3 && (
+            <div className="language-error-guidance">
+              <strong>What you can do:</strong>
+              <ul>
+                <li>Check your internet connection</li>
+                <li>Refresh the page</li>
+                <li>Try again later</li>
+              </ul>
+            </div>
+          )}
         </div>
       )}
       <label
