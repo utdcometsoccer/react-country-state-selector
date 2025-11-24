@@ -14,6 +14,7 @@ const meta = {
         classNameLabel: { control: 'text' },
         classNameSelect: { control: 'text' },
         enableSearch: { control: 'boolean' },
+        required: { control: 'boolean' },
     },
 } satisfies Meta<typeof CountryDropdown>;
 
@@ -109,5 +110,18 @@ export const WithErrorHandling: Story = {
         getCountryInformation: async (culture: CultureInfo) => {
             throw new Error('Network error - unable to fetch country data');
         },
+    },
+};
+
+export const RequiredField: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        required: true,
     },
 };

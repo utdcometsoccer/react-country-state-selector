@@ -1,15 +1,15 @@
 /* Visual hierarchy: Typography and Spacing */
 .state-dropdown-label {
   display: block;
-  font-size: 14px;
+  font-size: var(--rcss-label-font-size, 0.875rem);
   font-weight: 600;
   line-height: 1.5;
   margin-bottom: 6px;
-  color: #212121;
+  color: var(--rcss-label-color, #374151);
 }
 
 .state-dropdown-select {
-  font-size: 14px;
+  font-size: var(--rcss-font-size, 1rem);
   line-height: 1.5;
   padding: 8px 12px;
   display: block;
@@ -193,7 +193,7 @@ input#state-province-select:disabled {
 
 /* Placeholder styling for search input */
 input#state-province-select::placeholder {
-  color: #9ca3af;
+  color: var(--rcss-placeholder-color, #9ca3af);
   opacity: 1;
 }
 
@@ -213,5 +213,69 @@ input#state-province-select::placeholder {
 @media (prefers-reduced-motion: reduce) {
   input#state-province-select {
     transition: none;
+  }
+}
+
+/* ============================================
+   Mobile-First & Touch Optimization
+   ============================================ */
+
+/* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
+@media (max-width: 768px) {
+  /* Increase padding for easier touch interaction */
+  select#state-province-select,
+  input#state-province-select {
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 44px; /* iOS Human Interface Guidelines minimum touch target */
+  }
+
+  /* Larger label for better readability on mobile */
+  label[for="state-province-select"] {
+    font-size: 1rem;
+    margin-bottom: 0.625rem;
+  }
+
+  /* Adjust container spacing for mobile */
+  .state-dropdown-container {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Error messages more prominent on mobile */
+  .state-error-message {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small mobile devices (portrait phones) */
+@media (max-width: 480px) {
+  select#state-province-select,
+  input#state-province-select {
+    padding: 0.875rem 1rem;
+    font-size: 16px;
+    min-height: 48px; /* Extra large touch target for small screens */
+  }
+}
+
+/* Touch device optimizations (tablets and phones) */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets for touch screens */
+  select#state-province-select,
+  input#state-province-select {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover states on touch devices */
+  select#state-province-select:hover:not(:disabled),
+  input#state-province-select:hover:not(:disabled) {
+    border-color: var(--rcss-border-color);
+  }
+
+  /* Enhanced focus states for touch */
+  select#state-province-select:focus,
+  input#state-province-select:focus {
+    box-shadow: 0 0 0 4px var(--rcss-focus-ring-color);
   }
 }

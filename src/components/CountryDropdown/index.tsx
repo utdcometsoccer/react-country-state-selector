@@ -64,7 +64,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
-  loadingText = "Loading country information..."
+  loadingText = "Loading country information...",
+  required = false
 }) => {
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
@@ -148,7 +149,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     <div className="country-dropdown-container">
       {state.error && (
         <div 
-          id="country-error" 
+          id="country-error-message" 
           className="country-error-message"
           role="alert"
           aria-live="polite"
@@ -183,10 +184,12 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         htmlFor="country-select"
         className={classNameLabel ?? 'country-dropdown-label'}
       >
-        {Label}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />
+        <div role="status" aria-live="polite">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
@@ -196,10 +199,12 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
             aria-labelledby="country-select-label"
-            aria-describedby={state.error ? 'country-error' : undefined}
-            aria-invalid={state.error ? 'true' : undefined}
+            aria-describedby={state.error ? 'country-error-message' : undefined}
+            aria-required={required}
+            aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a country"
             autoComplete="off"
+            required={required}
           />
           <datalist id="country-datalist">
             {state.countryInformation.map((country) => (
@@ -218,10 +223,12 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           placeholder="Select a country"
           className={classNameSelect ?? 'country-dropdown-select'}
           aria-labelledby="country-select-label"
-          aria-describedby={state.error ? 'country-error' : undefined}
-          aria-invalid={state.error ? 'true' : undefined}
+          aria-describedby={state.error ? 'country-error-message' : undefined}
+          aria-required={required}
+          aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
+          required={required}
         />
       )}
     </div>

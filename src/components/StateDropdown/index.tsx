@@ -63,7 +63,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading state/province information...",
-  enableSearch = false
+  enableSearch = false,
+  required = false
 }) => {
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -146,7 +147,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
     <div className="state-dropdown-container">
       {state.error && (
         <div 
-          id="state-province-error" 
+          id="state-province-error-message" 
           className="state-error-message"
           role="alert"
           aria-live="polite"
@@ -181,10 +182,12 @@ const StateDropdown: FC<StateDropdownProps> = ({
         htmlFor="state-province-select"
         className={classNameLabel ?? 'state-dropdown-label'}
       >
-        {Label}
+        {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
+        <div role="status" aria-live="polite">
+          {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />}
+        </div>
       ) : enableSearch ? (
         <>
           <input
@@ -194,10 +197,12 @@ const StateDropdown: FC<StateDropdownProps> = ({
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
             aria-labelledby="state-province-select-label"
-            aria-describedby={state.error ? 'state-province-error' : undefined}
-            aria-invalid={state.error ? 'true' : undefined}
+            aria-describedby={state.error ? 'state-province-error-message' : undefined}
+            aria-required={required}
+            aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a state/province"
             autoComplete="off"
+            required={required}
           />
           <datalist id="state-province-datalist">
             {state.stateProvinceInformation.map((stateProvince) => (
@@ -216,10 +221,12 @@ const StateDropdown: FC<StateDropdownProps> = ({
           placeholder="Select a state/province"
           className={classNameSelect ?? undefined}
           aria-labelledby="state-province-select-label"
-          aria-describedby={state.error ? 'state-province-error' : undefined}
-          aria-invalid={state.error ? 'true' : undefined}
+          aria-describedby={state.error ? 'state-province-error-message' : undefined}
+          aria-required={required}
+          aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
+          required={required}
         />
       )}
     </div>

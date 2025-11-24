@@ -267,7 +267,27 @@ describe('CountryDropdown', () => {
 
     await waitFor(() => {
       const select = screen.getByRole('combobox');
-      expect(select).toHaveAttribute('aria-describedby', 'country-error');
+      expect(select).toHaveAttribute('aria-describedby', 'country-error-message');
+      expect(select).toHaveAttribute('aria-invalid', 'true');
+    });
+  });
+
+  it('error message has proper ARIA live region attributes', async () => {
+    mockedGetCountryInformation.mockRejectedValue(new Error('Failed to load'));
+
+    render(
+      <CountryDropdown
+        selectedCountry="US"
+        onCountryChange={mockOnCountryChange}
+        Label="Country"
+      />
+    );
+
+    await waitFor(() => {
+      const errorMessage = document.getElementById('country-error');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveAttribute('role', 'alert');
+      expect(errorMessage).toHaveAttribute('aria-live', 'polite');
     });
   });
 
