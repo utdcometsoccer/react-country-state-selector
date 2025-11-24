@@ -16,6 +16,7 @@ export interface LanguageDropdownProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 // Type for a single element from languages JSON file
 export type LanguageInformation = {
@@ -39,6 +40,7 @@ export interface CountryDropdownProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 // Type for a single element from countries JSON file
 export type CountryInformation = {
@@ -167,6 +169,7 @@ export interface StateDropdownProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 
 export interface GetCountryInformation {

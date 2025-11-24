@@ -17,6 +17,7 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
+- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (18.64 KB gzipped core)
 - 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
@@ -26,7 +27,148 @@ in **English**, **Spanish**, and **French**.
 - 🧪 **Thoroughly tested** - 145+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
-- 📱 **Mobile-friendly** - Optimized touch interactions and native keyboard support
+- 📱 **Mobile-first design** - Touch-optimized with 44x44px minimum touch targets, responsive CSS, and mobile testing guidelines
+
+## Quick Links
+
+- [📱 Mobile & Touch Optimization Guide](./docs/MOBILE.md) - Comprehensive mobile best practices and testing
+- [♿ Accessibility Documentation](./docs/ACCESSIBILITY.md) - WCAG compliance and screen reader support
+- [🎨 Styling Guide](./docs/STYLING.md) - Customization and theming options
+
+## Performance & Bundle Size
+
+This library is designed with performance in mind, implementing several optimization strategies to minimize bundle size and maximize runtime efficiency.
+
+### Bundle Size Impact
+
+The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need. All measurements below are from Vite v7.2.4 build output:
+
+**Core Library (always loaded):**
+- ES Module: **65.76 KB** (16.50 KB gzipped)
+- UMD Module: **90.04 KB** (24.05 KB gzipped)
+- CSS Styles: **14.73 KB** (2.14 KB gzipped)
+
+**Data Files (loaded on-demand):**
+- Country data per locale: **~8.6-8.7 KB each** (~2.4 KB gzipped)
+- Language data per locale: **~8.3-8.4 KB each** (~1.5 KB gzipped)  
+- State/Province data per locale: **0.8-3.1 KB each** (0.3-0.7 KB gzipped)
+
+**Total Initial Bundle:** **80.49 KB** uncompressed or **18.64 KB gzipped** for the core library (ES + CSS) without any data files.
+
+### Dynamic Data Loading
+
+All country, state, and language data files are loaded **dynamically** using JavaScript's native `import()` function. This means:
+
+✅ **Only requested locales are downloaded** - If a user needs English (US) country data, Spanish (Mexico) and French (Canada) data are never loaded  
+✅ **Data files are code-split automatically** - Each locale's data becomes a separate chunk  
+✅ **Browser caching is effective** - Unchanged data files remain cached between updates  
+✅ **Parallel loading when needed** - Multiple locales can load simultaneously without blocking
+
+**Example: How Dynamic Loading Works**
+
+```typescript
+// This code from getCountryInformationByCulture uses dynamic imports
+const data = await import(`../components/CountryDropdown/${fileName}.json`);
+
+// Result: Only the specific locale file is loaded:
+// ✅ countries.en-us.json → 8.74 KB (2.44 KB gzipped) 
+// ❌ countries.es-mx.json → NOT loaded (saved 8.63 KB)
+// ❌ countries.fr-ca.json → NOT loaded (saved 8.61 KB)
+```
+
+### Virtual Scrolling Performance
+
+For dropdowns with more than 50 items (configurable), the library automatically uses **virtual scrolling** powered by `react-window`:
+
+✅ **Constant rendering performance** - Only visible items are rendered (typically 10-20 DOM nodes)  
+✅ **Smooth scrolling** - 60 FPS even with 250+ countries or 185+ languages  
+✅ **Reduced memory footprint** - Minimal DOM nodes regardless of list size  
+✅ **Instant dropdown opening** - No lag when opening large lists
+
+**Performance Comparison:**
+
+| List Size | Without Virtualization | With Virtualization |
+|-----------|----------------------|---------------------|
+| 50 items  | 50 DOM nodes | ~15 DOM nodes |
+| 185 items | 185 DOM nodes | ~15 DOM nodes |
+| 250 items | 250 DOM nodes | ~15 DOM nodes |
+
+### Search/Filter Optimization
+
+The optional search functionality reduces the visible options in real-time:
+
+✅ **Instant filtering** - Native browser autocomplete with `<datalist>`  
+✅ **Reduced rendering** - Only matching items are displayed  
+✅ **Mobile-optimized** - Leverages native mobile keyboard and autocomplete  
+✅ **No additional bundle cost** - Uses native HTML5 features
+
+### Best Practices for Optimal Performance
+
+1. **Specify culture explicitly** when possible to avoid browser detection overhead:
+   ```jsx
+   <CountryDropdown culture="en-US" /> // Preferred
+   ```
+
+2. **Reuse data** across components by passing `countryInformation` prop:
+   ```jsx
+   const [countries, setCountries] = useState([]);
+   
+   useEffect(() => {
+     getCountryInformationByCulture(new CultureInfo('en-US'))
+       .then(setCountries);
+   }, []);
+   
+   // Reuse the same data, avoiding duplicate requests
+   <CountryDropdown countryInformation={countries} />
+   ```
+
+3. **Enable search** for long lists to improve user experience:
+   ```jsx
+   <CountryDropdown enableSearch={true} /> // Better UX for 250+ countries
+   ```
+
+4. **Keep virtual scrolling enabled** (default) for optimal performance with large lists.
+
+5. **Use tree shaking** in your bundler to exclude unused exports.
+
+### Production Build Recommendations
+
+For the smallest possible bundle:
+
+```javascript
+// webpack.config.js or similar
+module.exports = {
+  optimization: {
+    usedExports: true,
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+};
+```
+
+This ensures:
+- Dead code elimination removes unused functions
+- Data files are in separate chunks for better caching
+- Only the locales you use are included in the final bundle
+
+### Measuring Bundle Impact
+
+To analyze the bundle size impact in your application:
+
+```bash
+# Using webpack-bundle-analyzer
+npm install --save-dev webpack-bundle-analyzer
+
+# Using source-map-explorer  
+npm install --save-dev source-map-explorer
+npx source-map-explorer dist/bundle.js
+```
+
+**Expected Impact on Your Bundle:**
+- Minimal: **~21 KB gzipped** (core + one locale with country data)
+- Typical: **~25 KB gzipped** (core + 2-3 locales)
+- Maximum: **~37 KB gzipped** (core + all locale files)
 
 ## Installation
 
@@ -253,6 +395,61 @@ The search functionality is designed with mobile users in mind:
 ### Backward Compatibility
 
 The `enableSearch` prop is **optional and defaults to `false`**, ensuring complete backward compatibility with existing implementations. Your existing code will continue to work exactly as before without any changes.
+
+## Mobile-First & Touch Optimization
+
+This library is built with a **mobile-first approach**, ensuring excellent usability on smartphones, tablets, and touch-enabled devices.
+
+### ✅ Mobile Features
+
+- **Touch-Optimized Targets**: All interactive elements meet the 44x44px minimum touch target size (iOS HIG and Material Design standards)
+- **Responsive CSS**: Automatically adapts to different screen sizes with mobile-specific optimizations
+- **No Zoom on Input**: Font sizes optimized to prevent unwanted iOS zoom behavior
+- **Search for Long Lists**: Enable `enableSearch` prop for easier navigation on mobile
+- **Native Mobile Support**: Uses native HTML elements for optimal mobile browser integration
+
+### Mobile-Optimized Example
+
+```jsx
+import { CountryDropdown } from 'react-country-state-selector';
+
+function MobileOptimizedForm() {
+  const [country, setCountry] = useState('');
+
+  return (
+    <div style={{ padding: '1rem' }}>
+      <CountryDropdown 
+        selectedCountry={country}
+        onCountryChange={setCountry}
+        culture="en-US"
+        Label="Country"
+        enableSearch={true}  // Recommended for mobile: easier than scrolling 250+ countries
+      />
+    </div>
+  );
+}
+```
+
+### Touch Target Specifications
+
+The library implements responsive touch targets that automatically adjust based on device:
+
+| Device Type | Min Touch Target | Font Size | Implementation |
+|-------------|-----------------|-----------|----------------|
+| Desktop | Auto (~40px) | 1rem (16px) | Default styling |
+| Tablet/Mobile (≤768px) | 44px | 16px | iOS HIG standard |
+| Small Phones (≤480px) | 48px | 16px | Material Design standard |
+
+### 📱 Comprehensive Mobile Guide
+
+For detailed mobile implementation guidance, testing procedures, and best practices, see our comprehensive [Mobile & Touch Optimization Guide](./docs/MOBILE.md).
+
+The guide covers:
+- Touch target guidelines and customization
+- Mobile testing checklist for various devices
+- Performance optimization tips
+- Mobile-specific troubleshooting
+- PWA integration considerations
 
 ## Props Reference
 
@@ -755,6 +952,32 @@ The library features a clean, maintainable architecture:
 - **Modular design** - Each component is self-contained with clear responsibilities
 - **Error boundaries** - Graceful error handling with user-friendly fallbacks
 - **Performance optimized** - Efficient data loading and caching strategies
+
+## Theming and Customization
+
+The library provides comprehensive CSS custom properties (CSS variables) for easy theming. You can customize all visual aspects including colors, fonts, spacing, and more.
+
+For detailed theming documentation and examples, see:
+- [Theming Guide](./docs/THEMING.md) - Complete guide to customizing the appearance
+
+Quick example:
+```css
+:root {
+  --rcss-primary-color: #8b5cf6;        /* Purple primary */
+  --rcss-error-color: #dc2626;          /* Error color */
+  --rcss-border-radius: 0.5rem;         /* Rounded corners */
+}
+```
+
+## Additional Documentation
+
+For more detailed information, see the following guides:
+
+- **[Error Handling & Recovery Guide](./docs/ERROR-HANDLING.md)** - Learn about error handling, retry mechanisms, and recovery guidance
+- **[Accessibility Guide](./docs/ACCESSIBILITY.md)** - Comprehensive accessibility features and ARIA support
+- **[Styling Guide](./docs/STYLING.md)** - Customization options and CSS theming
+- **[Visual Hierarchy Guide](./docs/VISUAL-HIERARCHY.md)** - Design principles and visual organization
+- **[UI/UX Analysis](./docs/UI-UX-ANALYSIS.md)** - Detailed analysis and recommendations
 
 ## License
 

@@ -159,7 +159,7 @@ describe('StateDropdown', () => {
 
     // Mock process.env for development mode
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'Development'; // Note: StateDropdown uses 'Development' not 'development'
+    process.env.NODE_ENV = 'development'; // Fixed: now uses lowercase 'development'
 
     render(
       <StateDropdown
@@ -288,10 +288,11 @@ describe('StateDropdown', () => {
       // Verify proper label-to-input association
       expect(label.tagName).toBe('LABEL');
       expect(label).toHaveAttribute('for', 'state-province-select');
+      expect(label).toHaveAttribute('id', 'state-province-select-label');
       expect(select).toHaveAttribute('id', 'state-province-select');
       
-      // aria-labelledby should not be present when using htmlFor/id
-      expect(select).not.toHaveAttribute('aria-labelledby');
+      // aria-labelledby should reference the label ID
+      expect(select).toHaveAttribute('aria-labelledby', 'state-province-select-label');
     });
   });
 
@@ -309,7 +310,28 @@ describe('StateDropdown', () => {
 
     await waitFor(() => {
       const select = screen.getByRole('combobox');
-      expect(select).toHaveAttribute('aria-describedby', 'state-province-error');
+      expect(select).toHaveAttribute('aria-describedby', 'state-province-error-message');
+      expect(select).toHaveAttribute('aria-invalid', 'true');
+    });
+  });
+
+  it('error message has proper ARIA live region attributes', async () => {
+    mockedGetStateProvinceInformation.mockRejectedValue(new Error('Failed to load'));
+
+    render(
+      <StateDropdown
+        selectedState="TX"
+        onStateChange={mockOnStateChange}
+        country="US"
+        Label="State/Province"
+      />
+    );
+
+    await waitFor(() => {
+      const errorMessage = document.getElementById('state-province-error');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveAttribute('role', 'alert');
+      expect(errorMessage).toHaveAttribute('aria-live', 'polite');
     });
   });
 });

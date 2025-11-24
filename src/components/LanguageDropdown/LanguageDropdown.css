@@ -1,15 +1,15 @@
 /* Visual hierarchy: Typography and Spacing */
 .language-dropdown-label {
   display: block;
-  font-size: 14px;
+  font-size: var(--rcss-label-font-size, 0.875rem);
   font-weight: 600;
   line-height: 1.5;
   margin-bottom: 6px;
-  color: #212121;
+  color: var(--rcss-label-color, #374151);
 }
 
 .language-dropdown-select {
-  font-size: 14px;
+  font-size: var(--rcss-font-size, 1rem);
   line-height: 1.5;
   padding: 8px 12px;
   display: block;
@@ -48,6 +48,55 @@
 .rcss-error-icon svg {
   width: 100%;
   height: 100%;
+}
+
+/* Retry button styling */
+.language-retry-button {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--rcss-label-font-size);
+  font-weight: 500;
+  color: var(--rcss-primary-color);
+  background-color: transparent;
+  border: 1px solid var(--rcss-primary-color);
+  border-radius: var(--rcss-border-radius);
+  cursor: pointer;
+  font-family: var(--rcss-font-family);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.language-retry-button:hover {
+  background-color: var(--rcss-primary-color);
+  color: #ffffff;
+}
+
+.language-retry-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+/* Error guidance styling */
+.language-error-guidance {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rcss-error-border);
+}
+
+.language-error-guidance strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.language-error-guidance ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.language-error-guidance li {
+  margin-bottom: 0.25rem;
 }
 
 /* Label styling */
@@ -159,7 +208,7 @@ input#language-select:disabled {
 
 /* Placeholder styling for search input */
 input#language-select::placeholder {
-  color: #9ca3af;
+  color: var(--rcss-placeholder-color, #9ca3af);
   opacity: 1;
 }
 
@@ -205,4 +254,67 @@ input#language-select::placeholder {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+/* ============================================
+   Mobile-First & Touch Optimization
+   ============================================ */
+
+/* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
+@media (max-width: 768px) {
+  /* Increase padding for easier touch interaction */
+  select#language-select,
+  input#language-select {
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 44px; /* iOS Human Interface Guidelines minimum touch target */
+  }
+
+  /* Larger label for better readability on mobile */
+  label[for="language-select"] {
+    font-size: 1rem;
+    margin-bottom: 0.625rem;
+  }
+
+  /* Adjust container spacing for mobile */
+  .language-dropdown-container {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Error messages more prominent on mobile */
+  .language-error-message {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small mobile devices (portrait phones) */
+@media (max-width: 480px) {
+  select#language-select,
+  input#language-select {
+    padding: 0.875rem 1rem;
+    font-size: 16px;
+    min-height: 48px; /* Extra large touch target for small screens */
+  }
+}
+
+/* Touch device optimizations (tablets and phones) */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets for touch screens */
+  select#language-select,
+  input#language-select {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover states on touch devices */
+  select#language-select:hover:not(:disabled),
+  input#language-select:hover:not(:disabled) {
+    border-color: var(--rcss-border-color);
+  }
+
+  /* Enhanced focus states for touch */
+  select#language-select:focus,
+  input#language-select:focus {
+    box-shadow: 0 0 0 4px var(--rcss-focus-ring-color);
+  }
 }

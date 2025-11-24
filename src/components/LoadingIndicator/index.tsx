@@ -6,17 +6,16 @@ interface LoadingIndicatorProps {
   ariaLabel?: string;
 }
 
-const LoadingIndicator: FC<LoadingIndicatorProps> = ({ 
-  message = 'Loading...', 
-  ariaLabel = 'Loading content' 
+const LoadingIndicator: FC<LoadingIndicatorProps> = ({
+  message = 'Loading...',
+  ariaLabel = 'Loading content'
 }) => {
-  return (
-    <div className="rcss-loading-container" role="status" aria-live="polite" aria-label={ariaLabel}>
-      <span className="rcss-loading-spinner" aria-hidden="true">
-        <span className="rcss-spinner-ring"></span>
-      </span>
-      <span className="rcss-loading-message">{message}</span>
+  return (<div className="rcss-loading-container" role="status" aria-live="polite" aria-busy="true" aria-label={ariaLabel}>
+    <div className="rcss-loading-spinner" aria-hidden="true">
+      <div className="rcss-spinner-ring"></div>
     </div>
+    <span className="rcss-loading-message">{message}</span>
+  </div>
   );
 };
 

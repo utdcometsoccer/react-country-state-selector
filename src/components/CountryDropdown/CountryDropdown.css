@@ -1,15 +1,15 @@
 /* Visual hierarchy: Typography and Spacing */
 .country-dropdown-label {
   display: block;
-  font-size: 14px;
+  font-size: var(--rcss-label-font-size, 0.875rem);
   font-weight: 600;
   line-height: 1.5;
   margin-bottom: 6px;
-  color: #212121;
+  color: var(--rcss-label-color, #374151);
 }
 
 .country-dropdown-select {
-  font-size: 14px;
+  font-size: var(--rcss-font-size, 1rem);
   line-height: 1.5;
   padding: 8px 12px;
   display: block;
@@ -23,19 +23,38 @@
 
 /* CSS Custom Properties for easy customization */
 :root {
+  /* Primary Colors */
   --rcss-primary-color: #0066cc;
   --rcss-primary-hover: #0052a3;
+
+  /* Border & Layout */
   --rcss-border-color: #d1d5db;
   --rcss-border-radius: 0.375rem;
+
+  /* Focus & Interaction */
   --rcss-focus-ring-color: rgba(0, 102, 204, 0.4);
+
+  /* Text Colors */
   --rcss-text-color: #1f2937;
   --rcss-label-color: #374151;
+  --rcss-highlight-text-color: #ffffff;
+
+  /* Background Colors */
   --rcss-background-color: #ffffff;
   --rcss-disabled-background: #f3f4f6;
-  --rcss-error-color: #dc2626;
+  --rcss-selected-background: rgba(0, 102, 204, 0.1);
+  --rcss-group-background: #f9fafb;
+
+  /* Error States */
+  --rcss-error-color: #d32f2f;
   --rcss-error-background: #fef2f2;
   --rcss-error-border: #fecaca;
+
+  /* Other */
   --rcss-dropdown-arrow-color: #6b7280;
+  --rcss-placeholder-color: #9ca3af;
+
+  /* Typography */
   --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --rcss-font-size: 1rem;
   --rcss-label-font-size: 0.875rem;
@@ -67,6 +86,55 @@
 .rcss-error-icon svg {
   width: 100%;
   height: 100%;
+}
+
+/* Retry button styling */
+.country-retry-button {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--rcss-label-font-size);
+  font-weight: 500;
+  color: var(--rcss-primary-color);
+  background-color: transparent;
+  border: 1px solid var(--rcss-primary-color);
+  border-radius: var(--rcss-border-radius);
+  cursor: pointer;
+  font-family: var(--rcss-font-family);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.country-retry-button:hover {
+  background-color: var(--rcss-primary-color);
+  color: #ffffff;
+}
+
+.country-retry-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--rcss-focus-ring-color);
+}
+
+/* Error guidance styling */
+.country-error-guidance {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rcss-error-border);
+}
+
+.country-error-guidance strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.country-error-guidance ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.country-error-guidance li {
+  margin-bottom: 0.25rem;
 }
 
 /* Label styling */
@@ -128,7 +196,7 @@ select#country-select:disabled {
   select#country-select {
     border-width: 2px;
   }
-  
+
   select#country-select:focus {
     outline: 2px solid var(--rcss-primary-color);
     outline-offset: 2px;
@@ -178,7 +246,7 @@ input#country-select:disabled {
 
 /* Placeholder styling for search input */
 input#country-select::placeholder {
-  color: #9ca3af;
+  color: var(--rcss-placeholder-color, #9ca3af);
   opacity: 1;
 }
 
@@ -187,7 +255,7 @@ input#country-select::placeholder {
   input#country-select {
     border-width: 2px;
   }
-  
+
   input#country-select:focus {
     outline: 2px solid var(--rcss-primary-color);
     outline-offset: 2px;
@@ -203,9 +271,12 @@ input#country-select::placeholder {
 
 /* Success feedback animation */
 @keyframes rcss-success-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 3px transparent;
   }
+
   50% {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
@@ -224,4 +295,74 @@ input#country-select::placeholder {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* ============================================
+   Mobile-First & Touch Optimization
+   ============================================ */
+
+/* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
+@media (max-width: 768px) {
+
+  /* Increase padding for easier touch interaction */
+  select#country-select,
+  input#country-select {
+    padding: 0.75rem 1rem;
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+    min-height: 44px;
+    /* iOS Human Interface Guidelines minimum touch target */
+  }
+
+  /* Larger label for better readability on mobile */
+  label[for="country-select"] {
+    font-size: 1rem;
+    margin-bottom: 0.625rem;
+  }
+
+  /* Adjust container spacing for mobile */
+  .country-dropdown-container {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Error messages more prominent on mobile */
+  .country-error-message {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small mobile devices (portrait phones) */
+@media (max-width: 480px) {
+
+  select#country-select,
+  input#country-select {
+    padding: 0.875rem 1rem;
+    font-size: 16px;
+    min-height: 48px;
+    /* Extra large touch target for small screens */
+  }
+}
+
+/* Touch device optimizations (tablets and phones) */
+@media (hover: none) and (pointer: coarse) {
+
+  /* Larger tap targets for touch screens */
+  select#country-select,
+  input#country-select {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover states on touch devices */
+  select#country-select:hover:not(:disabled),
+  input#country-select:hover:not(:disabled) {
+    border-color: var(--rcss-border-color);
+  }
+
+  /* Enhanced focus states for touch */
+  select#country-select:focus,
+  input#country-select:focus {
+    box-shadow: 0 0 0 4px var(--rcss-focus-ring-color);
+  }
 }
