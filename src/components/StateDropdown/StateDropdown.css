@@ -33,6 +33,21 @@
   border: 1px solid var(--rcss-error-border);
   border-radius: var(--rcss-border-radius);
   font-family: var(--rcss-font-family);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Error icon styling */
+.rcss-error-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.rcss-error-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* Retry button styling */
@@ -143,7 +158,7 @@ select#state-province-select:disabled {
   select#state-province-select {
     border-width: 2px;
   }
-  
+
   select#state-province-select:focus {
     outline: 2px solid var(--rcss-primary-color);
     outline-offset: 2px;
@@ -202,7 +217,7 @@ input#state-province-select::placeholder {
   input#state-province-select {
     border-width: 2px;
   }
-  
+
   input#state-province-select:focus {
     outline: 2px solid var(--rcss-primary-color);
     outline-offset: 2px;
@@ -216,18 +231,49 @@ input#state-province-select::placeholder {
   }
 }
 
+/* Success feedback animation */
+@keyframes rcss-success-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px transparent;
+  }
+
+  50% {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+}
+
+.rcss-success-animation {
+  animation: rcss-success-pulse 0.6s ease-out;
+}
+
+/* aria-live region for success feedback - screen reader only */
+.rcss-selection-feedback {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ============================================
    Mobile-First & Touch Optimization
    ============================================ */
 
 /* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
 @media (max-width: 768px) {
+
   /* Increase padding for easier touch interaction */
   select#state-province-select,
   input#state-province-select {
     padding: 0.75rem 1rem;
-    font-size: 16px; /* Prevents iOS zoom on focus */
-    min-height: 44px; /* iOS Human Interface Guidelines minimum touch target */
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+    min-height: 44px;
+    /* iOS Human Interface Guidelines minimum touch target */
   }
 
   /* Larger label for better readability on mobile */
@@ -250,16 +296,19 @@ input#state-province-select::placeholder {
 
 /* Small mobile devices (portrait phones) */
 @media (max-width: 480px) {
+
   select#state-province-select,
   input#state-province-select {
     padding: 0.875rem 1rem;
     font-size: 16px;
-    min-height: 48px; /* Extra large touch target for small screens */
+    min-height: 48px;
+    /* Extra large touch target for small screens */
   }
 }
 
 /* Touch device optimizations (tablets and phones) */
 @media (hover: none) and (pointer: coarse) {
+
   /* Larger tap targets for touch screens */
   select#state-province-select,
   input#state-province-select {

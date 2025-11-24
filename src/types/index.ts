@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export interface LanguageDropdownProps {
     selectedLanguage?: Language;
     onLanguageChange: (language: Language) => void;
+    onSuccess?: (language: Language) => void;
     culture?: CultureInfo | string;
     languageInformation?: LanguageInformation[];
     getLanguageInformation?: (cultureInfo: CultureInfo) => Promise<LanguageInformation[]>;
@@ -26,6 +27,7 @@ export type LanguageInformation = {
 export interface CountryDropdownProps {
     selectedCountry?: string;
     onCountryChange: (country: string) => void;
+    onSuccess?: (country: string) => void;
     culture?: CultureInfo | string;
     countryInformation?: CountryInformation[];
     getCountryInformation?: GetCountryInformation;
@@ -154,6 +156,7 @@ export interface StateDropdownProps {
     getStateProvinceInformation?: GetStateProvinceInformation; 
     selectedState?: string;
     onStateChange: (state: string) => void;
+    onSuccess?: (state: string) => void;
     country: Country;
     culture?: CultureInfo | Culture;
     stateProvinceInformation?: StateProvinceInformation[];
