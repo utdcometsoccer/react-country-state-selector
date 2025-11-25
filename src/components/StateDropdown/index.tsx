@@ -92,6 +92,8 @@ const StateDropdown: FC<StateDropdownProps> = ({
   });
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  // Separate state for search input text when enableSearch is true
+  const [searchText, setSearchText] = useState('');
   
   const uniqueId = generateUniqueId('state-dropdown');
 
@@ -118,10 +120,19 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   // Sync selected state from props to state
   useEffect(() => {
-    if (selectedState !== state.selectedState) {
-      dispatch({ type: 'SET_STATE', payload: selectedState });
+    // When search is enabled, only sync if prop has a value (to allow controlled preselection)
+    // When search is disabled, always sync prop to state
+    if (enableSearch) {
+      if (selectedState && selectedState !== state.selectedState) {
+        dispatch({ type: 'SET_STATE', payload: selectedState });
+        setSearchText('');
+      }
+    } else {
+      if (selectedState !== state.selectedState) {
+        dispatch({ type: 'SET_STATE', payload: selectedState });
+      }
     }
-  }, [selectedState, state.selectedState]);
+  }, [selectedState, enableSearch]);
 
   // Validation effect
   useEffect(() => {
@@ -194,6 +205,9 @@ const StateDropdown: FC<StateDropdownProps> = ({
   }));
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Update search text for display
+    setSearchText(value);
+    
     // Find matching state by code or name
     const matchingState = state.stateProvinceInformation.find(
       s => s.code === value || s.name === value
@@ -201,10 +215,22 @@ const StateDropdown: FC<StateDropdownProps> = ({
     if (matchingState) {
       dispatch({ type: 'SET_STATE', payload: matchingState.code });
       onStateChange(matchingState.code);
-    } else {
-      dispatch({ type: 'SET_STATE', payload: value });
-      onStateChange(value);
+      // Clear search text to show the actual state name
+      setSearchText('');
     }
+    // Don't update selected state for partial matches - only when exact match is found
+  };
+
+  // Get display value for the search input
+  const getSearchInputValue = () => {
+    // If there's search text being typed, show it
+    if (searchText) {
+      return searchText;
+    }
+    // Otherwise, show the selected state name (or empty if none)
+    if (!state.selectedState) return '';
+    const stateProvince = state.stateProvinceInformation.find(s => s.code === state.selectedState);
+    return stateProvince ? stateProvince.name : state.selectedState;
   };
 
   // Get display name for selected state
@@ -254,7 +280,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
           <input
             id={uniqueId}
             list={`${uniqueId}-datalist`}
-            value={getSelectedStateName()}
+            value={getSearchInputValue()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
             aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}

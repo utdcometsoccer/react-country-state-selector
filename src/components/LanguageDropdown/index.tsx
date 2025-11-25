@@ -93,6 +93,8 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   });
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  // Separate state for search input text when enableSearch is true
+  const [searchText, setSearchText] = useState('');
   
   const uniqueId = generateUniqueId('language-dropdown');
 
@@ -119,10 +121,19 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   // Sync selected language from props to state
   useEffect(() => {
-    if (selectedLanguage !== state.selectedLanguage) {
-      dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+    // When search is enabled, only sync if prop has a value (to allow controlled preselection)
+    // When search is disabled, always sync prop to state
+    if (enableSearch) {
+      if (selectedLanguage && selectedLanguage !== state.selectedLanguage) {
+        dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+        setSearchText('');
+      }
+    } else {
+      if (selectedLanguage !== state.selectedLanguage) {
+        dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+      }
     }
-  }, [selectedLanguage, state.selectedLanguage]);
+  }, [selectedLanguage, enableSearch]);
 
   // Validation effect
   useEffect(() => {
@@ -195,6 +206,9 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   }));
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Update search text for display
+    setSearchText(value);
+    
     // Find matching language by code or name
     const matchingLanguage = state.languageInformation.find(
       l => l.code === value || l.name === value
@@ -202,10 +216,22 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     if (matchingLanguage) {
       dispatch({ type: 'SET_LANGUAGE', payload: matchingLanguage.code });
       onLanguageChange(matchingLanguage.code);
-    } else {
-      dispatch({ type: 'SET_LANGUAGE', payload: value as Language });
-      onLanguageChange(value as Language);
+      // Clear search text to show the actual language name
+      setSearchText('');
     }
+    // Don't update selected language for partial matches - only when exact match is found
+  };
+
+  // Get display value for the search input
+  const getSearchInputValue = () => {
+    // If there's search text being typed, show it
+    if (searchText) {
+      return searchText;
+    }
+    // Otherwise, show the selected language name (or empty if none)
+    if (!state.selectedLanguage) return '';
+    const language = state.languageInformation.find(l => l.code === state.selectedLanguage);
+    return language ? language.name : state.selectedLanguage;
   };
 
   // Get display name for selected language
@@ -255,7 +281,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
           <input
             id={uniqueId}
             list={`${uniqueId}-datalist`}
-            value={getSelectedLanguageName()}
+            value={getSearchInputValue()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
             aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}

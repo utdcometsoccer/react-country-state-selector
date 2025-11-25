@@ -94,6 +94,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   });
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  // Separate state for search input text when enableSearch is true
+  const [searchText, setSearchText] = useState('');
   
   const uniqueId = generateUniqueId('country-dropdown');
 
@@ -120,10 +122,19 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
 
   // Sync selected country from props to state
   useEffect(() => {
-    if (selectedCountry !== state.selectedCountry) {
-      dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
+    // When search is enabled, only sync if prop has a value (to allow controlled preselection)
+    // When search is disabled, always sync prop to state
+    if (enableSearch) {
+      if (selectedCountry && selectedCountry !== state.selectedCountry) {
+        dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
+        setSearchText('');
+      }
+    } else {
+      if (selectedCountry !== state.selectedCountry) {
+        dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
+      }
     }
-  }, [selectedCountry, state.selectedCountry]);
+  }, [selectedCountry, enableSearch]);
 
   // Validation effect
   useEffect(() => {
@@ -196,6 +207,9 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   }));
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Update search text for display
+    setSearchText(value);
+    
     // Find matching country by code or name
     const matchingCountry = state.countryInformation.find(
       c => c.code === value || c.name === value
@@ -203,10 +217,22 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     if (matchingCountry) {
       dispatch({ type: 'SET_COUNTRY', payload: matchingCountry.code });
       onCountryChange(matchingCountry.code);
-    } else {
-      dispatch({ type: 'SET_COUNTRY', payload: value as Country });
-      onCountryChange(value);
+      // Clear search text to show the actual country name
+      setSearchText('');
     }
+    // Don't update selected country for partial matches - only when exact match is found
+  };
+
+  // Get display value for the search input
+  const getSearchInputValue = () => {
+    // If there's search text being typed, show it
+    if (searchText) {
+      return searchText;
+    }
+    // Otherwise, show the selected country name (or empty if none)
+    if (!state.selectedCountry) return '';
+    const country = state.countryInformation.find(c => c.code === state.selectedCountry);
+    return country ? country.name : state.selectedCountry;
   };
 
   // Get display name for selected country
@@ -256,7 +282,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           <input
             id={uniqueId}
             list={`${uniqueId}-datalist`}
-            value={getSelectedCountryName()}
+            value={getSearchInputValue()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
             aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
