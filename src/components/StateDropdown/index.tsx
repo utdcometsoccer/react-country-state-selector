@@ -118,16 +118,21 @@ const StateDropdown: FC<StateDropdownProps> = ({
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
-  // Sync selected state from props to state (only when prop changes)
+  // Sync selected state from props to state
   useEffect(() => {
-    // Only update state if the prop has a value and differs from state
-    // This prevents the state from being reset when user makes a selection via search
-    if (selectedState && selectedState !== state.selectedState) {
-      dispatch({ type: 'SET_STATE', payload: selectedState });
-      // Clear search text when prop changes to show the actual state name
-      setSearchText('');
+    // When search is enabled, only sync if prop has a value (to allow controlled preselection)
+    // When search is disabled, always sync prop to state
+    if (enableSearch) {
+      if (selectedState && selectedState !== state.selectedState) {
+        dispatch({ type: 'SET_STATE', payload: selectedState });
+        setSearchText('');
+      }
+    } else {
+      if (selectedState !== state.selectedState) {
+        dispatch({ type: 'SET_STATE', payload: selectedState });
+      }
     }
-  }, [selectedState]);
+  }, [selectedState, enableSearch]);
 
   // Validation effect
   useEffect(() => {
@@ -219,7 +224,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
   // Get display value for the search input
   const getSearchInputValue = () => {
     // If there's search text being typed, show it
-    if (searchText !== '') {
+    if (searchText) {
       return searchText;
     }
     // Otherwise, show the selected state name (or empty if none)

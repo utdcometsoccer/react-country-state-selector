@@ -119,16 +119,21 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     }
   }, [state.languageInformation.length, state.cultureInfo, effectiveGetLanguageInformation]);
 
-  // Sync selected language from props to state (only when prop changes)
+  // Sync selected language from props to state
   useEffect(() => {
-    // Only update state if the prop has a value and differs from state
-    // This prevents the state from being reset when user makes a selection via search
-    if (selectedLanguage && selectedLanguage !== state.selectedLanguage) {
-      dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
-      // Clear search text when prop changes to show the actual language name
-      setSearchText('');
+    // When search is enabled, only sync if prop has a value (to allow controlled preselection)
+    // When search is disabled, always sync prop to state
+    if (enableSearch) {
+      if (selectedLanguage && selectedLanguage !== state.selectedLanguage) {
+        dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+        setSearchText('');
+      }
+    } else {
+      if (selectedLanguage !== state.selectedLanguage) {
+        dispatch({ type: 'SET_LANGUAGE', payload: selectedLanguage });
+      }
     }
-  }, [selectedLanguage]);
+  }, [selectedLanguage, enableSearch]);
 
   // Validation effect
   useEffect(() => {
@@ -220,7 +225,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   // Get display value for the search input
   const getSearchInputValue = () => {
     // If there's search text being typed, show it
-    if (searchText !== '') {
+    if (searchText) {
       return searchText;
     }
     // Otherwise, show the selected language name (or empty if none)
