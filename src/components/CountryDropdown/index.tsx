@@ -95,7 +95,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
   
-  const uniqueId = generateUniqueId('rcs-country-dropdown');
+  const uniqueId = generateUniqueId('country-dropdown');
 
   useEffect(() => {
     if (state.countryInformation.length === 0 && !state.isLoadingCountryInformation) {

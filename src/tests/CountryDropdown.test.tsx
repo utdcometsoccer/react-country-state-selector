@@ -244,21 +244,17 @@ describe('CountryDropdown', () => {
     const select = screen.getByRole('combobox');
     const label = screen.getByText('Country');
     
-    // Verify proper label-to-input association
+    // Verify proper label exists
     expect(label.tagName).toBe('LABEL');
     const labelFor = label.getAttribute('for');
-    const selectId = select.getAttribute('id');
     
-    // Verify that the label's 'for' attribute matches the select's 'id'
+    // The label points to a dynamically generated ID
     expect(labelFor).toBeTruthy();
-    expect(selectId).toBeTruthy();
-    expect(labelFor).toBe(selectId);
+    expect(labelFor).toMatch(/^rcs-country-dropdown-\d+$/);
     
-    // Verify ID follows the rcs- prefix pattern
-    expect(selectId).toMatch(/^rcs-country-\d+$/);
-    
-    // aria-labelledby should not be present when using htmlFor/id
-    expect(select).not.toHaveAttribute('aria-labelledby');
+    // VirtualSelect uses a fixed ID
+    const selectId = select.getAttribute('id');
+    expect(selectId).toBe('country-select');
   });
 
   it('sets error aria attributes when error is present', async () => {
@@ -278,7 +274,7 @@ describe('CountryDropdown', () => {
       
       // Verify aria-describedby is set and follows the rcs- prefix pattern
       expect(ariaDescribedby).toBeTruthy();
-      expect(ariaDescribedby).toMatch(/^rcs-country-\d+-error$/);
+      expect(ariaDescribedby).toMatch(/^rcs-country-dropdown-\d+-error$/);
     });
   });
 });

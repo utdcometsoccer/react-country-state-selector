@@ -111,7 +111,7 @@ describe('LoadingIndicator', () => {
 vi.mock('../services/getCountryInformation');
 vi.mock('../services/getStateProvinceInformation');
 vi.mock('../services/getLanguageInformation');
-vi.mock('@/services/cultureFromBrowser');
+vi.mock('../services/cultureFromBrowser');
 
 const mockedGetCountryInformation = vi.mocked(getCountryInformationByCulture);
 const mockedGetStateProvinceInformation = vi.mocked(getStateProvinceInformationByCulture);

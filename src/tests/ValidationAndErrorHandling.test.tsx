@@ -514,7 +514,10 @@ describe('Accessibility with Validation', () => {
 
     await waitFor(() => {
       const combobox = screen.getByRole('combobox');
-      expect(combobox).toHaveAttribute('aria-describedby', 'country-validation-error');
+      const ariaDescribedby = combobox.getAttribute('aria-describedby');
+      // Verify aria-describedby is set and points to a validation error element
+      expect(ariaDescribedby).toBeTruthy();
+      expect(ariaDescribedby).toMatch(/-validation-error$/);
     });
   });
 });

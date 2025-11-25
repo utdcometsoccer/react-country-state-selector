@@ -94,7 +94,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
   
-  const uniqueId = generateUniqueId('rcs-language-dropdown');
+  const uniqueId = generateUniqueId('language-dropdown');
 
   useEffect(() => {
     if (state.languageInformation.length === 0 && !state.isLoadingLanguageInformation) {
@@ -248,7 +248,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         >
           {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
         </label>
-      {state.isLoadingLanguageInformation ? (
+      {state.isLoadingLanguageInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
       ) : enableSearch ? (
         <>

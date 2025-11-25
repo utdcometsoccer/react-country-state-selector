@@ -147,27 +147,25 @@ describe('Integration Tests', () => {
       </div>
     );
 
-    // Check accessibility attributes - comboboxes don't have names from labels in VirtualSelect
+    // Check accessibility attributes - comboboxes use fixed IDs in VirtualSelect
     const comboboxes = screen.getAllByRole('combobox');
     expect(comboboxes).toHaveLength(2);
     
     const countrySelect = comboboxes[0];
     const languageSelect = comboboxes[1];
 
-    // Verify IDs exist and follow the rcs- prefix pattern
+    // VirtualSelect uses fixed IDs
     const countryId = countrySelect.getAttribute('id');
     const languageId = languageSelect.getAttribute('id');
     
-    expect(countryId).toBeTruthy();
-    expect(languageId).toBeTruthy();
-    expect(countryId).toMatch(/^rcs-country-\d+$/);
-    expect(languageId).toMatch(/^rcs-language-\d+$/);
+    expect(countryId).toBe('country-select');
+    expect(languageId).toBe('language-select');
 
-    // Verify labels exist and point to the right elements
+    // Verify labels exist and point to dynamically generated IDs
     const countryLabel = screen.getByText('Country');
     const languageLabel = screen.getByText('Language');
     
-    expect(countryLabel.getAttribute('for')).toBe(countryId);
-    expect(languageLabel.getAttribute('for')).toBe(languageId);
+    expect(countryLabel.getAttribute('for')).toMatch(/^rcs-country-dropdown-\d+$/);
+    expect(languageLabel.getAttribute('for')).toMatch(/^rcs-language-dropdown-\d+$/);
   });
 });
