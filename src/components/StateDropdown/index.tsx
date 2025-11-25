@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useMemo, useState } from 'react';
 import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import LoadingIndicator from '../LoadingIndicator';
 import LoadingSpinner from '../LoadingSpinner';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -67,6 +68,11 @@ const StateDropdown: FC<StateDropdownProps> = ({
   enableSearch = false,
   required = false
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('state'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -175,20 +181,20 @@ const StateDropdown: FC<StateDropdownProps> = ({
   };
 
   return (
-    <div className="state-dropdown-container">
+    <div className="rcs-container">
       {/* Aria-live region for selection confirmation */}
-      <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
+      <div className="rcs-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
         {selectionFeedback}
       </div>
       
       {state.error && (
         <div 
-          id="state-province-error-message"
-          className="state-error-message"
+          id={errorId}
+          className="rcs-error"
           role="alert"
           aria-live="polite"
         >
-          <span className="rcss-error-icon" aria-hidden="true">
+          <span className="rcs-error-icon" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
             </svg>
@@ -199,7 +205,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
               {' '}
               <button 
                 onClick={handleRetry}
-                className="state-retry-button"
+                className="rcs-retry-button"
                 aria-label="Retry loading state/province information"
               >
                 Try Again
@@ -207,7 +213,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
             </>
           )}
           {state.retryCount >= 3 && (
-            <div className="state-error-guidance">
+            <div className="rcs-error-guidance">
               <strong>What you can do:</strong>
               <ul>
                 <li>Check your internet connection</li>
@@ -219,33 +225,31 @@ const StateDropdown: FC<StateDropdownProps> = ({
         </div>
       )}
       <label
-        id="state-province-select-label"
-        htmlFor="state-province-select"
-        className={classNameLabel ?? 'state-dropdown-label'}
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
       >
         {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingStateProvinceInformation ? (
-        <div role="status" aria-live="polite">
+        <div className="rcs-loading" role="status" aria-live="polite">
           {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />}
         </div>
       ) : enableSearch ? (
         <>
           <input
-            id="state-province-select"
-            list="state-province-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedStateName()}
             onChange={handleSearchChange}
-            className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-            aria-describedby={state.error ? 'state-province-error-message' : undefined}
-            aria-labelledby="state-province-select-label"
+            className={`${classNameSelect ?? 'rcs-select'} ${showSuccessAnimation ? 'rcs-success-animation' : ''}`.trim()}
+            aria-describedby={state.error ? errorId : undefined}
             aria-required={required}
             aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a state/province"
             autoComplete="off"
             required={required}
           />
-          <datalist id="state-province-datalist">
+          <datalist id={datalistId}>
             {state.stateProvinceInformation.map((stateProvince) => (
               <option key={stateProvince.code} value={stateProvince.name} data-value={stateProvince.code}>
                 {stateProvince.name}
@@ -255,14 +259,13 @@ const StateDropdown: FC<StateDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="state-province-select"
+          id={uniqueId}
           value={state.selectedState ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a state/province"
-          className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-          aria-describedby={state.error ? 'state-province-error-message' : undefined}
-          aria-labelledby="state-province-select-label"
+          className={`${classNameSelect ?? 'rcs-select'} ${showSuccessAnimation ? 'rcs-success-animation' : ''}`.trim()}
+          aria-describedby={state.error ? errorId : undefined}
           aria-required={required}
           aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}

@@ -154,14 +154,20 @@ describe('Integration Tests', () => {
     const countrySelect = comboboxes[0];
     const languageSelect = comboboxes[1];
 
-    expect(countrySelect).toHaveAttribute('id', 'country-select');
-    expect(languageSelect).toHaveAttribute('id', 'language-select');
+    // Verify IDs exist and follow the rcs- prefix pattern
+    const countryId = countrySelect.getAttribute('id');
+    const languageId = languageSelect.getAttribute('id');
+    
+    expect(countryId).toBeTruthy();
+    expect(languageId).toBeTruthy();
+    expect(countryId).toMatch(/^rcs-country-\d+$/);
+    expect(languageId).toMatch(/^rcs-language-\d+$/);
 
     // Verify labels exist and point to the right elements
     const countryLabel = screen.getByText('Country');
     const languageLabel = screen.getByText('Language');
     
-    expect(countryLabel).toHaveAttribute('for', 'country-select');
-    expect(languageLabel).toHaveAttribute('for', 'language-select');
+    expect(countryLabel.getAttribute('for')).toBe(countryId);
+    expect(languageLabel.getAttribute('for')).toBe(languageId);
   });
 });

@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
+import { type ChangeEvent, type FC, useEffect, useMemo, useReducer, useState } from 'react';
 import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import { Country, type CountryDropdownProps, CountryInformation, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -68,6 +69,11 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   loadingText = "Loading country information...",
   required = false
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('country'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -177,7 +183,14 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   };
 
   return (
-    <div className="country-dropdown-container">
+    <div className="rcs-container">
+      {state.error && <div id={errorId} className="rcs-error">{state.error}</div>}
+      <label
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
+      >
+        {Label}
+      </label>
       {/* Aria-live region for selection confirmation */}
       <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
         {selectionFeedback}
@@ -228,18 +241,18 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
-        <div role="status" aria-live="polite">
+        <div className="rcs-loading" aria-live="polite">
           {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />}
         </div>
       ) : enableSearch ? (
         <>
           <input
-            id="country-select"
-            list="country-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedCountryName()}
             onChange={handleSearchChange}
+            aria-describedby={state.error ? errorId : undefined}
             className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-            aria-describedby={state.error ? 'country-error-message' : undefined}
             aria-labelledby="country-select-label"
             aria-required={required}
             aria-invalid={state.error ? true : undefined}
@@ -247,7 +260,7 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
             autoComplete="off"
             required={required}
           />
-          <datalist id="country-datalist">
+          <datalist id={datalistId}>
             {state.countryInformation.map((country) => (
               <option key={country.code} value={country.name} data-value={country.code}>
                 {country.name}
@@ -257,13 +270,13 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="country-select"
+          id={uniqueId}
           value={state.selectedCountry ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a country"
-          className={`${classNameSelect ?? 'country-dropdown-select'} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-          aria-describedby={state.error ? 'country-error-message' : undefined}
+          aria-describedby={state.error ? errorId : undefined}
+          className={`${classNameSelect ?? 'rcs-select'} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
           aria-labelledby="country-select-label"
           aria-required={required}
           aria-invalid={state.error ? true : undefined}

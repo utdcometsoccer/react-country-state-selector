@@ -1,9 +1,10 @@
-import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useMemo, useState } from 'react';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { CultureInfo, type Language, type LanguageDropdownProps, type LanguageInformation } from '../../types';
 import { getLanguageInformationByCulture } from '../../services/getLanguageInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import './LanguageDropdown.css';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -68,6 +69,11 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   loadingText = "Loading language information...",
   required = false
 }) => {
+  // Generate unique ID for this instance
+  const uniqueId = useMemo(() => generateUniqueId('language'), []);
+  const errorId = `${uniqueId}-error`;
+  const datalistId = `${uniqueId}-datalist`;
+  
   const effectiveGetLanguageInformation = getLanguageInformation ?? getLanguageInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialLanguageInformation: LanguageInformation[] = languageInformation ?? [];
@@ -176,20 +182,20 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
   };
 
   return (
-    <div className="language-dropdown-container">
+    <div className="rcs-container">
       {/* Aria-live region for selection confirmation */}
-      <div className="rcss-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
+      <div className="rcs-selection-feedback" role="status" aria-live="polite" aria-atomic="true">
         {selectionFeedback}
       </div>
       
       {state.error && (
         <div 
-          id="language-error-message"
-          className="language-error-message"
+          id={errorId}
+          className="rcs-error"
           role="alert"
           aria-live="polite"
         >
-          <span className="rcss-error-icon" aria-hidden="true">
+          <span className="rcs-error-icon" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
             </svg>
@@ -200,7 +206,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
               {' '}
               <button 
                 onClick={handleRetry}
-                className="language-retry-button"
+                className="rcs-retry-button"
                 aria-label="Retry loading language information"
               >
                 Try Again
@@ -208,7 +214,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
             </>
           )}
           {state.retryCount >= 3 && (
-            <div className="language-error-guidance">
+            <div className="rcs-error-guidance">
               <strong>What you can do:</strong>
               <ul>
                 <li>Check your internet connection</li>
@@ -220,33 +226,31 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         </div>
       )}
       <label
-        id="language-select-label"
-        htmlFor="language-select"
-        className={classNameLabel ?? 'language-dropdown-label'}
+        htmlFor={uniqueId}
+        className={classNameLabel ?? 'rcs-label'}
       >
         {Label}{required && <span aria-hidden="true"> *</span>}
       </label>
       {state.isLoadingLanguageInformation ? (
-        <div role="status" aria-live="polite">
+        <div className="rcs-loading" role="status" aria-live="polite">
           {customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />}
         </div>
       ) : enableSearch ? (
         <>
           <input
-            id="language-select"
-            list="language-datalist"
+            id={uniqueId}
+            list={datalistId}
             value={getSelectedLanguageName()}
             onChange={handleSearchChange}
-            className={`${classNameSelect ?? ''} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-            aria-describedby={state.error ? 'language-error-message' : undefined}
-            aria-labelledby="language-select-label"
+            className={`${classNameSelect ?? 'rcs-select'} ${showSuccessAnimation ? 'rcs-success-animation' : ''}`.trim()}
+            aria-describedby={state.error ? errorId : undefined}
             aria-required={required}
             aria-invalid={state.error ? true : undefined}
             placeholder="Search or select a language"
             autoComplete="off"
             required={required}
           />
-          <datalist id="language-datalist">
+          <datalist id={datalistId}>
             {state.languageInformation.map((language) => (
               <option key={language.code} value={language.name} data-value={language.code}>
                 {language.name}
@@ -256,14 +260,13 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         </>
       ) : (
         <VirtualSelect
-          id="language-select"
+          id={uniqueId}
           value={state.selectedLanguage ?? ''}
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a language"
-          className={`${classNameSelect ?? 'language-dropdown-select'} ${showSuccessAnimation ? 'rcss-success-animation' : ''}`.trim()}
-          aria-describedby={state.error ? 'language-error-message' : undefined}
-          aria-labelledby="language-select-label"
+          className={`${classNameSelect ?? 'rcs-select'} ${showSuccessAnimation ? 'rcs-success-animation' : ''}`.trim()}
+          aria-describedby={state.error ? errorId : undefined}
           aria-required={required}
           aria-invalid={state.error ? true : undefined}
           enableVirtualScrolling={enableVirtualScrolling}

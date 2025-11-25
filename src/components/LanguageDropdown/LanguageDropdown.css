@@ -1,4 +1,4 @@
-/* Visual hierarchy: Typography and Spacing */
+/* Visual hierarchy: Typography and Spacing - Legacy classes for backward compatibility */
 .language-dropdown-label {
   display: block;
   font-size: var(--rcss-label-font-size, 0.875rem);

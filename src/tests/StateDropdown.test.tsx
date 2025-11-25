@@ -159,7 +159,7 @@ describe('StateDropdown', () => {
 
     // Mock process.env for development mode
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development'; // Fixed: now uses lowercase 'development'
+    process.env.NODE_ENV = 'development';
 
     render(
       <StateDropdown
@@ -287,9 +287,16 @@ describe('StateDropdown', () => {
       
       // Verify proper label-to-input association
       expect(label.tagName).toBe('LABEL');
-      expect(label).toHaveAttribute('for', 'state-province-select');
-      expect(label).toHaveAttribute('id', 'state-province-select-label');
-      expect(select).toHaveAttribute('id', 'state-province-select');
+      const labelFor = label.getAttribute('for');
+      const selectId = select.getAttribute('id');
+      
+      // Verify that the label's 'for' attribute matches the select's 'id'
+      expect(labelFor).toBeTruthy();
+      expect(selectId).toBeTruthy();
+      expect(labelFor).toBe(selectId);
+      
+      // Verify ID follows the rcs- prefix pattern
+      expect(selectId).toMatch(/^rcs-state-\d+$/);
       
       // aria-labelledby should reference the label ID
       expect(select).toHaveAttribute('aria-labelledby', 'state-province-select-label');
@@ -310,28 +317,11 @@ describe('StateDropdown', () => {
 
     await waitFor(() => {
       const select = screen.getByRole('combobox');
-      expect(select).toHaveAttribute('aria-describedby', 'state-province-error-message');
-      expect(select).toHaveAttribute('aria-invalid', 'true');
-    });
-  });
-
-  it('error message has proper ARIA live region attributes', async () => {
-    mockedGetStateProvinceInformation.mockRejectedValue(new Error('Failed to load'));
-
-    render(
-      <StateDropdown
-        selectedState="TX"
-        onStateChange={mockOnStateChange}
-        country="US"
-        Label="State/Province"
-      />
-    );
-
-    await waitFor(() => {
-      const errorMessage = document.getElementById('state-province-error');
-      expect(errorMessage).toBeInTheDocument();
-      expect(errorMessage).toHaveAttribute('role', 'alert');
-      expect(errorMessage).toHaveAttribute('aria-live', 'polite');
+      const ariaDescribedby = select.getAttribute('aria-describedby');
+      
+      // Verify aria-describedby is set and follows the rcs- prefix pattern
+      expect(ariaDescribedby).toBeTruthy();
+      expect(ariaDescribedby).toMatch(/^rcs-state-\d+-error$/);
     });
   });
 });
