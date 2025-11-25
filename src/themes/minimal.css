@@ -1,0 +1,83 @@
+/**
+ * Minimal Theme for react-country-state-selector
+ * 
+ * A clean, minimalist theme with subtle styling.
+ * Perfect for modern applications that prefer understated design.
+ * 
+ * Usage:
+ * import 'react-country-state-selector/dist/themes/minimal.css';
+ */
+
+:root {
+  /* Primary colors - minimal blue accent */
+  --rcss-primary-color: #3b82f6;
+  --rcss-primary-hover: #2563eb;
+  
+  /* Border styling - thin and subtle */
+  --rcss-border-color: #e5e7eb;
+  --rcss-border-radius: 0.25rem;
+  
+  /* Focus ring - subtle blue glow */
+  --rcss-focus-ring-color: rgba(59, 130, 246, 0.2);
+  
+  /* Text colors - neutral grays */
+  --rcss-text-color: #374151;
+  --rcss-label-color: #6b7280;
+  
+  /* Backgrounds - clean white */
+  --rcss-background-color: #ffffff;
+  --rcss-disabled-background: #f9fafb;
+  
+  /* Error styling - soft red */
+  --rcss-error-color: #ef4444;
+  --rcss-error-background: #fef2f2;
+  --rcss-error-border: #fecaca;
+  
+  /* Typography - system fonts */
+  --rcss-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rcss-font-size: 0.875rem;
+  --rcss-label-font-size: 0.875rem;
+  
+  /* Spacing - compact */
+  --rcss-spacing: 0.375rem;
+}
+
+/* Label overrides for minimal theme */
+label[for="country-select"],
+label[for="state-province-select"],
+label[for="language-select"] {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Select overrides for minimal theme */
+select#country-select,
+select#state-province-select,
+select#language-select,
+input#country-select,
+input#state-province-select,
+input#language-select {
+  padding: 0.5rem 0.75rem;
+  border-width: 1px;
+  box-shadow: none;
+}
+
+select#country-select:focus,
+select#state-province-select:focus,
+select#language-select:focus,
+input#country-select:focus,
+input#state-province-select:focus,
+input#language-select:focus {
+  box-shadow: 0 0 0 2px var(--rcss-focus-ring-color);
+}
+
+select#country-select:hover:not(:disabled),
+select#state-province-select:hover:not(:disabled),
+select#language-select:hover:not(:disabled),
+input#country-select:hover:not(:disabled),
+input#state-province-select:hover:not(:disabled),
+input#language-select:hover:not(:disabled) {
+  border-color: var(--rcss-border-color);
+  background-color: var(--rcss-disabled-background);
+}

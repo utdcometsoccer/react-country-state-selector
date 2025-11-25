@@ -1,0 +1,99 @@
+/**
+ * Material Design Theme for react-country-state-selector
+ * 
+ * A theme inspired by Google's Material Design principles.
+ * Features elevated surfaces, prominent focus states, and material colors.
+ * 
+ * Usage:
+ * import 'react-country-state-selector/dist/themes/material.css';
+ */
+
+:root {
+  /* Primary colors - Material blue */
+  --rcss-primary-color: #1976d2;
+  --rcss-primary-hover: #1565c0;
+  
+  /* Border styling - subtle borders with 4px radius */
+  --rcss-border-color: #bdbdbd;
+  --rcss-border-radius: 4px;
+  
+  /* Focus ring - material elevation effect */
+  --rcss-focus-ring-color: rgba(25, 118, 210, 0.3);
+  
+  /* Text colors - material typography */
+  --rcss-text-color: #212121;
+  --rcss-label-color: #616161;
+  
+  /* Backgrounds - material surfaces */
+  --rcss-background-color: #ffffff;
+  --rcss-disabled-background: #fafafa;
+  
+  /* Error styling - material red */
+  --rcss-error-color: #d32f2f;
+  --rcss-error-background: #ffebee;
+  --rcss-error-border: #ef9a9a;
+  
+  /* Typography - Roboto font family */
+  --rcss-font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --rcss-font-size: 1rem;
+  --rcss-label-font-size: 0.875rem;
+  
+  /* Spacing - material 8px grid */
+  --rcss-spacing: 0.5rem;
+}
+
+/* Label overrides for material theme */
+label[for="country-select"],
+label[for="state-province-select"],
+label[for="language-select"] {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--rcss-label-color);
+}
+
+/* Select overrides for material theme */
+select#country-select,
+select#state-province-select,
+select#language-select,
+input#country-select,
+input#state-province-select,
+input#language-select {
+  padding: 1rem 0.875rem;
+  border-width: 1px;
+  border-bottom-width: 2px;
+  border-radius: 4px 4px 0 0;
+  background-color: #fafafa;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+select#country-select:focus,
+select#state-province-select:focus,
+select#language-select:focus,
+input#country-select:focus,
+input#state-province-select:focus,
+input#language-select:focus {
+  background-color: #ffffff;
+  border-bottom-color: var(--rcss-primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+select#country-select:hover:not(:disabled),
+select#state-province-select:hover:not(:disabled),
+select#language-select:hover:not(:disabled),
+input#country-select:hover:not(:disabled),
+input#state-province-select:hover:not(:disabled),
+input#language-select:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Material elevation for containers */
+.country-dropdown-container,
+.state-dropdown-container,
+.language-dropdown-container {
+  padding: 0.5rem;
+  background-color: #ffffff;
+  border-radius: 4px;
+}
