@@ -159,7 +159,7 @@ describe('StateDropdown', () => {
 
     // Mock process.env for development mode
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'Development'; // Note: StateDropdown uses 'Development' not 'development'
+    process.env.NODE_ENV = 'development';
 
     render(
       <StateDropdown
@@ -287,11 +287,19 @@ describe('StateDropdown', () => {
       
       // Verify proper label-to-input association
       expect(label.tagName).toBe('LABEL');
-      expect(label).toHaveAttribute('for', 'state-province-select');
-      expect(select).toHaveAttribute('id', 'state-province-select');
+      const labelFor = label.getAttribute('for');
+      const selectId = select.getAttribute('id');
       
-      // aria-labelledby should not be present when using htmlFor/id
-      expect(select).not.toHaveAttribute('aria-labelledby');
+      // Verify that the label's 'for' attribute matches the select's 'id'
+      expect(labelFor).toBeTruthy();
+      expect(selectId).toBeTruthy();
+      expect(labelFor).toBe(selectId);
+      
+      // Verify ID follows the rcs- prefix pattern
+      expect(selectId).toMatch(/^rcs-state-\d+$/);
+      
+      // aria-labelledby should reference the label ID
+      expect(select).toHaveAttribute('aria-labelledby', 'state-province-select-label');
     });
   });
 
@@ -309,7 +317,11 @@ describe('StateDropdown', () => {
 
     await waitFor(() => {
       const select = screen.getByRole('combobox');
-      expect(select).toHaveAttribute('aria-describedby', 'state-province-error');
+      const ariaDescribedby = select.getAttribute('aria-describedby');
+      
+      // Verify aria-describedby is set and follows the rcs- prefix pattern
+      expect(ariaDescribedby).toBeTruthy();
+      expect(ariaDescribedby).toMatch(/^rcs-state-\d+-error$/);
     });
   });
 });

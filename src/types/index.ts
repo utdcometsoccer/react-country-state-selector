@@ -9,6 +9,7 @@ export interface ValidationProps {
 export interface LanguageDropdownProps extends ValidationProps {
     selectedLanguage?: Language;
     onLanguageChange: (language: Language) => void;
+    onSuccess?: (language: Language) => void;
     culture?: CultureInfo | string;
     languageInformation?: LanguageInformation[];
     getLanguageInformation?: (cultureInfo: CultureInfo) => Promise<LanguageInformation[]>;
@@ -21,6 +22,7 @@ export interface LanguageDropdownProps extends ValidationProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 // Type for a single element from languages JSON file
 export type LanguageInformation = {
@@ -31,6 +33,7 @@ export type LanguageInformation = {
 export interface CountryDropdownProps extends ValidationProps {
     selectedCountry?: string;
     onCountryChange: (country: string) => void;
+    onSuccess?: (country: string) => void;
     culture?: CultureInfo | string;
     countryInformation?: CountryInformation[];
     getCountryInformation?: GetCountryInformation;
@@ -43,6 +46,7 @@ export interface CountryDropdownProps extends ValidationProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 // Type for a single element from countries JSON file
 export type CountryInformation = {
@@ -158,6 +162,7 @@ export interface StateDropdownProps extends ValidationProps {
     getStateProvinceInformation?: GetStateProvinceInformation; 
     selectedState?: string;
     onStateChange: (state: string) => void;
+    onSuccess?: (state: string) => void;
     country: Country;
     culture?: CultureInfo | Culture;
     stateProvinceInformation?: StateProvinceInformation[];
@@ -170,6 +175,7 @@ export interface StateDropdownProps extends ValidationProps {
     showLoadingIndicator?: boolean;
     customLoadingIndicator?: ReactNode;
     loadingText?: string;
+    required?: boolean;
 }
 
 export interface GetCountryInformation {

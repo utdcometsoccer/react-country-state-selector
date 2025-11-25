@@ -4,6 +4,7 @@ import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import { Country, type CountryDropdownProps, CountryInformation, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
@@ -57,8 +58,9 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
 
 const CountryDropdown: FC<CountryDropdownProps> = ({ 
   selectedCountry, 
-  onCountryChange, 
-  culture, 
+  onCountryChange,
+  onSuccess,
+  culture,
   countryInformation, 
   getCountryInformation, 
   Label, 
@@ -87,8 +89,13 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     countryInformation: initialCountryInformation,
     error: null,
     isLoadingCountryInformation: false,
+    validationError: undefined,
     retryCount: 0
   });
+
+  const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  
+  const uniqueId = generateUniqueId('rcs-country-dropdown');
 
   useEffect(() => {
     if (state.countryInformation.length === 0 && !state.isLoadingCountryInformation) {
@@ -171,6 +178,14 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_COUNTRY', payload: value as Country });
     onCountryChange(value);
+    
+    // Show success feedback and trigger callback
+    if (onSuccess && value) {
+      setShowSuccessFeedback(true);
+      onSuccess(value);
+      // Hide success feedback after 2 seconds
+      setTimeout(() => setShowSuccessFeedback(false), 2000);
+    }
   };
 
   // Convert country information to VirtualSelect options
@@ -203,14 +218,14 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
 
   return (
     <DropdownErrorBoundary>
-      <div className="country-dropdown-container">
+      <div className="rcs-country-dropdown-container">
         {state.error && (
-          <div id="country-error" className="country-error-message">
+          <div id={`${uniqueId}-error`} className="rcs-country-error-message">
             {state.error}
             {state.retryCount < maxRetries && (
               <button 
                 onClick={handleRetry}
-                className="country-retry-button"
+                className="rcs-country-retry-button"
                 aria-label="Retry loading country data"
               >
                 Retry loading data
@@ -219,33 +234,38 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           </div>
         )}
         {state.validationError && (
-          <div id="country-validation-error" className="country-validation-error">
+          <div id={`${uniqueId}-validation-error`} className="rcs-country-validation-error">
             {state.validationError}
           </div>
         )}
+        {showSuccessFeedback && (
+          <div className="rcs-country-success-feedback">
+            ✓ Country selected successfully!
+          </div>
+        )}
         <label
-          htmlFor="country-select"
-          className={classNameLabel ?? 'country-dropdown-label'}
+          htmlFor={uniqueId}
+          className={classNameLabel ?? 'rcs-country-dropdown-label'}
         >
-          {Label}{required && <span className="required-indicator" aria-label="required"> *</span>}
+          {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
         </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />
       ) : enableSearch ? (
         <>
           <input
-            id="country-select"
-            list="country-datalist"
+            id={uniqueId}
+            list={`${uniqueId}-datalist`}
             value={getSelectedCountryName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'country-error' : state.validationError ? 'country-validation-error' : undefined}
+            aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
             aria-required={required}
             aria-invalid={!!state.validationError}
             placeholder="Search or select a country"
             autoComplete="off"
           />
-          <datalist id="country-datalist">
+          <datalist id={`${uniqueId}-datalist`}>
             {state.countryInformation.map((country) => (
               <option key={country.code} value={country.name} data-value={country.code}>
                 {country.name}
@@ -260,8 +280,8 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a country"
-          className={classNameSelect ?? 'country-dropdown-select'}
-          aria-describedby={state.error ? 'country-error' : state.validationError ? 'country-validation-error' : undefined}
+          className={classNameSelect ?? 'rcs-country-dropdown-select'}
+          aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
           aria-required={required}
           aria-invalid={!!state.validationError}
           enableVirtualScrolling={enableVirtualScrolling}

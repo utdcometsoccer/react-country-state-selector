@@ -1,6 +1,6 @@
 import CountryDropdown from '../components/CountryDropdown';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { CountryInformation } from '../types';
+import type { CountryInformation, CultureInfo } from '../types';
 import groupedCountries from '../components/CountryDropdown/countries-grouped-example.json';
 
 const meta = {
@@ -14,6 +14,7 @@ const meta = {
         classNameLabel: { control: 'text' },
         classNameSelect: { control: 'text' },
         enableSearch: { control: 'boolean' },
+        required: { control: 'boolean' },
     },
 } satisfies Meta<typeof CountryDropdown>;
 
@@ -92,5 +93,35 @@ export const WithSearchPreselected: Story = {
         classNameLabel: 'country-label',
         classNameSelect: 'country-select',
         enableSearch: true,
+    },
+};
+
+// Story demonstrating error handling with retry mechanism
+export const WithErrorHandling: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country (Error Demo)',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        // Mock function that always throws an error to demonstrate error handling
+        getCountryInformation: async (culture: CultureInfo) => {
+            throw new Error('Network error - unable to fetch country data');
+        },
+    },
+};
+
+export const RequiredField: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: '',
+        culture: 'en-US',
+        countryInformation: [],
+        Label: 'Country',
+        classNameLabel: 'country-label',
+        classNameSelect: 'country-select',
+        required: true,
     },
 };
