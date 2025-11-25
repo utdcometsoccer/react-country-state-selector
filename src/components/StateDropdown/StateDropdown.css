@@ -1,3 +1,7 @@
+/* StateDropdown component styles */
+/* Imports shared styles from shared.css */
+@import '../shared.css';
+
 /* Visual hierarchy: Typography and Spacing - Legacy classes for backward compatibility */
 .state-dropdown-label {
   display: block;
@@ -21,8 +25,6 @@
   margin-bottom: 16px;
 }
 
-/* Note: CSS custom properties are defined in CountryDropdown.css to avoid duplication */
-
 /* Error message styling */
 .state-error-message {
   color: var(--rcss-error-color);
@@ -36,18 +38,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-/* Error icon styling */
-.rcss-error-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  flex-shrink: 0;
-}
-
-.rcss-error-icon svg {
-  width: 100%;
-  height: 100%;
 }
 
 /* Retry button styling */
@@ -230,6 +220,7 @@ input#state-province-select::placeholder {
     transition: none;
   }
 }
+
 /* Validation error styling */
 .rcs-state-validation-error {
   color: var(--rcss-error-color);
@@ -286,17 +277,6 @@ input#state-province-select::placeholder {
   animation: rcss-success-pulse 0.6s ease-out;
 }
 
-/* Success feedback animation */
-@keyframes rcss-success-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 3px transparent;
-  }
-  50% {
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .rcs-state-retry-button {
     transition: none;
@@ -312,21 +292,12 @@ input#state-province-select::placeholder {
 }
 
 /* ============================================
-   Mobile-First & Touch Optimization
+   Mobile-First & Touch Optimization (component-specific)
+   Shared mobile/touch media queries are in shared.css
    ============================================ */
 
-/* Mobile devices: Larger touch targets (minimum 44x44px per iOS HIG and Material Design) */
+/* Mobile devices: Component-specific styles */
 @media (max-width: 768px) {
-  /* Increase padding for easier touch interaction */
-  select,
-  input {
-    padding: 0.75rem 1rem;
-    font-size: 16px;
-    /* Prevents iOS zoom on focus */
-    min-height: 44px;
-    /* iOS Human Interface Guidelines minimum touch target */
-  }
-
   /* Larger label for better readability on mobile */
   .rcs-state-dropdown-label {
     font-size: 1rem;
@@ -342,38 +313,5 @@ input#state-province-select::placeholder {
   .rcs-state-error-message {
     padding: 0.625rem;
     font-size: 0.9375rem;
-  }
-}
-
-/* Small mobile devices (portrait phones) */
-@media (max-width: 480px) {
-  select,
-  input {
-    padding: 0.875rem 1rem;
-    font-size: 16px;
-    min-height: 48px;
-    /* Extra large touch target for small screens */
-  }
-}
-
-/* Touch device optimizations (tablets and phones) */
-@media (hover: none) and (pointer: coarse) {
-  /* Larger tap targets for touch screens */
-  select,
-  input {
-    min-height: 44px;
-    padding: 0.75rem 1rem;
-  }
-
-  /* Remove hover states on touch devices */
-  select:hover:not(:disabled),
-  input:hover:not(:disabled) {
-    border-color: var(--rcss-border-color);
-  }
-
-  /* Enhanced focus states for touch */
-  select:focus,
-  input:focus {
-    box-shadow: 0 0 0 4px var(--rcss-focus-ring-color);
   }
 }

@@ -1,3 +1,7 @@
+/* VirtualSelect component styles */
+/* Imports shared styles from shared.css */
+@import '../shared.css';
+
 /* Virtual Select Container */
 .virtual-select-container {
   position: relative;
