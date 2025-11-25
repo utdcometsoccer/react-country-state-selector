@@ -249,7 +249,7 @@ describe('LanguageDropdown', () => {
     
     // The label points to a dynamically generated ID
     expect(labelFor).toBeTruthy();
-    expect(labelFor).toMatch(/^rcs-rcs-language-dropdown-\d+$/);
+    expect(labelFor).toMatch(/^rcs-language-dropdown-\d+$/);
     
     // VirtualSelect uses a fixed ID
     const selectId = select.getAttribute('id');
@@ -273,7 +273,7 @@ describe('LanguageDropdown', () => {
       
       // Verify aria-describedby is set and follows the rcs- prefix pattern
       expect(ariaDescribedby).toBeTruthy();
-      expect(ariaDescribedby).toMatch(/^rcs-rcs-language-dropdown-\d+-error$/);
+      expect(ariaDescribedby).toMatch(/^rcs-language-dropdown-\d+-error$/);
     });
   });
 });

@@ -165,7 +165,7 @@ describe('Integration Tests', () => {
     const countryLabel = screen.getByText('Country');
     const languageLabel = screen.getByText('Language');
     
-    expect(countryLabel.getAttribute('for')).toMatch(/^rcs-rcs-country-dropdown-\d+$/);
-    expect(languageLabel.getAttribute('for')).toMatch(/^rcs-rcs-language-dropdown-\d+$/);
+    expect(countryLabel.getAttribute('for')).toMatch(/^rcs-country-dropdown-\d+$/);
+    expect(languageLabel.getAttribute('for')).toMatch(/^rcs-language-dropdown-\d+$/);
   });
 });

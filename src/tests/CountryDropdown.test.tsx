@@ -250,7 +250,7 @@ describe('CountryDropdown', () => {
     
     // The label points to a dynamically generated ID
     expect(labelFor).toBeTruthy();
-    expect(labelFor).toMatch(/^rcs-rcs-country-dropdown-\d+$/);
+    expect(labelFor).toMatch(/^rcs-country-dropdown-\d+$/);
     
     // VirtualSelect uses a fixed ID
     const selectId = select.getAttribute('id');
@@ -274,7 +274,7 @@ describe('CountryDropdown', () => {
       
       // Verify aria-describedby is set and follows the rcs- prefix pattern
       expect(ariaDescribedby).toBeTruthy();
-      expect(ariaDescribedby).toMatch(/^rcs-rcs-country-dropdown-\d+-error$/);
+      expect(ariaDescribedby).toMatch(/^rcs-country-dropdown-\d+-error$/);
     });
   });
 });

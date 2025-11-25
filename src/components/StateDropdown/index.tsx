@@ -93,7 +93,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
 
   const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
   
-  const uniqueId = generateUniqueId('rcs-state-dropdown');
+  const uniqueId = generateUniqueId('state-dropdown');
 
   useEffect(() => {
     if (state.stateProvinceInformation.length === 0 && !state.isLoadingStateProvinceInformation) {

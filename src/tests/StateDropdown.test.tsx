@@ -291,7 +291,7 @@ describe('StateDropdown', () => {
       
       // The label points to a dynamically generated ID
       expect(labelFor).toBeTruthy();
-      expect(labelFor).toMatch(/^rcs-rcs-state-dropdown-\d+$/);
+      expect(labelFor).toMatch(/^rcs-state-dropdown-\d+$/);
       
       // VirtualSelect uses a fixed ID
       const selectId = select.getAttribute('id');
@@ -317,7 +317,7 @@ describe('StateDropdown', () => {
       
       // Verify aria-describedby is set and follows the rcs- prefix pattern
       expect(ariaDescribedby).toBeTruthy();
-      expect(ariaDescribedby).toMatch(/^rcs-rcs-state-dropdown-\d+-error$/);
+      expect(ariaDescribedby).toMatch(/^rcs-state-dropdown-\d+-error$/);
     });
   });
 });
