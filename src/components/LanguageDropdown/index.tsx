@@ -245,8 +245,10 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
     <DropdownErrorBoundary>
       <div className="rcs-language-dropdown-container">
         {state.error && (
-          <div id={`${uniqueId}-error`} className="rcs-language-error-message">
-            {state.error}
+          <div className="rcs-language-error-container">
+            <div id={`${uniqueId}-error`} className="rcs-language-error-message" role="alert">
+              {state.error}
+            </div>
             {state.retryCount < maxRetries && (
               <button 
                 onClick={handleRetry}

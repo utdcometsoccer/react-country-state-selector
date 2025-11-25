@@ -246,8 +246,10 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     <DropdownErrorBoundary>
       <div className="rcs-country-dropdown-container">
         {state.error && (
-          <div id={`${uniqueId}-error`} className="rcs-country-error-message">
-            {state.error}
+          <div className="rcs-country-error-container">
+            <div id={`${uniqueId}-error`} className="rcs-country-error-message" role="alert">
+              {state.error}
+            </div>
             {state.retryCount < maxRetries && (
               <button 
                 onClick={handleRetry}
