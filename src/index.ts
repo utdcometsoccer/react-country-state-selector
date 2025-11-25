@@ -4,6 +4,7 @@ export { default as CountryDropdown } from './components/CountryDropdown';
 export { default as StateDropdown } from './components/StateDropdown';
 export { default as LoadingIndicator } from './components/LoadingIndicator';
 export { default as LoadingSpinner } from './components/LoadingSpinner';
+export { default as DropdownErrorBoundary } from './components/DropdownErrorBoundary';
 export * from './types';
 export * from './services/cultureFromBrowser';
 export * from './services/getCountryInformation';

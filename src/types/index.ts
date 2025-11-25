@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 
-export interface LanguageDropdownProps {
+export interface ValidationProps {
+    required?: boolean;
+    validate?: (value: string) => string | undefined;
+    onValidationError?: (error: string) => void;
+}
+
+export interface LanguageDropdownProps extends ValidationProps {
     selectedLanguage?: Language;
     onLanguageChange: (language: Language) => void;
     onSuccess?: (language: Language) => void;
@@ -24,7 +30,7 @@ export type LanguageInformation = {
     name: string;
     group?: string;
 };
-export interface CountryDropdownProps {
+export interface CountryDropdownProps extends ValidationProps {
     selectedCountry?: string;
     onCountryChange: (country: string) => void;
     onSuccess?: (country: string) => void;
@@ -152,7 +158,7 @@ export class CultureInfo{
     }
 }
 
-export interface StateDropdownProps {
+export interface StateDropdownProps extends ValidationProps {
     getStateProvinceInformation?: GetStateProvinceInformation; 
     selectedState?: string;
     onStateChange: (state: string) => void;
