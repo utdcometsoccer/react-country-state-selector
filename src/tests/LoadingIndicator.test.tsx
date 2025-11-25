@@ -3,13 +3,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 
 import LoadingIndicator from '../components/LoadingIndicator';
-import CountryDropdown from '@/components/CountryDropdown';
-import LanguageDropdown from '@/components/LanguageDropdown';
-import StateDropdown from '@/components/StateDropdown';
-import { cultureFromBrowser } from '@/services/cultureFromBrowser';
-import { getCountryInformationByCulture } from '@/services/getCountryInformation';
-import { getLanguageInformationByCulture } from '@/services/getLanguageInformation';
-import { getStateProvinceInformationByCulture } from '@/services/getStateProvinceInformation';
+import CountryDropdown from '../components/CountryDropdown';
+import LanguageDropdown from '../components/LanguageDropdown';
+import StateDropdown from '../components/StateDropdown';
+import { cultureFromBrowser } from '../services/cultureFromBrowser';
+import { getCountryInformationByCulture } from '../services/getCountryInformation';
+import { getLanguageInformationByCulture } from '../services/getLanguageInformation';
+import { getStateProvinceInformationByCulture } from '../services/getStateProvinceInformation';
 import { 
   Country, 
   CountryInformation, 
@@ -17,7 +17,7 @@ import {
   LanguageInformation, 
   Language, 
   CultureInfo 
-} from '@/types';
+} from '../types';
 
 describe('LoadingIndicator', () => {
   it('renders with default message', () => {
@@ -77,6 +77,33 @@ describe('LoadingIndicator', () => {
     
     const statusElement = screen.getByRole('status');
     expect(statusElement).toHaveAttribute('aria-label', 'Loading content');
+  });
+
+  it('has aria-live="polite" for screen reader announcements', () => {
+    render(<LoadingIndicator />);
+    
+    const statusElement = screen.getByRole('status');
+    expect(statusElement).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('has aria-busy="true" to indicate loading state', () => {
+    render(<LoadingIndicator />);
+    
+    const statusElement = screen.getByRole('status');
+    expect(statusElement).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('announces loading state changes to screen readers', () => {
+    const { rerender } = render(<LoadingIndicator message="Loading countries..." />);
+    
+    const statusElement = screen.getByRole('status');
+    expect(statusElement).toHaveAttribute('aria-live', 'polite');
+    expect(statusElement).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByText('Loading countries...')).toBeInTheDocument();
+
+    // Test that the component can be updated with a new message
+    rerender(<LoadingIndicator message="Loading complete" />);
+    expect(screen.getByText('Loading complete')).toBeInTheDocument();
   });
 });
 

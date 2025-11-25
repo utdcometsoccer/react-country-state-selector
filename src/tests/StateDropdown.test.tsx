@@ -298,8 +298,8 @@ describe('StateDropdown', () => {
       // Verify ID follows the rcs- prefix pattern
       expect(selectId).toMatch(/^rcs-state-\d+$/);
       
-      // aria-labelledby should not be present when using htmlFor/id
-      expect(select).not.toHaveAttribute('aria-labelledby');
+      // aria-labelledby should reference the label ID
+      expect(select).toHaveAttribute('aria-labelledby', 'state-province-select-label');
     });
   });
 

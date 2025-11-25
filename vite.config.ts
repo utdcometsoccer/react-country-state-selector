@@ -13,6 +13,11 @@ export default defineConfig({
   plugins: [react(), dts({
     insertTypesEntry: true, // Ensures type definitions are included in the package entry
   })],
+  resolve: {
+    alias: {
+      '@': path.resolve(dirname, './src')
+    }
+  },
   build: {
     lib: {
       entry: 'src/index.ts',

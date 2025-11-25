@@ -84,17 +84,17 @@
 .virtual-select-option:hover,
 .virtual-select-option.highlighted {
   background-color: var(--rcss-primary-color, #0066cc);
-  color: #ffffff;
+  color: var(--rcss-highlight-text-color, #ffffff);
 }
 
 .virtual-select-option.selected {
   font-weight: 600;
-  background-color: rgba(0, 102, 204, 0.1);
+  background-color: var(--rcss-selected-background, rgba(0, 102, 204, 0.1));
 }
 
 .virtual-select-option.selected.highlighted {
   background-color: var(--rcss-primary-color, #0066cc);
-  color: #ffffff;
+  color: var(--rcss-highlight-text-color, #ffffff);
 }
 
 .virtual-select-option.grouped {
@@ -107,7 +107,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--rcss-label-color, #374151);
-  background-color: #f9fafb;
+  background-color: var(--rcss-group-background, #f9fafb);
   border-bottom: 1px solid var(--rcss-border-color, #d1d5db);
   text-transform: uppercase;
   letter-spacing: 0.05em;

@@ -244,20 +244,18 @@ describe('LanguageDropdown', () => {
     const label = screen.getByText('Language');
     
     // Verify proper label-to-input association
-    expect(label.tagName).toBe('LABEL');
-    const labelFor = label.getAttribute('for');
-    const selectId = select.getAttribute('id');
-    
-    // Verify that the label's 'for' attribute matches the select's 'id'
-    expect(labelFor).toBeTruthy();
-    expect(selectId).toBeTruthy();
-    expect(labelFor).toBe(selectId);
-    
-    // Verify ID follows the rcs- prefix pattern
-    expect(selectId).toMatch(/^rcs-language-\d+$/);
-    
-    // aria-labelledby should not be present when using htmlFor/id
-    expect(select).not.toHaveAttribute('aria-labelledby');
+      expect(label.tagName).toBe('LABEL');
+      const labelFor = label.getAttribute('for');
+      const selectId = select.getAttribute('id');
+      
+      // Verify that the label's 'for' attribute matches the select's 'id'
+      expect(labelFor).toBeTruthy();
+      expect(selectId).toBeTruthy();
+      expect(labelFor).toBe(selectId);
+      
+      // Verify ID follows the rcs- prefix pattern
+      expect(selectId).toMatch(/^rcs-language-\d+$/);    // aria-labelledby should reference the label ID
+    expect(select).toHaveAttribute('aria-labelledby', 'language-select-label');
   });
 
   it('sets error aria attributes when error is present', async () => {
