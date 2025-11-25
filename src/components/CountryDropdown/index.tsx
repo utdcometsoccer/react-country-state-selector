@@ -1,13 +1,15 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
 import './CountryDropdown.css';
 import { cultureFromBrowser } from '../../services/cultureFromBrowser';
 import { getCountryInformationByCulture } from '../../services/getCountryInformation';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import { Country, type CountryDropdownProps, CountryInformation, CultureInfo } from '../../types';
 import LoadingIndicator from '../LoadingIndicator';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
 import LoadingSpinner from '../LoadingSpinner';
+import DropdownErrorBoundary from '../DropdownErrorBoundary';
 
 interface CountryDropdownState {
   selectedCountry: Country;
@@ -16,6 +18,8 @@ interface CountryDropdownState {
   countryInformation: CountryInformation[];
   error?: string | null;
   isLoadingCountryInformation: boolean;
+  validationError?: string;
+  retryCount: number;
 }
 
 type CountryDropdownAction =
@@ -23,7 +27,10 @@ type CountryDropdownAction =
   | { type: 'SET_CULTURE'; payload: CultureInfo | string }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_COUNTRY_INFORMATION'; payload: CountryInformation[] }
-  | { type: 'SET_LOADING_COUNTRY_INFORMATION'; payload: boolean };
+  | { type: 'SET_LOADING_COUNTRY_INFORMATION'; payload: boolean }
+  | { type: 'SET_VALIDATION_ERROR'; payload?: string }
+  | { type: 'INCREMENT_RETRY_COUNT' }
+  | { type: 'RESET_RETRY_COUNT' };
 
 function reducer(state: CountryDropdownState, action: CountryDropdownAction): CountryDropdownState {
   switch (action.type) {
@@ -38,6 +45,12 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
       return { ...state, countryInformation: action.payload };
     case 'SET_LOADING_COUNTRY_INFORMATION':
       return { ...state, isLoadingCountryInformation: action.payload };
+    case 'SET_VALIDATION_ERROR':
+      return { ...state, validationError: action.payload };
+    case 'INCREMENT_RETRY_COUNT':
+      return { ...state, retryCount: state.retryCount + 1 };
+    case 'RESET_RETRY_COUNT':
+      return { ...state, retryCount: 0 };
     default:
       return state;
   }
@@ -45,8 +58,9 @@ function reducer(state: CountryDropdownState, action: CountryDropdownAction): Co
 
 const CountryDropdown: FC<CountryDropdownProps> = ({ 
   selectedCountry, 
-  onCountryChange, 
-  culture, 
+  onCountryChange,
+  onSuccess,
+  culture,
   countryInformation, 
   getCountryInformation, 
   Label, 
@@ -57,8 +71,12 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   enableSearch = false,
   showLoadingIndicator = true,
   customLoadingIndicator,
-  loadingText = "Loading country information..."
+  loadingText = "Loading country information...",
+  required = false,
+  validate,
+  onValidationError
 }) => {
+  const maxRetries = 3;
   // Set default for getCountryInformation if not provided
   const effectiveGetCountryInformation = getCountryInformation ?? getCountryInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
@@ -70,8 +88,14 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     cultureInfo: initialCultureInfo,
     countryInformation: initialCountryInformation,
     error: null,
-    isLoadingCountryInformation: false
+    isLoadingCountryInformation: false,
+    validationError: undefined,
+    retryCount: 0
   });
+
+  const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  
+  const uniqueId = generateUniqueId('rcs-country-dropdown');
 
   useEffect(() => {
     if (state.countryInformation.length === 0 && !state.isLoadingCountryInformation) {
@@ -94,9 +118,74 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
     }
   }, [state.countryInformation.length, state.cultureInfo, effectiveGetCountryInformation]);
 
+  // Sync selected country from props to state
+  useEffect(() => {
+    if (selectedCountry !== state.selectedCountry) {
+      dispatch({ type: 'SET_COUNTRY', payload: selectedCountry as Country });
+    }
+  }, [selectedCountry, state.selectedCountry]);
+
+  // Validation effect
+  useEffect(() => {
+    if (!state.selectedCountry) {
+      if (required) {
+        const error = 'Country selection is required';
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+        if (onValidationError) {
+          onValidationError(error);
+        }
+      } else {
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+      }
+      return;
+    }
+
+    if (validate) {
+      const error = validate(state.selectedCountry);
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+      if (error && onValidationError) {
+        onValidationError(error);
+      }
+    } else {
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+    }
+  }, [state.selectedCountry, required, validate, onValidationError]);
+
+  const handleRetry = () => {
+    if (state.retryCount < maxRetries) {
+      dispatch({ type: 'INCREMENT_RETRY_COUNT' });
+      dispatch({ type: 'SET_ERROR', payload: null });
+      dispatch({ type: 'SET_LOADING_COUNTRY_INFORMATION', payload: true });
+      (async () => {
+        try {
+          const info = await effectiveGetCountryInformation(state.cultureInfo!);
+          dispatch({ type: 'SET_COUNTRY_INFORMATION', payload: info });
+          dispatch({ type: 'SET_ERROR', payload: null });
+          dispatch({ type: 'RESET_RETRY_COUNT' });
+        } catch (err: any) {
+          if (process.env.NODE_ENV === 'development') {
+            dispatch({ type: 'SET_ERROR', payload: `Error loading country information: ${err?.message}\n${err?.stack}` });
+          } else {
+            dispatch({ type: 'SET_ERROR', payload: 'Error loading country information. Please try again later.' });
+          }
+        } finally {
+          dispatch({ type: 'SET_LOADING_COUNTRY_INFORMATION', payload: false });
+        }
+      })();
+    }
+  };
+
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_COUNTRY', payload: value as Country });
     onCountryChange(value);
+    
+    // Show success feedback and trigger callback
+    if (onSuccess && value) {
+      setShowSuccessFeedback(true);
+      onSuccess(value);
+      // Hide success feedback after 2 seconds
+      setTimeout(() => setShowSuccessFeedback(false), 2000);
+    }
   };
 
   // Convert country information to VirtualSelect options
@@ -128,29 +217,55 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
   };
 
   return (
-    <div className="country-dropdown-container">
-      {state.error && <div id="country-error" className="country-error-message">{state.error}</div>}
-      <label
-        htmlFor="country-select"
-        className={classNameLabel ?? 'country-dropdown-label'}
-      >
-        {Label}
-      </label>
+    <DropdownErrorBoundary>
+      <div className="rcs-country-dropdown-container">
+        {state.error && (
+          <div id={`${uniqueId}-error`} className="rcs-country-error-message">
+            {state.error}
+            {state.retryCount < maxRetries && (
+              <button 
+                onClick={handleRetry}
+                className="rcs-country-retry-button"
+                aria-label="Retry loading country data"
+              >
+                Retry loading data
+              </button>
+            )}
+          </div>
+        )}
+        {state.validationError && (
+          <div id={`${uniqueId}-validation-error`} className="rcs-country-validation-error">
+            {state.validationError}
+          </div>
+        )}
+        {showSuccessFeedback && (
+          <div className="rcs-country-success-feedback">
+            ✓ Country selected successfully!
+          </div>
+        )}
+        <label
+          htmlFor={uniqueId}
+          className={classNameLabel ?? 'rcs-country-dropdown-label'}
+        >
+          {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
+        </label>
       {state.isLoadingCountryInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading country information" />
       ) : enableSearch ? (
         <>
           <input
-            id="country-select"
-            list="country-datalist"
+            id={uniqueId}
+            list={`${uniqueId}-datalist`}
             value={getSelectedCountryName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'country-error' : undefined}
+            aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
+            aria-required={required}
+            aria-invalid={!!state.validationError}
             placeholder="Search or select a country"
             autoComplete="off"
           />
-          <datalist id="country-datalist">
+          <datalist id={`${uniqueId}-datalist`}>
             {state.countryInformation.map((country) => (
               <option key={country.code} value={country.name} data-value={country.code}>
                 {country.name}
@@ -165,13 +280,16 @@ const CountryDropdown: FC<CountryDropdownProps> = ({
           onChange={handleChange}
           options={virtualSelectOptions}
           placeholder="Select a country"
-          className={classNameSelect ?? 'country-dropdown-select'}
-          aria-describedby={state.error ? 'country-error' : undefined}
+          className={classNameSelect ?? 'rcs-country-dropdown-select'}
+          aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
+          aria-required={required}
+          aria-invalid={!!state.validationError}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
       )}
-    </div>
+      </div>
+    </DropdownErrorBoundary>
   );
 };
 

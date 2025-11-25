@@ -1,12 +1,14 @@
-import { type ChangeEvent, type FC, useEffect, useReducer } from 'react';
+import { type ChangeEvent, type FC, useEffect, useReducer, useState } from 'react';
 import './StateDropdown.css';
 import { getStateProvinceInformationByCulture } from '../../services/getStateProvinceInformation';
 import { CultureInfo, type StateDropdownProps, StateProvinceInformation } from '../../types';
 import { resolveCultureInfo } from '../../utils/cultureResolution';
 import { renderGroupedOptions } from '../../utils/renderOptions';
+import { generateUniqueId } from '../../utils/generateId';
 import LoadingIndicator from '../LoadingIndicator';
 import LoadingSpinner from '../LoadingSpinner';
 import VirtualSelect, { type VirtualSelectOption } from '../VirtualSelect';
+import DropdownErrorBoundary from '../DropdownErrorBoundary';
 
 interface StateDropdownState {
   selectedState?: string;
@@ -15,6 +17,8 @@ interface StateDropdownState {
   stateProvinceInformation: StateProvinceInformation[];
   error?: string | null;
   isLoadingStateProvinceInformation: boolean;
+  validationError?: string;
+  retryCount: number;
 }
 
 type StateDropdownAction =
@@ -22,7 +26,10 @@ type StateDropdownAction =
   | { type: 'SET_CULTURE'; payload: CultureInfo | string }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_STATE_PROVINCE_INFORMATION'; payload: StateProvinceInformation[] }
-  | { type: 'SET_LOADING_STATE_PROVINCE_INFORMATION'; payload: boolean };
+  | { type: 'SET_LOADING_STATE_PROVINCE_INFORMATION'; payload: boolean }
+  | { type: 'SET_VALIDATION_ERROR'; payload?: string }
+  | { type: 'INCREMENT_RETRY_COUNT' }
+  | { type: 'RESET_RETRY_COUNT' };
 
 function reducer(state: StateDropdownState, action: StateDropdownAction): StateDropdownState {
   switch (action.type) {
@@ -37,6 +44,12 @@ function reducer(state: StateDropdownState, action: StateDropdownAction): StateD
       return { ...state, stateProvinceInformation: action.payload };
     case 'SET_LOADING_STATE_PROVINCE_INFORMATION':
       return { ...state, isLoadingStateProvinceInformation: action.payload };
+    case 'SET_VALIDATION_ERROR':
+      return { ...state, validationError: action.payload };
+    case 'INCREMENT_RETRY_COUNT':
+      return { ...state, retryCount: state.retryCount + 1 };
+    case 'RESET_RETRY_COUNT':
+      return { ...state, retryCount: 0 };
     default:
       return state;
   }
@@ -46,6 +59,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
   getStateProvinceInformation,
   stateProvinceInformation, selectedState,
   onStateChange,
+  onSuccess,
   country,
   culture,
   Label,
@@ -56,8 +70,12 @@ const StateDropdown: FC<StateDropdownProps> = ({
   showLoadingIndicator = true,
   customLoadingIndicator,
   loadingText = "Loading state/province information...",
-  enableSearch = false
+  enableSearch = false,
+  required = false,
+  validate,
+  onValidationError
 }) => {
+  const maxRetries = 3;
   const effectiveGetStateProvinceInformation = getStateProvinceInformation || getStateProvinceInformationByCulture;
   const initialCultureInfo: CultureInfo = resolveCultureInfo(culture);
   const initialStateProvinceInformation: StateProvinceInformation[] = stateProvinceInformation ?? [];
@@ -68,8 +86,14 @@ const StateDropdown: FC<StateDropdownProps> = ({
     cultureInfo: initialCultureInfo,
     stateProvinceInformation: initialStateProvinceInformation,
     error: null,
-    isLoadingStateProvinceInformation: false
+    isLoadingStateProvinceInformation: false,
+    validationError: undefined,
+    retryCount: 0
   });
+
+  const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+  
+  const uniqueId = generateUniqueId('rcs-state-dropdown');
 
   useEffect(() => {
     if (state.stateProvinceInformation.length === 0 && !state.isLoadingStateProvinceInformation) {
@@ -92,9 +116,74 @@ const StateDropdown: FC<StateDropdownProps> = ({
     }
   }, [state.stateProvinceInformation.length, state.cultureInfo, country]);
 
+  // Sync selected state from props to state
+  useEffect(() => {
+    if (selectedState !== state.selectedState) {
+      dispatch({ type: 'SET_STATE', payload: selectedState });
+    }
+  }, [selectedState, state.selectedState]);
+
+  // Validation effect
+  useEffect(() => {
+    if (!state.selectedState) {
+      if (required) {
+        const error = 'State/Province selection is required';
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+        if (onValidationError) {
+          onValidationError(error);
+        }
+      } else {
+        dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+      }
+      return;
+    }
+
+    if (validate) {
+      const error = validate(state.selectedState);
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: error });
+      if (error && onValidationError) {
+        onValidationError(error);
+      }
+    } else {
+      dispatch({ type: 'SET_VALIDATION_ERROR', payload: undefined });
+    }
+  }, [state.selectedState, required, validate, onValidationError]);
+
+  const handleRetry = () => {
+    if (state.retryCount < maxRetries) {
+      dispatch({ type: 'INCREMENT_RETRY_COUNT' });
+      dispatch({ type: 'SET_ERROR', payload: null });
+      dispatch({ type: 'SET_LOADING_STATE_PROVINCE_INFORMATION', payload: true });
+      (async () => {
+        try {
+          const info = await effectiveGetStateProvinceInformation(state.cultureInfo!);
+          dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: info });
+          dispatch({ type: 'SET_ERROR', payload: null });
+          dispatch({ type: 'RESET_RETRY_COUNT' });
+        } catch (err: any) {
+          if (process.env.NODE_ENV === 'Development') {
+            dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
+          } else {
+            dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
+          }
+        } finally {
+          dispatch({ type: 'SET_LOADING_STATE_PROVINCE_INFORMATION', payload: false });
+        }
+      })();
+    }
+  };
+
   const handleChange = (value: string) => {
     dispatch({ type: 'SET_STATE', payload: value });
     onStateChange(value);
+    
+    // Show success feedback and trigger callback
+    if (onSuccess && value) {
+      setShowSuccessFeedback(true);
+      onSuccess(value);
+      // Hide success feedback after 2 seconds
+      setTimeout(() => setShowSuccessFeedback(false), 2000);
+    }
   };
 
   // Convert state/province information to VirtualSelect options
@@ -126,29 +215,55 @@ const StateDropdown: FC<StateDropdownProps> = ({
   };
 
   return (
-    <div className="state-dropdown-container">
-      {state.error && <div id="state-province-error" className="state-error-message">{state.error}</div>}
-      <label
-        htmlFor="state-province-select"
-        className={classNameLabel ?? 'state-dropdown-label'}
-      >
-        {Label}
-      </label>
+    <DropdownErrorBoundary>
+      <div className="rcs-state-dropdown-container">
+        {state.error && (
+          <div id={`${uniqueId}-error`} className="rcs-state-error-message">
+            {state.error}
+            {state.retryCount < maxRetries && (
+              <button 
+                onClick={handleRetry}
+                className="rcs-state-retry-button"
+                aria-label="Retry loading state/province data"
+              >
+                Retry loading data
+              </button>
+            )}
+          </div>
+        )}
+        {state.validationError && (
+          <div id={`${uniqueId}-validation-error`} className="rcs-state-validation-error">
+            {state.validationError}
+          </div>
+        )}
+        {showSuccessFeedback && (
+          <div className="rcs-state-success-feedback">
+            ✓ State/Province selected successfully!
+          </div>
+        )}
+        <label
+          htmlFor={uniqueId}
+          className={classNameLabel ?? 'rcs-state-dropdown-label'}
+        >
+          {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
+        </label>
       {state.isLoadingStateProvinceInformation ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
       ) : enableSearch ? (
         <>
           <input
-            id="state-province-select"
-            list="state-province-datalist"
+            id={uniqueId}
+            list={`${uniqueId}-datalist`}
             value={getSelectedStateName()}
             onChange={handleSearchChange}
             className={classNameSelect ?? undefined}
-            aria-describedby={state.error ? 'state-province-error' : undefined}
+            aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
+            aria-required={required}
+            aria-invalid={!!state.validationError}
             placeholder="Search or select a state/province"
             autoComplete="off"
           />
-          <datalist id="state-province-datalist">
+          <datalist id={`${uniqueId}-datalist`}>
             {state.stateProvinceInformation.map((stateProvince) => (
               <option key={stateProvince.code} value={stateProvince.name} data-value={stateProvince.code}>
                 {stateProvince.name}
@@ -164,12 +279,15 @@ const StateDropdown: FC<StateDropdownProps> = ({
           options={virtualSelectOptions}
           placeholder="Select a state/province"
           className={classNameSelect ?? undefined}
-          aria-describedby={state.error ? 'state-province-error' : undefined}
+          aria-describedby={state.error ? `${uniqueId}-error` : state.validationError ? `${uniqueId}-validation-error` : undefined}
+          aria-required={required}
+          aria-invalid={!!state.validationError}
           enableVirtualScrolling={enableVirtualScrolling}
           virtualScrollThreshold={virtualScrollThreshold}
         />
       )}
-    </div>
+      </div>
+    </DropdownErrorBoundary>
   );
 };
 
