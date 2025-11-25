@@ -104,7 +104,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
           dispatch({ type: 'SET_STATE_PROVINCE_INFORMATION', payload: info });
           dispatch({ type: 'SET_ERROR', payload: null });
         } catch (err: any) {
-          if (process.env.NODE_ENV === 'Development') {
+          if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
           } else {
             dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
@@ -161,7 +161,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
           dispatch({ type: 'SET_ERROR', payload: null });
           dispatch({ type: 'RESET_RETRY_COUNT' });
         } catch (err: any) {
-          if (process.env.NODE_ENV === 'Development') {
+          if (process.env.NODE_ENV === 'development') {
             dispatch({ type: 'SET_ERROR', payload: `Error loading state/province information: ${err?.message}\n${err?.stack}` });
           } else {
             dispatch({ type: 'SET_ERROR', payload: 'Error loading state/province information. Please try again later.' });
@@ -247,7 +247,7 @@ const StateDropdown: FC<StateDropdownProps> = ({
         >
           {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
         </label>
-      {state.isLoadingStateProvinceInformation ? (
+      {state.isLoadingStateProvinceInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading state or province information" />
       ) : enableSearch ? (
         <>

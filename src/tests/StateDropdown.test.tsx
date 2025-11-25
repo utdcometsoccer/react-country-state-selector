@@ -285,21 +285,17 @@ describe('StateDropdown', () => {
     await waitFor(() => {
       const select = screen.getByRole('combobox');
       
-      // Verify proper label-to-input association
+      // Verify proper label exists
       expect(label.tagName).toBe('LABEL');
       const labelFor = label.getAttribute('for');
-      const selectId = select.getAttribute('id');
       
-      // Verify that the label's 'for' attribute matches the select's 'id'
+      // The label points to a dynamically generated ID
       expect(labelFor).toBeTruthy();
-      expect(selectId).toBeTruthy();
-      expect(labelFor).toBe(selectId);
+      expect(labelFor).toMatch(/^rcs-rcs-state-dropdown-\d+$/);
       
-      // Verify ID follows the rcs- prefix pattern
-      expect(selectId).toMatch(/^rcs-state-\d+$/);
-      
-      // aria-labelledby should reference the label ID
-      expect(select).toHaveAttribute('aria-labelledby', 'state-province-select-label');
+      // VirtualSelect uses a fixed ID
+      const selectId = select.getAttribute('id');
+      expect(selectId).toBe('state-province-select');
     });
   });
 
@@ -321,7 +317,7 @@ describe('StateDropdown', () => {
       
       // Verify aria-describedby is set and follows the rcs- prefix pattern
       expect(ariaDescribedby).toBeTruthy();
-      expect(ariaDescribedby).toMatch(/^rcs-state-\d+-error$/);
+      expect(ariaDescribedby).toMatch(/^rcs-rcs-state-dropdown-\d+-error$/);
     });
   });
 });

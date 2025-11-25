@@ -248,7 +248,7 @@ const LanguageDropdown: FC<LanguageDropdownProps> = ({
         >
           {Label}{required && <span className="rcs-required-indicator" aria-label="required"> *</span>}
         </label>
-      {state.isLoadingLanguageInformation ? (
+      {state.isLoadingLanguageInformation && showLoadingIndicator ? (
         customLoadingIndicator || <LoadingIndicator message={loadingText} ariaLabel="Loading language information" />
       ) : enableSearch ? (
         <>

@@ -113,7 +113,7 @@ describe('Search Functionality', () => {
       const input = screen.getByPlaceholderText('Search or select a country');
       const datalistId = input.getAttribute('list');
       expect(datalistId).toBeTruthy();
-      expect(datalistId).toMatch(/^rcs-country-\d+-datalist$/);
+      expect(datalistId).toMatch(/^rcs-rcs-country-dropdown-\d+-datalist$/);
       
       const datalist = document.getElementById(datalistId!);
       expect(datalist).toBeInTheDocument();
@@ -286,7 +286,7 @@ describe('Search Functionality', () => {
       const input = screen.getByPlaceholderText('Search or select a state/province');
       const datalistId = input.getAttribute('list');
       expect(datalistId).toBeTruthy();
-      expect(datalistId).toMatch(/^rcs-state-\d+-datalist$/);
+      expect(datalistId).toMatch(/^rcs-rcs-state-dropdown-\d+-datalist$/);
       
       const datalist = document.getElementById(datalistId!);
       expect(datalist).toBeInTheDocument();
@@ -382,7 +382,7 @@ describe('Search Functionality', () => {
       const input = screen.getByPlaceholderText('Search or select a language');
       const datalistId = input.getAttribute('list');
       expect(datalistId).toBeTruthy();
-      expect(datalistId).toMatch(/^rcs-language-\d+-datalist$/);
+      expect(datalistId).toMatch(/^rcs-rcs-language-dropdown-\d+-datalist$/);
       
       const datalist = document.getElementById(datalistId!);
       expect(datalist).toBeInTheDocument();
@@ -417,7 +417,7 @@ describe('Search Functionality', () => {
       expect(labelFor).toBe(inputId);
       
       // Verify ID follows the rcs- prefix pattern
-      expect(inputId).toMatch(/^rcs-country-\d+$/);
+      expect(inputId).toMatch(/^rcs-rcs-country-dropdown-\d+$/);
     });
 
     it('maintains proper label association for StateDropdown', () => {
@@ -445,7 +445,7 @@ describe('Search Functionality', () => {
       expect(labelFor).toBe(inputId);
       
       // Verify ID follows the rcs- prefix pattern
-      expect(inputId).toMatch(/^rcs-state-\d+$/);
+      expect(inputId).toMatch(/^rcs-rcs-state-dropdown-\d+$/);
     });
 
     it('maintains proper label association for LanguageDropdown', () => {
@@ -472,7 +472,7 @@ describe('Search Functionality', () => {
       expect(labelFor).toBe(inputId);
       
       // Verify ID follows the rcs- prefix pattern
-      expect(inputId).toMatch(/^rcs-language-\d+$/);
+      expect(inputId).toMatch(/^rcs-rcs-language-dropdown-\d+$/);
     });
   });
 

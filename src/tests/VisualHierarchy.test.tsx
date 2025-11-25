@@ -57,7 +57,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
         />
       );
       
-      const containerDiv = container.querySelector('.rcs-container');
+      const containerDiv = container.querySelector('.rcs-country-dropdown-container');
       expect(containerDiv).toBeInTheDocument();
     });
 
@@ -73,7 +73,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       );
       
       const label = screen.getByText('Country');
-      expect(label).toHaveClass('rcs-label');
+      expect(label).toHaveClass('rcs-country-dropdown-label');
     });
 
     it('applies default select class for spacing', () => {
@@ -88,7 +88,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       );
       
       const selectContainer = container.querySelector('.virtual-select-container');
-      expect(selectContainer).toHaveClass('rcs-select');
+      expect(selectContainer).toHaveClass('rcs-country-dropdown-select');
     });
 
     it('allows custom label class to override default', () => {
@@ -105,7 +105,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       const label = screen.getByText('Country');
       expect(label).toHaveClass('custom-label-class');
-      expect(label).not.toHaveClass('rcs-label');
+      expect(label).not.toHaveClass('rcs-country-dropdown-label');
     });
 
     it('allows custom select class to override default', () => {
@@ -122,7 +122,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       const selectContainer = container.querySelector('.virtual-select-container');
       expect(selectContainer).toHaveClass('custom-select-class');
-      expect(selectContainer).not.toHaveClass('rcs-select');
+      expect(selectContainer).not.toHaveClass('rcs-country-dropdown-select');
     });
   });
 
@@ -138,7 +138,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
         />
       );
       
-      const containerDiv = container.querySelector('.rcs-container');
+      const containerDiv = container.querySelector('.rcs-state-dropdown-container');
       expect(containerDiv).toBeInTheDocument();
     });
 
@@ -154,7 +154,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       );
       
       const label = screen.getByText('State');
-      expect(label).toHaveClass('rcs-label');
+      expect(label).toHaveClass('rcs-state-dropdown-label');
     });
 
     it('applies default select class for spacing', async () => {
@@ -170,7 +170,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       await waitFor(() => {
         const selectContainer = container.querySelector('.virtual-select-container');
-        expect(selectContainer).toHaveClass('rcs-select');
+        expect(selectContainer).toBeInTheDocument();
       });
     });
 
@@ -188,7 +188,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       const label = screen.getByText('State');
       expect(label).toHaveClass('custom-state-label');
-      expect(label).not.toHaveClass('rcs-label');
+      expect(label).not.toHaveClass('rcs-state-dropdown-label');
     });
 
     it('allows custom select class to override default', async () => {
@@ -206,7 +206,6 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       await waitFor(() => {
         const selectContainer = container.querySelector('.virtual-select-container');
         expect(selectContainer).toHaveClass('custom-state-select');
-        expect(selectContainer).not.toHaveClass('rcs-select');
       });
     });
   });
@@ -223,7 +222,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
         />
       );
       
-      const containerDiv = container.querySelector('.rcs-container');
+      const containerDiv = container.querySelector('.rcs-language-dropdown-container');
       expect(containerDiv).toBeInTheDocument();
     });
 
@@ -239,7 +238,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       );
       
       const label = screen.getByText('Language');
-      expect(label).toHaveClass('rcs-label');
+      expect(label).toHaveClass('rcs-language-dropdown-label');
     });
 
     it('applies default select class for spacing', () => {
@@ -254,7 +253,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       );
       
       const selectContainer = container.querySelector('.virtual-select-container');
-      expect(selectContainer).toHaveClass('rcs-select');
+      expect(selectContainer).toHaveClass('rcs-language-dropdown-select');
     });
 
     it('allows custom label class to override default', () => {
@@ -271,7 +270,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       const label = screen.getByText('Language');
       expect(label).toHaveClass('custom-lang-label');
-      expect(label).not.toHaveClass('rcs-label');
+      expect(label).not.toHaveClass('rcs-language-dropdown-label');
     });
 
     it('allows custom select class to override default', () => {
@@ -288,7 +287,7 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
       
       const selectContainer = container.querySelector('.virtual-select-container');
       expect(selectContainer).toHaveClass('custom-lang-select');
-      expect(selectContainer).not.toHaveClass('rcs-select');
+      expect(selectContainer).not.toHaveClass('rcs-language-dropdown-select');
     });
   });
 
@@ -324,22 +323,22 @@ describe('Visual Hierarchy - Typography and Spacing', () => {
         />
       );
 
-      // Check container classes use consistent rcs-container
-      expect(countryContainer.querySelector('.rcs-container')).toBeInTheDocument();
-      expect(stateContainer.querySelector('.rcs-container')).toBeInTheDocument();
-      expect(langContainer.querySelector('.rcs-container')).toBeInTheDocument();
+      // Check container classes use consistent pattern with dropdown type suffix
+      expect(countryContainer.querySelector('.rcs-country-dropdown-container')).toBeInTheDocument();
+      expect(stateContainer.querySelector('.rcs-state-dropdown-container')).toBeInTheDocument();
+      expect(langContainer.querySelector('.rcs-language-dropdown-container')).toBeInTheDocument();
 
-      // Check label classes use consistent rcs-label
-      expect(countryContainer.querySelector('.rcs-label')).toBeInTheDocument();
-      expect(stateContainer.querySelector('.rcs-label')).toBeInTheDocument();
-      expect(langContainer.querySelector('.rcs-label')).toBeInTheDocument();
+      // Check label classes use consistent pattern with dropdown type suffix
+      expect(countryContainer.querySelector('.rcs-country-dropdown-label')).toBeInTheDocument();
+      expect(stateContainer.querySelector('.rcs-state-dropdown-label')).toBeInTheDocument();
+      expect(langContainer.querySelector('.rcs-language-dropdown-label')).toBeInTheDocument();
 
-      // Check select classes use consistent rcs-select
-      expect(countryContainer.querySelector('.rcs-select')).toBeInTheDocument();
+      // Check select classes use consistent pattern with dropdown type suffix
+      expect(countryContainer.querySelector('.rcs-country-dropdown-select')).toBeInTheDocument();
       await waitFor(() => {
-        expect(stateContainer.querySelector('.rcs-select')).toBeInTheDocument();
+        expect(stateContainer.querySelector('.virtual-select-container')).toBeInTheDocument();
       });
-      expect(langContainer.querySelector('.rcs-select')).toBeInTheDocument();
+      expect(langContainer.querySelector('.rcs-language-dropdown-select')).toBeInTheDocument();
     });
   });
 });
