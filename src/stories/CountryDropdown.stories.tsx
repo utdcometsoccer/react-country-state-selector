@@ -96,7 +96,17 @@ export const WithSearchPreselected: Story = {
     },
 };
 
-// Story demonstrating error handling with retry mechanism
+/**
+ * Story demonstrating error handling with retry mechanism.
+ * 
+ * This story shows how the component handles data loading failures:
+ * - Displays a user-friendly error message
+ * - Provides a "Retry loading data" button (up to 3 retries)
+ * - Shows detailed error info in development mode for debugging
+ * 
+ * In production builds, only a brief error message is shown.
+ * See docs/ERROR-HANDLING.md for full documentation.
+ */
 export const WithErrorHandling: Story = {
     args: {
         onCountryChange: (country) => console.log('Selected country:', country),
@@ -106,9 +116,9 @@ export const WithErrorHandling: Story = {
         Label: 'Country (Error Demo)',
         classNameLabel: 'country-label',
         classNameSelect: 'country-select',
-        // Mock function that always throws an error to demonstrate error handling
-        getCountryInformation: async (culture: CultureInfo) => {
-            throw new Error('Network error - unable to fetch country data');
+        // Mock function that simulates a network failure to demonstrate error handling
+        getCountryInformation: async () => {
+            throw new Error('Simulated network failure');
         },
     },
 };

@@ -91,10 +91,19 @@ Then navigate to:
 **stories > CountryDropdown > With Error Handling**
 
 This story demonstrates:
-- Initial error display
-- Retry button functionality
-- Error recovery guidance (after 3 attempts)
-- Development mode error details
+- Initial error display with user-friendly message
+- Retry button functionality (up to 3 attempts)
+- Stack trace visibility in development mode for debugging
+- Scrollable error container for long messages
+
+### Development vs Production Behavior
+
+| Environment | Error Display |
+|-------------|---------------|
+| Development | Full error message with stack trace (scrollable) |
+| Production  | Brief user-friendly message without technical details |
+
+In development mode (including Storybook), the error container shows detailed information to help developers debug issues. The container has a maximum height with scrolling enabled to prevent the error from overwhelming the UI.
 
 ## Custom Error Handling
 

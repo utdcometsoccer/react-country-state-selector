@@ -221,6 +221,28 @@ input#language-select::placeholder {
   }
 }
 
+/* Data loading error container */
+.rcs-language-error-container {
+  margin-bottom: var(--rcss-spacing);
+}
+
+/* Data loading error message styling */
+.rcs-language-error-message {
+  color: var(--rcss-error-color);
+  font-size: var(--rcss-label-font-size);
+  padding: 0.75rem;
+  background-color: var(--rcss-error-background);
+  border: 1px solid var(--rcss-error-border);
+  border-radius: var(--rcss-border-radius);
+  font-family: var(--rcss-font-family);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.4;
+}
+
 /* Validation error styling */
 .rcs-language-validation-error {
   color: var(--rcss-error-color);

@@ -244,8 +244,10 @@ const StateDropdown: FC<StateDropdownProps> = ({
     <DropdownErrorBoundary>
       <div className="rcs-state-dropdown-container">
         {state.error && (
-          <div id={`${uniqueId}-error`} className="rcs-state-error-message">
-            {state.error}
+          <div className="rcs-state-error-container">
+            <div id={`${uniqueId}-error`} className="rcs-state-error-message" role="alert">
+              {state.error}
+            </div>
             {state.retryCount < maxRetries && (
               <button 
                 onClick={handleRetry}
