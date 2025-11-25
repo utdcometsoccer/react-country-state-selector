@@ -1,7 +1,7 @@
 # react-country-state-selector
 
 [![GitHub Actions](https://github.com/utdcometsoccer/react-country-state-selector/actions/workflows/publish.yml/badge.svg)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
-[![Tests](https://img.shields.io/badge/tests-128%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
+[![Tests](https://img.shields.io/badge/tests-261%2B%20passing-brightgreen)](https://github.com/utdcometsoccer/react-country-state-selector/actions)
 [![npm version](https://badge.fury.io/js/@idahoedokpayi%2Freact-country-state-selector.svg)](https://www.npmjs.com/package/@idahoedokpayi/react-country-state-selector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -17,14 +17,16 @@ in **English**, **Spanish**, and **French**.
 
 ## Features
 
-- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (18.64 KB gzipped core)
+- ⚡ **Performance optimized** - Code splitting with dynamic imports keeps bundle size minimal (~18 KB gzipped core)
 - 🔍 **Optional search/filter** - Built-in search functionality for mobile users and long lists
 - 🌍 **Dynamic loading** of country and state/province data based on user culture
 - 🔤 **ISO Standards Compliance** - ISO 3166-1 country codes and ISO 639-1 language codes
 - 🚀 **Virtual scrolling** - Optimized performance for long lists using react-window
 - 🎨 **Flexible customization** - Custom labels, CSS classes, and data sources
-- ♿ **Accessibility first** - Full ARIA support and screen reader compatibility
-- 🧪 **Thoroughly tested** - 145+ comprehensive unit tests with 100% backward compatibility
+- ♿ **Accessibility first** - Full ARIA support, screen reader compatibility, and WCAG 2.1 compliance
+- ✅ **Required field validation** - Built-in support for required fields with visual indicators and ARIA attributes
+- 🛡️ **Error boundaries** - Graceful error handling with customizable fallback UI
+- 🧪 **Thoroughly tested** - 261+ comprehensive unit tests with 100% backward compatibility
 - 🏗️ **Clean architecture** - Centralized culture resolution logic with robust error handling
 - 🎯 **TypeScript support** - Full type safety and IntelliSense support
 - 📱 **Mobile-first design** - Touch-optimized with 44x44px minimum touch targets, responsive CSS, and mobile testing guidelines
@@ -34,6 +36,8 @@ in **English**, **Spanish**, and **French**.
 - [📱 Mobile & Touch Optimization Guide](./docs/MOBILE.md) - Comprehensive mobile best practices and testing
 - [♿ Accessibility Documentation](./docs/ACCESSIBILITY.md) - WCAG compliance and screen reader support
 - [🎨 Styling Guide](./docs/STYLING.md) - Customization and theming options
+- [✅ Required Field Validation](./docs/REQUIRED-FIELD-VALIDATION.md) - Form validation and ARIA accessibility
+- [🛡️ Error Handling & Recovery](./docs/ERROR-HANDLING.md) - Error boundaries and retry mechanisms
 
 ## Performance & Bundle Size
 
@@ -41,19 +45,19 @@ This library is designed with performance in mind, implementing several optimiza
 
 ### Bundle Size Impact
 
-The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need. All measurements below are from Vite v7.2.4 build output:
+The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need:
 
 **Core Library (always loaded):**
-- ES Module: **65.76 KB** (16.50 KB gzipped)
-- UMD Module: **90.04 KB** (24.05 KB gzipped)
-- CSS Styles: **14.73 KB** (2.14 KB gzipped)
+- ES Module: **65.22 KB** (14.55 KB gzipped)
+- UMD Module: **90.36 KB** (22.35 KB gzipped)
+- CSS Styles: **27.12 KB** (3.18 KB gzipped)
 
 **Data Files (loaded on-demand):**
 - Country data per locale: **~8.6-8.7 KB each** (~2.4 KB gzipped)
 - Language data per locale: **~8.3-8.4 KB each** (~1.5 KB gzipped)  
 - State/Province data per locale: **0.8-3.1 KB each** (0.3-0.7 KB gzipped)
 
-**Total Initial Bundle:** **80.49 KB** uncompressed or **18.64 KB gzipped** for the core library (ES + CSS) without any data files.
+**Total Initial Bundle:** **~92 KB** uncompressed or **~18 KB gzipped** for the core library (ES + CSS) without any data files.
 
 ### Dynamic Data Loading
 
@@ -469,6 +473,10 @@ The guide covers:
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading country information..."): Custom text to display with the loading indicator.
+- `required` (boolean, default: `false`): Whether the field is required. Adds visual asterisk and `aria-required` attribute.
+- `validate` (function): Custom validation function that receives the selected value and returns an error message or undefined.
+- `onValidationError` (function): Callback when validation error occurs.
+- `onSuccess` (function): Callback triggered when a selection is successfully made.
 
 ### StateDropdown Props
 
@@ -487,6 +495,10 @@ The guide covers:
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading state/province information..."): Custom text to display with the loading indicator.
+- `required` (boolean, default: `false`): Whether the field is required. Adds visual asterisk and `aria-required` attribute.
+- `validate` (function): Custom validation function that receives the selected value and returns an error message or undefined.
+- `onValidationError` (function): Callback when validation error occurs.
+- `onSuccess` (function): Callback triggered when a selection is successfully made.
 
 ### LanguageDropdown Props
 
@@ -504,6 +516,10 @@ The guide covers:
 - `showLoadingIndicator` (boolean, default: true): Whether to display a loading indicator while data is loading.
 - `customLoadingIndicator` (ReactNode): Custom loading indicator component to replace the default spinner.
 - `loadingText` (string, default: "Loading language information..."): Custom text to display with the loading indicator.
+- `required` (boolean, default: `false`): Whether the field is required. Adds visual asterisk and `aria-required` attribute.
+- `validate` (function): Custom validation function that receives the selected value and returns an error message or undefined.
+- `onValidationError` (function): Callback when validation error occurs.
+- `onSuccess` (function): Callback triggered when a selection is successfully made.
 
 ## Culture Resolution
 
@@ -527,15 +543,105 @@ const culture = new CultureInfo('fr-CA');
 <CountryDropdown /> // Uses browser language automatically
 ```
 
+## Required Field Validation
+
+All dropdown components support required field validation with built-in accessibility features. This ensures WCAG 2.1 compliance and provides a great user experience.
+
+### Basic Required Field
+
+```jsx
+<CountryDropdown
+  selectedCountry={country}
+  onCountryChange={setCountry}
+  Label="Country"
+  required={true}  // Adds visual asterisk and aria-required
+/>
+```
+
+When `required={true}`:
+- A visual asterisk (*) appears next to the label
+- The `aria-required="true"` attribute is added for screen readers
+- Validation error appears when no selection is made
+
+### Custom Validation
+
+You can provide custom validation logic using the `validate` prop:
+
+```jsx
+<StateDropdown
+  selectedState={state}
+  onStateChange={setState}
+  country="US"
+  Label="State"
+  validate={(value) => {
+    if (!value) return 'State is required';
+    if (value === 'XX') return 'This state is not available';
+    return undefined; // No error
+  }}
+  onValidationError={(error) => {
+    console.log('Validation error:', error);
+  }}
+/>
+```
+
+### Success Callback
+
+Use the `onSuccess` callback to be notified when a valid selection is made:
+
+```jsx
+<LanguageDropdown
+  selectedLanguage={language}
+  onLanguageChange={setLanguage}
+  Label="Language"
+  onSuccess={(value) => {
+    console.log('Language selected successfully:', value);
+    // Show success message, trigger analytics, etc.
+  }}
+/>
+```
+
+## Error Boundary
+
+The library includes a `DropdownErrorBoundary` component that wraps all dropdowns automatically to catch and handle errors gracefully. You can also use it directly:
+
+```jsx
+import { DropdownErrorBoundary, CountryDropdown } from 'react-country-state-selector';
+
+// Custom error handling
+<DropdownErrorBoundary
+  fallback={<div>Custom error message</div>}
+  onError={(error, errorInfo) => {
+    // Log to error tracking service
+    console.error('Dropdown error:', error);
+  }}
+>
+  <CountryDropdown
+    selectedCountry={country}
+    onCountryChange={setCountry}
+  />
+</DropdownErrorBoundary>
+```
+
+### Error Recovery
+
+All components include built-in error recovery with retry functionality:
+
+- Up to 3 automatic retry attempts
+- User-friendly error messages
+- Recovery guidance after failed attempts
+- Accessible error announcements via ARIA live regions
+
+For more details, see the [Error Handling & Recovery Guide](./docs/ERROR-HANDLING.md).
+
 ## Testing & Quality
 
 This library is built with quality and reliability in mind:
 
-- **144+ comprehensive unit tests** covering all components and utilities
-- **24+ dedicated tests** for search/filter functionality
-- **128+ comprehensive unit tests** covering all components and utilities
-- **20+ dedicated tests** for culture resolution logic
-- **15+ tests** for loading indicator functionality
+- **261+ comprehensive unit tests** covering all components and utilities
+- **Dedicated tests** for search/filter functionality, virtual scrolling, and optgroup support
+- **Culture resolution tests** for multi-language support
+- **Loading indicator tests** for all loading states
+- **Required field validation tests** for accessibility compliance
 - **Integration tests** ensuring component compatibility
 - **Error handling tests** for robust fallback mechanisms
 - **Accessibility tests** for ARIA compliance and screen reader support
@@ -652,89 +758,6 @@ import { LoadingSpinner } from 'react-country-state-selector';
 
 // In your component
 <LoadingSpinner text="Loading..." />
-```
-  ]} 
-/>
-```
-
-## Loading Indicators
-
-All dropdown components display a loading indicator while data is being fetched. The loading indicators are fully customizable:
-
-### Default Loading Indicator
-
-By default, all components show an animated spinner with descriptive text:
-
-```jsx
-<CountryDropdown 
-  selectedCountry=""
-  onCountryChange={handleCountryChange}
-  culture="en-US"
-/>
-// Shows: animated spinner with "Loading country information..."
-```
-
-### Disable Loading Indicator
-
-You can hide the loading indicator completely:
-
-```jsx
-<CountryDropdown 
-  selectedCountry=""
-  onCountryChange={handleCountryChange}
-  culture="en-US"
-  showLoadingIndicator={false}
-/>
-// No loading indicator will be shown
-```
-
-### Custom Loading Text
-
-Customize the loading message:
-
-```jsx
-<StateDropdown 
-  selectedState=""
-  onStateChange={handleStateChange}
-  country="US"
-  culture="en-US"
-  loadingText="Please wait, fetching states..."
-/>
-// Shows: spinner with "Please wait, fetching states..."
-```
-
-### Custom Loading Indicator
-
-Replace the default spinner with your own component:
-
-```jsx
-const MyCustomSpinner = () => (
-  <div style={{ padding: '10px' }}>
-    <img src="/my-loader.gif" alt="Loading" />
-    <span>Loading data...</span>
-  </div>
-);
-
-<LanguageDropdown 
-  selectedLanguage=""
-  onLanguageChange={handleLanguageChange}
-  culture="en-US"
-  customLoadingIndicator={<MyCustomSpinner />}
-/>
-```
-
-### Using the LoadingSpinner Component
-
-The library exports the `LoadingSpinner` component that you can use independently:
-
-```jsx
-import { LoadingSpinner } from 'react-country-state-selector';
-
-// In your component
-<LoadingSpinner text="Loading..." />
-```
-  ]} 
-/>
 ```
 
 ### Organizing Long Lists with Optgroups
@@ -998,8 +1021,10 @@ For more detailed information, see the following guides:
 
 - **[Error Handling & Recovery Guide](./docs/ERROR-HANDLING.md)** - Learn about error handling, retry mechanisms, and recovery guidance
 - **[Accessibility Guide](./docs/ACCESSIBILITY.md)** - Comprehensive accessibility features and ARIA support
+- **[Required Field Validation](./docs/REQUIRED-FIELD-VALIDATION.md)** - Form validation features and ARIA accessibility improvements
 - **[Styling Guide](./docs/STYLING.md)** - Customization options and CSS theming
 - **[Visual Hierarchy Guide](./docs/VISUAL-HIERARCHY.md)** - Design principles and visual organization
+- **[Mobile & Touch Optimization](./docs/MOBILE.md)** - Mobile best practices and touch target guidelines
 - **[UI/UX Analysis](./docs/UI-UX-ANALYSIS.md)** - Detailed analysis and recommendations
 
 ## License
