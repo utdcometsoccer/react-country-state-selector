@@ -83,7 +83,7 @@ input#country-select:hover:not(:disabled),
 input#state-province-select:hover:not(:disabled),
 input#language-select:hover:not(:disabled) {
   border-color: var(--rcss-primary-hover);
-  background-color: #374151;
+  background-color: var(--rcss-disabled-background);
 }
 
 select#country-select:disabled,
