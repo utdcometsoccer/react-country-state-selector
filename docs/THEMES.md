@@ -1,6 +1,6 @@
 # Preset Themes Guide
 
-The `react-country-state-selector` library provides three optional preset themes that you can use out of the box. These themes are designed to match popular design systems and provide a quick way to style your dropdowns without writing custom CSS.
+The `react-country-state-selector` library provides four optional preset themes that you can use out of the box. These themes are designed to match popular design systems and provide a quick way to style your dropdowns without writing custom CSS.
 
 ## Available Themes
 
@@ -103,17 +103,49 @@ import 'react-country-state-selector/dist/themes/bootstrap.css';
 
 ---
 
+### 4. Dark Theme
+
+**Perfect for:** Applications with dark mode support or dark-themed interfaces.
+
+**Features:**
+- Dark gray backgrounds
+- Light text for readability
+- Bright blue accent colors for visibility
+- Visible focus states on dark backgrounds
+- System font stack
+
+**Usage:**
+```tsx
+// Import the dark theme CSS
+import 'react-country-state-selector/dist/themes/dark.css';
+
+<CountryDropdown 
+  selectedCountry={country}
+  onCountryChange={setCountry}
+  Label="Country"
+/>
+```
+
+**Preview:**
+- Border: 1px gray on dark background (#4b5563)
+- Focus: Bright blue glow (#60a5fa)
+- Colors: Bright blue accents with light gray text (#f3f4f6)
+- Background: Dark gray (#1f2937)
+
+---
+
 ## Comparing Themes
 
-| Feature | Minimal | Material | Bootstrap |
-|---------|---------|----------|-----------|
-| **Style** | Clean, subtle | Elevated, prominent | Familiar, standard |
-| **Borders** | Thin (1px) | Bottom emphasis (2px) | Standard (1px) |
-| **Focus** | Subtle glow | Shadow elevation | Blue ring |
-| **Colors** | Blue/Gray | Material Blue | Bootstrap Blue |
-| **Labels** | Normal case | Uppercase | Normal case |
-| **Spacing** | Compact | Standard | Standard |
-| **Font** | System | Roboto preferred | Bootstrap stack |
+| Feature | Minimal | Material | Bootstrap | Dark |
+|---------|---------|----------|-----------|------|
+| **Style** | Clean, subtle | Elevated, prominent | Familiar, standard | Dark mode |
+| **Borders** | Thin (1px) | Bottom emphasis (2px) | Standard (1px) | Subtle (1px) |
+| **Focus** | Subtle glow | Shadow elevation | Blue ring | Bright glow |
+| **Colors** | Blue/Gray | Material Blue | Bootstrap Blue | Bright Blue |
+| **Labels** | Normal case | Uppercase | Normal case | Normal case |
+| **Spacing** | Compact | Standard | Standard | Standard |
+| **Font** | System | Roboto preferred | Bootstrap stack | System |
+| **Background** | White | Light gray | White | Dark gray |
 
 ---
 
@@ -165,6 +197,7 @@ The themes are located at:
 - `node_modules/react-country-state-selector/dist/themes/minimal.css`
 - `node_modules/react-country-state-selector/dist/themes/material.css`
 - `node_modules/react-country-state-selector/dist/themes/bootstrap.css`
+- `node_modules/react-country-state-selector/dist/themes/dark.css`
 
 ---
 
@@ -259,6 +292,39 @@ function App() {
           onStateChange={setState}
           country={country}
           Label="State/Province"
+          culture="en-US"
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+### Dark Theme Example
+
+```tsx
+import React, { useState } from 'react';
+import { CountryDropdown, StateDropdown } from 'react-country-state-selector';
+import 'react-country-state-selector/dist/themes/dark.css';
+
+function App() {
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+
+  return (
+    <div style={{ background: '#111827', minHeight: '100vh', padding: '16px' }}>
+      <CountryDropdown 
+        selectedCountry={country}
+        onCountryChange={setCountry}
+        Label="Country"
+        culture="en-US"
+      />
+      <div style={{ marginTop: '16px' }}>
+        <StateDropdown 
+          selectedState={state}
+          onStateChange={setState}
+          country={country}
+          Label="State"
           culture="en-US"
         />
       </div>

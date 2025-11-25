@@ -6,14 +6,16 @@ import type { Country } from '../types';
 import '../themes/minimal.css';
 import '../themes/material.css';
 import '../themes/bootstrap.css';
+import '../themes/dark.css';
 
 /**
  * Preset Themes Showcase
  * 
- * This story demonstrates the three preset themes available in react-country-state-selector:
+ * This story demonstrates the four preset themes available in react-country-state-selector:
  * - Minimal: Clean, understated design
  * - Material: Google Material Design inspired
  * - Bootstrap: Bootstrap 5 form control styling
+ * - Dark: Dark mode theme for dark-themed applications
  */
 const meta = {
     title: 'Themes/Preset Themes',
@@ -24,7 +26,7 @@ const meta = {
                 component: `
 # Preset Themes
 
-The library provides three ready-to-use preset themes that can be imported directly:
+The library provides four ready-to-use preset themes that can be imported directly:
 
 ## Available Themes
 
@@ -45,6 +47,12 @@ Google Material Design inspired with elevated surfaces and prominent focus state
 import 'react-country-state-selector/dist/themes/bootstrap.css';
 \`\`\`
 Familiar Bootstrap 5 form control styling.
+
+### Dark Theme
+\`\`\`tsx
+import 'react-country-state-selector/dist/themes/dark.css';
+\`\`\`
+Dark mode theme with dark backgrounds and light text.
 
 See the [Themes Guide](../docs/THEMES.md) for detailed documentation.
                 `,
@@ -236,9 +244,76 @@ export const BootstrapTheme: Story = {
 };
 
 /**
+ * Dark Theme Example
+ * 
+ * A dark mode theme with dark backgrounds and light text.
+ * Features:
+ * - Dark gray backgrounds
+ * - Light text for readability
+ * - Bright blue accent colors
+ * - Visible focus states on dark backgrounds
+ */
+export const DarkTheme: Story = {
+    args: {
+        onCountryChange: (country) => console.log('Selected country:', country),
+        selectedCountry: 'US',
+        culture: 'en-US',
+        Label: 'Country (Dark Theme)',
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ padding: '2rem', fontFamily: 'var(--rcss-font-family)' }}>
+                <style>{`
+                    /* Apply dark theme to this story */
+                    .dark-theme-container {
+                        --rcss-primary-color: #60a5fa;
+                        --rcss-primary-hover: #3b82f6;
+                        --rcss-border-color: #4b5563;
+                        --rcss-border-radius: 0.375rem;
+                        --rcss-focus-ring-color: rgba(96, 165, 250, 0.4);
+                        --rcss-text-color: #f3f4f6;
+                        --rcss-label-color: #e5e7eb;
+                        --rcss-background-color: #1f2937;
+                        --rcss-disabled-background: #374151;
+                        --rcss-font-size: 1rem;
+                        --rcss-label-font-size: 0.875rem;
+                        --rcss-spacing: 0.5rem;
+                    }
+                    .dark-theme-container select,
+                    .dark-theme-container input {
+                        padding: 0.5rem 0.75rem;
+                        border-color: #4b5563;
+                        background-color: #1f2937;
+                        color: #f3f4f6;
+                    }
+                    .dark-theme-container select:focus,
+                    .dark-theme-container input:focus {
+                        border-color: #60a5fa;
+                        box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.4);
+                    }
+                    .dark-theme-container select:hover:not(:disabled),
+                    .dark-theme-container input:hover:not(:disabled) {
+                        background-color: #374151;
+                    }
+                    .dark-theme-container label {
+                        color: #e5e7eb;
+                    }
+                `}</style>
+                <div className="dark-theme-container" style={{ maxWidth: '400px', background: '#111827', padding: '1.5rem', borderRadius: '0.5rem' }}>
+                    <Story />
+                    <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#9ca3af' }}>
+                        ✨ Dark mode theme with dark backgrounds and light text
+                    </p>
+                </div>
+            </div>
+        ),
+    ],
+};
+
+/**
  * Theme Comparison
  * 
- * See all three themes side by side for easy comparison.
+ * See all four themes side by side for easy comparison.
  */
 export const ThemeComparison: Story = {
     args: {
@@ -268,6 +343,9 @@ export const ThemeComparison: Story = {
                         font-size: 1.125rem;
                         font-weight: 600;
                         color: #1f2937;
+                    }
+                    .theme-card.theme-dark h3 {
+                        color: #f3f4f6;
                     }
                     
                     /* Minimal theme styles */
@@ -306,6 +384,26 @@ export const ThemeComparison: Story = {
                     .theme-bootstrap select {
                         padding: 0.375rem 0.75rem;
                     }
+                    
+                    /* Dark theme styles */
+                    .theme-dark {
+                        --rcss-primary-color: #60a5fa;
+                        --rcss-primary-hover: #3b82f6;
+                        --rcss-border-color: #4b5563;
+                        --rcss-text-color: #f3f4f6;
+                        --rcss-label-color: #e5e7eb;
+                        --rcss-background-color: #1f2937;
+                        background: #111827;
+                        border-color: #374151;
+                    }
+                    .theme-dark select {
+                        background-color: #1f2937;
+                        color: #f3f4f6;
+                        border-color: #4b5563;
+                    }
+                    .theme-dark label {
+                        color: #e5e7eb;
+                    }
                 `}</style>
                 <div className="theme-comparison-grid">
                     <div className="theme-card theme-minimal">
@@ -318,6 +416,10 @@ export const ThemeComparison: Story = {
                     </div>
                     <div className="theme-card theme-bootstrap">
                         <h3>Bootstrap</h3>
+                        <Story />
+                    </div>
+                    <div className="theme-card theme-dark">
+                        <h3>Dark</h3>
                         <Story />
                     </div>
                 </div>

@@ -20,7 +20,7 @@ function copyThemesPlugin() {
       try {
         mkdirSync(themesDir, { recursive: true });
         
-        const themeFiles = ['minimal.css', 'material.css', 'bootstrap.css'];
+        const themeFiles = ['minimal.css', 'material.css', 'bootstrap.css', 'dark.css'];
         themeFiles.forEach(file => {
           const src = path.join(srcThemesDir, file);
           const dest = path.join(themesDir, file);
