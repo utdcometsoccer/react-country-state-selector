@@ -45,7 +45,7 @@ This library is designed with performance in mind, implementing several optimiza
 
 ### Bundle Size Impact
 
-The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need:
+The library uses **code splitting** and **dynamic imports** to ensure you only load the data you actually need. Bundle size measurements below are from the Vite build output:
 
 **Core Library (always loaded):**
 - ES Module: **65.22 KB** (14.55 KB gzipped)
@@ -637,11 +637,13 @@ For more details, see the [Error Handling & Recovery Guide](./docs/ERROR-HANDLIN
 
 This library is built with quality and reliability in mind:
 
-- **261+ comprehensive unit tests** covering all components and utilities
-- **Dedicated tests** for search/filter functionality, virtual scrolling, and optgroup support
-- **Culture resolution tests** for multi-language support
-- **Loading indicator tests** for all loading states
-- **Required field validation tests** for accessibility compliance
+- **261+ comprehensive unit tests** covering all components and utilities, including:
+  - **40+ tests** for dropdown components (CountryDropdown, StateDropdown, LanguageDropdown)
+  - **24+ tests** for search/filter functionality
+  - **20+ tests** for culture resolution logic
+  - **15+ tests** for loading indicator functionality
+  - **20+ tests** for required field validation
+  - **18+ tests** for CultureInfo class
 - **Integration tests** ensuring component compatibility
 - **Error handling tests** for robust fallback mechanisms
 - **Accessibility tests** for ARIA compliance and screen reader support
